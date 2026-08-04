@@ -12,6 +12,9 @@ version = "1.1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":base"))
+    implementation(platform(libs.log4j.bom))
+    implementation(libs.log4j.api)
+    implementation(libs.log4j.core)
 }
 
 application {
