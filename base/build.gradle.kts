@@ -6,3 +6,7 @@
 plugins {
     id("buildlogic.java-library-conventions")
 }
+
+tasks.javadoc {
+    options.overview = "overview.html"
+}

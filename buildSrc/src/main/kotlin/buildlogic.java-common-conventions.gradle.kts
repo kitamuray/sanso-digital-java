@@ -43,6 +43,6 @@ tasks.javadoc {
             "<script src=\"https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js\"></script>"
 
     (options as StandardJavadocDocletOptions).charSet = "UTF-8"
-    (options as StandardJavadocDocletOptions).links("https://docs.oracle.com/javase/jp/8/docs/api/")
+    (options as StandardJavadocDocletOptions).links("https://docs.oracle.com/javase/jp/25/docs/api/")
     (options as StandardJavadocDocletOptions).addBooleanOption("-allow-script-in-comments", true)
 }

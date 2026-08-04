@@ -14,3 +14,7 @@ dependencies {
 application {
     mainClass = "com.nipponsanso.jp.digital.adsorption.Main"
 }
+
+tasks.javadoc {
+    options.overview = "overview.html"
+}
