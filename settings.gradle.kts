@@ -8,4 +8,4 @@ plugins {
 }
 
 rootProject.name = "sanso-digital-java"
-include("adsorption", "list", "utilities")
+include("adsorption", "base")
