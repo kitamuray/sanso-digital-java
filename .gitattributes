@@ -1,12 +1,10 @@
 #
-# https://help.github.com/articles/dealing-with-line-endings/
+# Copyright (c)  2025, 2026  TAIYO NIPPON SANSO CORPORATION
+# Copyright (c)  2026        Nippon Sanso Corporation
 #
-# Linux start script should use lf
-/gradlew        text eol=lf
 
-# These are Windows script files and should use crlf
-*.bat           text eol=crlf
-
-# Binary files should be left untouched
-*.jar           binary
-
+*            text=auto
+*.jar        binary
+*.png        binary
+/gradlew     text eol=lf
+/gradlew.bat text eol=crlf

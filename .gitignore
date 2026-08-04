@@ -1,8 +1,15 @@
-# Ignore Gradle project-specific cache directory
-.gradle
+#
+# Copyright (c)  2025, 2026  TAIYO NIPPON SANSO CORPORATION
+# Copyright (c)  2026        Nippon Sanso Corporation
+#
 
-# Ignore Gradle build output directory
-build
-
-# Ignore Kotlin plugin data
-.kotlin
+.*~
+*~
+*.csv
+*.iml
+*.log
+.gradle/
+.kotlin/
+/.idea/
+build/
+out/
