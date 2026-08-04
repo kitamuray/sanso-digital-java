@@ -7,6 +7,9 @@ plugins {
     id("buildlogic.java-application-conventions")
 }
 
+group = "com.nipponsanso.jp.digital"
+version = "1.1.0-SNAPSHOT"
+
 dependencies {
     implementation(project(":base"))
 }
