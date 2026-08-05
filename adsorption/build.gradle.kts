@@ -18,6 +18,8 @@ dependencies {
     implementation(platform(libs.guava.bom))
     implementation(libs.guava)
     testImplementation(libs.guava.testlib)
+    implementation(platform(libs.jackson.bom))
+    implementation(libs.jackson.databind)
     testImplementation(platform((libs.junit.bom)))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)

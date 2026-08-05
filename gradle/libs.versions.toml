@@ -6,6 +6,7 @@
 [versions]
 assertj-bom = "3.27.7"
 guava-bom = "33.6.0-jre"
+jackson-bom = "3.2.1"
 junit-bom = "6.1.2"
 log4j-bom = "2.26.1"
 mockito-bom = "5.23.0"
@@ -18,6 +19,8 @@ assertj-core = {group = "org.assertj", name = "assertj-core"}
 guava-bom = {group = "com.google.guava", name = "guava-bom", version.ref = "guava-bom"}
 guava = {group = "com.google.guava", name = "guava"}
 guava-testlib = {group = "com.google.guava", name = "guava-testlib"}
+jackson-bom = {group = "tools.jackson", name = "jackson-bom", version.ref = "jackson-bom"}
+jackson-databind = {group = "tools.jackson.core", name = "jackson-databind"}
 junit-bom = {group = "org.junit", name = "junit-bom", version.ref = "junit-bom"}
 junit-jupiter = {group = "org.junit.jupiter", name = "junit-jupiter"}
 junit-platform-launcher = {group = "org.junit.platform", name = "junit-platform-launcher"}
