@@ -14,23 +14,19 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 
-///
 /// 吸着プロセスの解析実行.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-///
 public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     private Main() {}
 
-    ///
     /// 吸着プロセスの解析を実行する.
     ///
     /// @param args コマンドライン引数.
-    ///
     static void main(String[] args) {
         LOGGER.info(
             "java.version, vendor, home = {}, {}, {}",

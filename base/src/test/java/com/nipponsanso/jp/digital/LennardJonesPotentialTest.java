@@ -9,17 +9,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
-///
 /// [LennardJonesPotential] のテスト.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-///
 class LennardJonesPotentialTest {
 
-  ///
   /// [LennardJonesPotential#LennardJonesPotential(double, double)] のテスト.
-  ///
   @Test
   void testLennardJonesPotentialDoubleDouble() {
     assertThatThrownBy(() -> new LennardJonesPotential(0., 71.4))

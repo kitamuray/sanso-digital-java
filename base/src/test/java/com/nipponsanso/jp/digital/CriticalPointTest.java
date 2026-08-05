@@ -9,17 +9,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
-///
 /// [CriticalPoint] のテスト.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-///
 class CriticalPointTest {
 
-  ///
   /// [CriticalPoint#CriticalPoint(double, double, double)] のテスト.
-  ///
   @Test
   void testCriticalPointDoubleDoubleDouble() {
     assertThatThrownBy(() -> new CriticalPoint(0., 3.3958e6, 1. /  11184.))

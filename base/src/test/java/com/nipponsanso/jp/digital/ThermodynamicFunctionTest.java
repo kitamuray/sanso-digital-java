@@ -17,21 +17,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- * {@link ThermodynamicFunction} のテスト.
- *
- * @since 1.0
- * @author KITAMURA Yuichiro
- */
+/// [ThermodynamicFunction] のテスト.
+///
+/// @since 1.0
+/// @author KITAMURA Yuichiro
 @ExtendWith(MockitoExtension.class)
 class ThermodynamicFunctionTest {
 
   @Mock
   private ThermodynamicFunction thermodynamicFunction;
 
-  /**
-   * {@link ThermodynamicFunction#molarSpecificEntropy(double)} のテスト.
-   */
+  /// [ThermodynamicFunction#molarSpecificEntropy(double)] のテスト.
   @Test
   void testMolarSpecificEntropyDouble() {
     doCallRealMethod().when(this.thermodynamicFunction).molarSpecificEntropy(anyDouble());
@@ -40,9 +36,7 @@ class ThermodynamicFunctionTest {
         .isInstanceOf(UnsupportedOperationException.class);
   }
 
-  /**
-   * {@link ThermodynamicFunction#molarSpecificGibbsEnergy(double)} のテスト.
-   */
+  /// [ThermodynamicFunction#molarSpecificGibbsEnergy(double)] のテスト.
   @Test
   void testMolarSpecificGibbsEnergyDouble() {
     final double temperature = 300.;

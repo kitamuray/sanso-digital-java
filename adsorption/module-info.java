@@ -3,12 +3,10 @@
  * Copyright (c)  2026        Nippon Sanso Corporation
  */
 
-///
 /// 吸着プロセスの解析.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-///
 module com.nipponsanso.jp.digital.adsorption {
 
   requires com.nipponsanso.jp.digital.base;

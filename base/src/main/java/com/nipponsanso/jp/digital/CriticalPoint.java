@@ -7,7 +7,6 @@ package com.nipponsanso.jp.digital;
 
 import com.google.common.base.Preconditions;
 
-///
 /// 臨界点.
 ///
 /// @param temperature 熱力学的温度 (K).
@@ -15,10 +14,8 @@ import com.google.common.base.Preconditions;
 /// @param molarVolume モル体積 (m<sup>3</sup> mol<sup>-1</sup>).
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-///
 public record CriticalPoint(double temperature, double pressure, double molarVolume) {
 
-  ///
   /// 臨界点のインスタンスを生成する.
   ///
   /// @param temperature 熱力学的温度 (K).
@@ -27,7 +24,6 @@ public record CriticalPoint(double temperature, double pressure, double molarVol
   /// @throws IllegalArgumentException `temperature`, `pressure`, `molarVolume`
   ///     のいずれかが 0 以下の場合
   ///     (`temperature <= 0 || pressure <= 0 || molarVolume <= 0`).
-  ///
   public CriticalPoint {
     Preconditions.checkArgument(
         temperature > 0., "temperature = %e", temperature);
