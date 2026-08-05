@@ -4,10 +4,21 @@
 #
 
 [versions]
+assertj-bom = "3.27.7"
+guava-bom = "33.6.0-jre"
+junit-bom = "6.1.2"
 log4j-bom = "2.26.1"
 rhino = "1.9.1"
 
 [libraries]
+assertj-bom = {group = "org.assertj", name = "assertj-bom", version.ref = "assertj-bom"}
+assertj-core = {group = "org.assertj", name = "assertj-core"}
+guava-bom = {group = "com.google.guava", name = "guava-bom", version.ref = "guava-bom"}
+guava = {group = "com.google.guava", name = "guava"}
+guava-testlib = {group = "com.google.guava", name = "guava-testlib"}
+junit-bom = {group = "org.junit", name = "junit-bom", version.ref = "junit-bom"}
+junit-jupiter = {group = "org.junit.jupiter", name = "junit-jupiter"}
+junit-platform-launcher = {group = "org.junit.platform", name = "junit-platform-launcher"}
 log4j-bom = {group = "org.apache.logging.log4j", name = "log4j-bom", version.ref = "log4j-bom"}
 log4j-api = {group = "org.apache.logging.log4j", name = "log4j-api"}
 log4j-core = {group = "org.apache.logging.log4j", name = "log4j-core"}
