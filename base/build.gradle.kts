@@ -19,6 +19,9 @@ dependencies {
     testImplementation(platform((libs.junit.bom)))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(platform(libs.mockito.bom))
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.junit.jupiter)
 }
 
 tasks.javadoc {
