@@ -15,6 +15,7 @@ dependencies {
     implementation(platform(libs.log4j.bom))
     implementation(libs.log4j.api)
     implementation(libs.log4j.core)
+    implementation(libs.rhino)
 }
 
 application {

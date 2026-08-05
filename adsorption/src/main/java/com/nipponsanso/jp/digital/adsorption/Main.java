@@ -5,9 +5,14 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.Scriptable;
 
 ///
 /// 吸着プロセスの解析実行.
@@ -41,6 +46,21 @@ public class Main {
             "user.dir = {}",
             System.getProperty("user.dir"));
         LOGGER.info("args = {}", Arrays.asList(args));
+
+        if (args.length != 1) {
+            System.err.println("usage: program scriptFile");
+            System.exit(1);
+        }
+
+        try {
+            try (Context cx = Context.enter()) {
+                Scriptable scope = new ImporterTopLevel(cx);
+                FileReader reader = new FileReader(args[0]);
+                cx.evaluateReader(scope, reader, args[0], 1, null);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
