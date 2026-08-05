@@ -10,6 +10,7 @@ junit-bom = "6.1.2"
 log4j-bom = "2.26.1"
 mockito-bom = "5.23.0"
 rhino = "1.9.1"
+shadow = "9.6.1"
 
 [libraries]
 assertj-bom = {group = "org.assertj", name = "assertj-bom", version.ref = "assertj-bom"}
@@ -29,3 +30,4 @@ mockito-junit-jupiter = {group = "org.mockito", name = "mockito-junit-jupiter"}
 rhino = {group = "org.mozilla", name = "rhino", version.ref = "rhino"}
 
 [plugins]
+shadow = {id = "com.gradleup.shadow", version.ref = "shadow"}

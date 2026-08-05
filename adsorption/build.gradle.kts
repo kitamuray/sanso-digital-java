@@ -5,6 +5,7 @@
 
 plugins {
     id("buildlogic.java-application-conventions")
+    alias(libs.plugins.shadow)
 }
 
 group = "com.nipponsanso.jp.digital"
