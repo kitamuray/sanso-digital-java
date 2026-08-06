@@ -8,7 +8,6 @@ package com.nipponsanso.jp.digital;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Stream;
@@ -43,7 +42,7 @@ class DoubleRealUnivariatePolynomialTest {
   @Test
   void testCoefficientList() {
     final double[] doubleCoefficients = {1., 2., 3., 4., 5.};
-    final List<Double> coefficientList = ImmutableList.of(1., 2., 3., 4., 5.);
+    final List<Double> coefficientList = List.of(1., 2., 3., 4., 5.);
 
     assertThat(new DoubleRealUnivariatePolynomial(doubleCoefficients).coefficientList())
         .isEqualTo(coefficientList);

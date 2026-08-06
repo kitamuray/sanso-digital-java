@@ -6,9 +6,9 @@
 package com.nipponsanso.jp.digital;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /// プリミティブ double 型実数一変数多項式.
@@ -42,9 +42,10 @@ public record DoubleRealUnivariatePolynomial(double[] doubleCoefficients)
   /// @return このプリミティブ double 型実数一変数多項式における係数の不変リスト.
   @Override
   public List<Double> coefficientList() {
+    //noinspection SimplifyStreamApiCallChains
     return Arrays.stream(this.doubleCoefficients)
         .boxed()
-        .collect(ImmutableList.toImmutableList());
+        .collect(Collectors.toUnmodifiableList());
   }
 
   /// このプリミティブ double 型実数一変数多項式を指定された値で評価した結果を返す.
