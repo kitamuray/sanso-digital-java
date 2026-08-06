@@ -11,6 +11,8 @@ plugins {
 group = "com.nipponsanso.jp.digital"
 version = "1.1.0-SNAPSHOT"
 
+val mockitoAgent: Configuration by configurations.creating
+
 dependencies {
     implementation(project(":base"))
     testImplementation(platform(libs.assertj.bom))
@@ -30,10 +32,16 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.junit.jupiter)
     implementation(libs.rhino)
+
+    mockitoAgent(libs.bytebuddy) { isTransitive = false }
 }
 
 application {
     mainClass = "com.nipponsanso.jp.digital.adsorption.Main"
+}
+
+tasks.withType<Test> {
+    jvmArgs("-javaagent:${mockitoAgent.singleFile.absolutePath}")
 }
 
 tasks.javadoc {
