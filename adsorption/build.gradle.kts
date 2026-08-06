@@ -11,7 +11,7 @@ plugins {
 group = "com.nipponsanso.jp.digital"
 version = "1.1.0-SNAPSHOT"
 
-val mockitoAgent: Configuration by configurations.creating
+val mockitoAgent: Configuration = configurations.create("mockitoAgent")
 
 dependencies {
     implementation(project(":base"))
