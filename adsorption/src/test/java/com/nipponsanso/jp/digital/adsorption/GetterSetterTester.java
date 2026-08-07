@@ -23,7 +23,7 @@ import java.util.function.ToDoubleFunction;
 /// @param <T> テスト対象の型.
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-final class GetterSetterTester<T> {
+public final class GetterSetterTester<T> {
 
   /// テスト対象のオブジェクトを生成するオペレーション.
   private final Supplier<T> supplier;
@@ -40,7 +40,7 @@ final class GetterSetterTester<T> {
   /// @param <T> テスト対象の型.
   /// @param supplier テスト対象のオブジェクトを生成するオペレーション.
   /// @return Getter メソッドと Setter メソッドのテストのインスタンス.
-  static <T> GetterSetterTester<T> supplier(Supplier<T> supplier) {
+  public static <T> GetterSetterTester<T> supplier(Supplier<T> supplier) {
     return new GetterSetterTester<>(supplier);
   }
 
@@ -49,7 +49,7 @@ final class GetterSetterTester<T> {
   /// @param <E> 参照型の型.
   /// @param getter Getter メソッド.
   /// @return Setter メソッドを設定するテスタのインスタンス.
-  <E> ObjectTester<E>.SetterTester getter(Function<T, E> getter) {
+  public <E> ObjectTester<E>.SetterTester getter(Function<T, E> getter) {
     return new ObjectTester<>(getter).new SetterTester();
   }
 
@@ -57,12 +57,12 @@ final class GetterSetterTester<T> {
   ///
   /// @param getter Getter メソッド.
   /// @return Setter メソッドを設定するテスタのインスタンス.
-  DoubleTester.SetterTester getter(ToDoubleFunction<T> getter) {
+  public DoubleTester.SetterTester getter(ToDoubleFunction<T> getter) {
     return new DoubleTester(getter).new SetterTester();
   }
 
   /// 参照型を対象とするテスタ.
-  final class ObjectTester<E> {
+  public final class ObjectTester<E> {
 
     /// Getter メソッド.
     private final Function<T, E> getter;
@@ -84,7 +84,7 @@ final class GetterSetterTester<T> {
     }
 
     /// Setter メソッドを設定するテスタ.
-    final class SetterTester {
+    public final class SetterTester {
 
       /// Setter メソッドを設定するテスタのインスタンスを生成する.
       private SetterTester() {}
@@ -101,7 +101,7 @@ final class GetterSetterTester<T> {
     } // SetterTester
 
     /// 正常値を設定するテスタ.
-    final class ValidValueTester {
+    public final class ValidValueTester {
 
       /// 正常値を設定するテスタのインスタンスを生成する.
       private ValidValueTester() {}
@@ -118,7 +118,7 @@ final class GetterSetterTester<T> {
     } // ValidValueTester
 
     /// 例外の実行クラスと異常値のリストのマップを設定するテスタ.
-    final class InvalidValueListMapTester {
+    public final class InvalidValueListMapTester {
 
       /// 例外クラス.
       private Class<? extends Throwable> clazz;
@@ -127,7 +127,7 @@ final class GetterSetterTester<T> {
       private InvalidValueListMapTester() {}
 
       /// テストを実行する.
-      void test() {
+      public void test() {
         T object = GetterSetterTester.this.supplier.get();
 
         // 異常値の検査 -> テスト失敗を想定し, stream ではなく loop を使用
@@ -149,14 +149,14 @@ final class GetterSetterTester<T> {
       ///
       /// @param clazz 例外の実行クラス.
       /// @return 異常値を設定するビルダのインスタンス.
-      InvalidValueTester thrown(
+      public InvalidValueTester thrown(
           @SuppressWarnings("SameParameterValue") Class<? extends Throwable> clazz) {
         this.clazz = clazz;
         return new InvalidValueTester();
       }
 
       /// 異常値を設定するテスタ.
-      final class InvalidValueTester {
+      public final class InvalidValueTester {
 
         /// 異常値を設定するテスタのインスタンスを生成する.
         private InvalidValueTester() {}
@@ -165,7 +165,7 @@ final class GetterSetterTester<T> {
         ///
         /// @param invalidValue 異常値.
         /// @return 例外クラスと異常値のリストのマップを設定するテスタのインスタンス.
-        InvalidValueListMapTester value(@SuppressWarnings("SameParameterValue") E invalidValue) {
+        public InvalidValueListMapTester value(@SuppressWarnings("SameParameterValue") E invalidValue) {
           ObjectTester.this.invalidValueListMap.putIfAbsent(
               InvalidValueListMapTester.this.clazz,
               new ArrayList<>());
@@ -182,7 +182,7 @@ final class GetterSetterTester<T> {
   } // ObjectTester
 
   /// プリミティブ double 型を対象とするテスタ.
-  final class DoubleTester {
+  public final class DoubleTester {
 
     /// Getter メソッド.
     private final ToDoubleFunction<T> getter;
@@ -205,7 +205,7 @@ final class GetterSetterTester<T> {
     }
 
     /// Setter メソッドを設定するテスタ.
-    final class SetterTester {
+    public final class SetterTester {
 
       /// Setter メソッドを設定するテスタのインスタンスを生成する.
       private SetterTester() {}
@@ -214,7 +214,7 @@ final class GetterSetterTester<T> {
       ///
       /// @param setter Setter メソッド.
       /// @return 初期値を設定するテスタのインスタンス.
-      ValidValueTester setter(ObjDoubleConsumer<T> setter) {
+      public ValidValueTester setter(ObjDoubleConsumer<T> setter) {
         DoubleTester.this.setter = setter;
         return new ValidValueTester();
       }
@@ -222,7 +222,7 @@ final class GetterSetterTester<T> {
     } // SetterTester
 
     /// 正常値を設定するテスタ.
-    final class ValidValueTester {
+    public final class ValidValueTester {
 
       /// 正常値を設定するテスタのインスタンスを生成する.
       private ValidValueTester() {}
@@ -231,7 +231,7 @@ final class GetterSetterTester<T> {
       ///
       /// @param validValue 正常値.
       /// @return 例外クラスと異常値のリストのマップを設定するテスタのインスタンス.
-      InvalidValueListMapTester valid(double validValue) {
+      public InvalidValueListMapTester valid(double validValue) {
         DoubleTester.this.validValue = validValue;
         return new InvalidValueListMapTester();
       }
@@ -239,7 +239,7 @@ final class GetterSetterTester<T> {
     } // ValidValueTester
 
     /// 例外の実行クラスと異常値のリストのマップを設定するテスタ.
-    final class InvalidValueListMapTester {
+    public final class InvalidValueListMapTester {
 
       /// 例外クラス.
       private Class<? extends Throwable> clazz;
@@ -248,7 +248,7 @@ final class GetterSetterTester<T> {
       private InvalidValueListMapTester() {}
 
       /// テストを実行する.
-      void test() {
+      public void test() {
         T object = GetterSetterTester.this.supplier.get();
 
         // 異常値の検査 -> テスト失敗を想定し, stream ではなく loop を使用
@@ -270,14 +270,14 @@ final class GetterSetterTester<T> {
       ///
       /// @param clazz 例外の実行クラス.
       /// @return 異常値を設定するビルダのインスタンス.
-      InvalidValueTester thrown(
+      public InvalidValueTester thrown(
           @SuppressWarnings("SameParameterValue") Class<? extends Throwable> clazz) {
         this.clazz = clazz;
         return new InvalidValueTester();
       }
 
       /// 異常値を設定するテスタ.
-      final class InvalidValueTester {
+      public final class InvalidValueTester {
 
         /// 異常値を設定するテスタのインスタンスを生成する.
         private InvalidValueTester() {}
@@ -286,7 +286,7 @@ final class GetterSetterTester<T> {
         ///
         /// @param value 異常値.
         /// @return 例外クラスと異常値のリストのマップを設定するテスタのインスタンス.
-        InvalidValueListMapTester value(@SuppressWarnings("SameParameterValue") double value) {
+        public InvalidValueListMapTester value(@SuppressWarnings("SameParameterValue") double value) {
           DoubleTester.this.invalidValueListMap.putIfAbsent(
               InvalidValueListMapTester.this.clazz,
               new ArrayList<>());
