@@ -5,11 +5,14 @@
 
 package com.nipponsanso.jp.digital;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.jspecify.annotations.NonNull;
 
 /// プリミティブ double 型実数一変数多項式.
 ///
@@ -102,6 +105,20 @@ public record DoubleRealUnivariatePolynomial(double[] doubleCoefficients)
     DoubleRealUnivariatePolynomial that = (DoubleRealUnivariatePolynomial) o;
 
     return Arrays.equals(this.doubleCoefficients, that.doubleCoefficients);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        this.getClass(),
+        Arrays.hashCode(this.doubleCoefficients));
+  }
+
+  @Override
+  public @NonNull String toString() {
+    return MoreObjects.toStringHelper(this.getClass())
+        .add("doubleCoefficients", Arrays.toString(this.doubleCoefficients))
+        .toString();
   }
 
 }

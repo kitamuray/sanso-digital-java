@@ -8,6 +8,6 @@
 /// @since 1.0
 module com.nipponsanso.digital.base {
 
-  export com.nipponsanso.digital;
+  export com.nipponsanso.jp.digital;
 
 }

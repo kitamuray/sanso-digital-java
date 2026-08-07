@@ -16,6 +16,7 @@ dependencies {
     implementation(platform(libs.guava.bom))
     implementation(libs.guava)
     testImplementation(libs.guava.testlib)
+    implementation(libs.jspecify)
     testImplementation(platform((libs.junit.bom)))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)

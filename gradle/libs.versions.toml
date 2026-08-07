@@ -8,6 +8,7 @@ assertj-bom = "3.27.7"
 bytebuddy = "1.18.11"
 guava-bom = "33.6.0-jre"
 jackson-bom = "3.2.1"
+jspecify = "1.0.0"
 junit-bom = "6.1.2"
 log4j-bom = "2.26.1"
 mockito-bom = "5.23.0"
@@ -23,6 +24,7 @@ guava = {group = "com.google.guava", name = "guava"}
 guava-testlib = {group = "com.google.guava", name = "guava-testlib"}
 jackson-bom = {group = "tools.jackson", name = "jackson-bom", version.ref = "jackson-bom"}
 jackson-databind = {group = "tools.jackson.core", name = "jackson-databind"}
+jspecify = {group = "org.jspecify", name = "jspecify", version.ref = "jspecify"}
 junit-bom = {group = "org.junit", name = "junit-bom", version.ref = "junit-bom"}
 junit-jupiter = {group = "org.junit.jupiter", name = "junit-jupiter"}
 junit-platform-launcher = {group = "org.junit.platform", name = "junit-platform-launcher"}
