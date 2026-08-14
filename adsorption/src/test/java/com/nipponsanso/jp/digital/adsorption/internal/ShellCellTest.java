@@ -12,7 +12,6 @@ import com.nipponsanso.jp.digital.adsorption.ComponentKey;
 import com.nipponsanso.jp.digital.adsorption.GetterSetterTester;
 import com.nipponsanso.jp.digital.adsorption.Shell;
 import java.util.Map;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ShellCellTest {
 
   /// 容器を含むセルの内部実装.
-  public abstract static class LocalCell extends ShellCell {
+  private static final class LocalCell extends ShellCell {
 
     private final double[] doubleArray = new double[ShellCell.SIZE];
 
@@ -45,7 +44,17 @@ class ShellCellTest {
       return this.doubleArray;
     }
 
-    public abstract static class Previous extends ShellCell.Previous {
+    @Override
+    public ShellCell.Previous previous() {
+      return null;
+    }
+
+    @Override
+    public Map<ComponentKey, ? extends ShellCell.ComponentValue> componentMap() {
+      return Map.of();
+    }
+
+    private static final class Previous extends ShellCell.Previous {
 
       private final double[] doubleArray = new double[ShellCell.Previous.SIZE];
 
@@ -69,37 +78,24 @@ class ShellCellTest {
   /// [ShellCell] の Getter と Setter をテスト.
   @Test
   void testGetterAndSetter() {
-    Supplier<ShellCell> supplier = () -> new LocalCell(this.shell) {
+    final double density = 7900.;
+    doReturn(density).when(this.shell).density();
 
-      @Override
-      public FluidCell.Previous previous() {
-        return null;
-      }
+    assertThat(new LocalCell(this.shell).shellDensity()).isEqualTo(density);
 
-      @Override
-      public Map<ComponentKey, ? extends FluidCell.ComponentValue> componentMap() {
-        return Map.of();
-      }
-
-    };
-
-    final double shellDensity = 640.;
-    doReturn(shellDensity).when(this.shell).density();
-    assertThat(supplier.get().shellDensity()).isEqualTo(shellDensity);
-
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(() -> new LocalCell(this.shell))
         .getter(ShellCell::getShellTemperature)
         .setter(ShellCell::setShellTemperature)
         .valid(303.15)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(() -> new LocalCell(this.shell))
         .getter(ShellCell::getShellSpecificHeat)
         .setter(ShellCell::setShellSpecificHeat)
         .valid(640.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(() -> new LocalCell(this.shell))
         .getter(ShellCell::getShellThermalConductivity)
         .setter(ShellCell::setShellThermalConductivity)
         .valid(0.2)
@@ -114,15 +110,13 @@ class ShellCellTest {
     /// [ShellCell.Previous] の Getter と Setter をテスト.
     @Test
     void testGetterAndSetter() {
-      Supplier<ShellCell.Previous> supplier = () -> new LocalCell.Previous() {};
-
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.Previous::new)
           .getter(ShellCell.Previous::getShellTemperature)
           .setter(ShellCell.Previous::setShellTemperature)
           .valid(303.15)
           .thrown(IllegalArgumentException.class).value(0.)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.Previous::new)
           .getter(ShellCell.Previous::getShellSpecificHeat)
           .setter(ShellCell.Previous::setShellSpecificHeat)
           .valid(640.)

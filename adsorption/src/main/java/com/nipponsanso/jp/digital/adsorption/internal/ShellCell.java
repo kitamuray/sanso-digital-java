@@ -6,7 +6,9 @@
 package com.nipponsanso.jp.digital.adsorption.internal;
 
 import com.google.common.base.Preconditions;
+import com.nipponsanso.jp.digital.adsorption.ComponentKey;
 import com.nipponsanso.jp.digital.adsorption.Shell;
+import java.util.Map;
 
 /// 容器を含むセル.
 ///
@@ -96,6 +98,18 @@ public abstract class ShellCell extends FluidCell {
     this.doubleArray()[this.offset() + SHELL_THERMAL_CONDUCTIVITY] = shellThermalConductivity;
   }
 
+  /// {@inheritDoc}
+  ///
+  /// @return {@inheritDoc}
+  @Override
+  public abstract Previous previous();
+
+  /// {@inheritDoc}
+  ///
+  /// @return {@inheritDoc}
+  @Override
+  public abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
+
   /// 容器を含むセルの前ステップ値.
   public abstract static class Previous extends FluidCell.Previous {
 
@@ -157,6 +171,12 @@ public abstract class ShellCell extends FluidCell {
 
     /// 容器を含むセルの成分値のインスタンスを生成して返す.
     public ComponentValue() {}
+
+    /// {@inheritDoc}
+    ///
+    /// @return {@inheritDoc}
+    @Override
+    public abstract Previous previous();
 
     /// 容器を含むセルの成分値の前ステップ値.
     public abstract static class Previous extends FluidCell.ComponentValue.Previous {

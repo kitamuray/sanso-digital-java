@@ -8,7 +8,6 @@ package com.nipponsanso.jp.digital.adsorption.internal;
 import com.nipponsanso.jp.digital.adsorption.ComponentKey;
 import com.nipponsanso.jp.digital.adsorption.GetterSetterTester;
 import java.util.Map;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +17,8 @@ import org.junit.jupiter.api.Test;
 /// @author KITAMURA Yuichiro
 class FluidCellTest {
 
-  /// [FluidCell] の具象クラス.
-  public abstract static class LocalCell extends FluidCell {
+  /// [FluidCell] の内部実装.
+  private static final class LocalCell extends FluidCell {
 
     private final double[] doubleArray = new double[FluidCell.SIZE];
 
@@ -33,7 +32,17 @@ class FluidCellTest {
       return this.doubleArray;
     }
 
-    public abstract static class Previous extends FluidCell.Previous {
+    @Override
+    public FluidCell.Previous previous() {
+      return null;
+    }
+
+    @Override
+    public Map<ComponentKey, ? extends FluidCell.ComponentValue> componentMap() {
+      return Map.of();
+    }
+
+    private static final class Previous extends FluidCell.Previous {
 
       private final double[] doubleArray = new double[FluidCell.Previous.SIZE];
 
@@ -49,7 +58,7 @@ class FluidCellTest {
 
     } // Previous
 
-    public abstract static class ComponentValue extends FluidCell.ComponentValue {
+    private static final class ComponentValue extends FluidCell.ComponentValue {
 
       private final double[] doubleArray = new double[FluidCell.ComponentValue.SIZE];
 
@@ -63,7 +72,12 @@ class FluidCellTest {
         return this.doubleArray;
       }
 
-      public abstract static class Previous extends FluidCell.ComponentValue.Previous {
+      @Override
+      public FluidCell.ComponentValue.Previous previous() {
+        return null;
+      }
+
+      private static final class Previous extends FluidCell.ComponentValue.Previous {
 
         private final double[] doubleArray = new double[FluidCell.ComponentValue.Previous.SIZE];
 
@@ -86,62 +100,48 @@ class FluidCellTest {
   /// [FluidCell] の Getter メソッドや Setter メソッドをテスト.
   @Test
   void testGetterAndSetter() {
-    final Supplier<FluidCell> supplier = () -> new LocalCell() {
-
-      @Override
-      public Previous previous() {
-        return null;
-      }
-
-      @Override
-      public Map<ComponentKey, ? extends LocalCell.ComponentValue> componentMap() {
-        return Map.of();
-      }
-
-    };
-
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getTemperature)
         .setter(FluidCell::setTemperature)
         .valid(298.15)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getPressure)
         .setter(FluidCell::setPressure)
         .valid(101325.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getDensity)
         .setter(FluidCell::setDensity)
         .valid(1.2)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getSpecificEnthalpy)
         .setter(FluidCell::setSpecificEnthalpy)
         .valid(10000.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getSpecificConstantPressureSpecificHeat)
         .setter(FluidCell::setSpecificConstantPressureSpecificHeat)
         .valid(1000.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getViscosity)
         .setter(FluidCell::setViscosity)
         .valid(18e-6)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getThermalConductivity)
         .setter(FluidCell::setThermalConductivity)
         .valid(0.02)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
-    GetterSetterTester.supplier(supplier)
+    GetterSetterTester.supplier(LocalCell::new)
         .getter(FluidCell::getMolecularWeight)
         .setter(FluidCell::setMolecularWeight)
         .valid(29.7)
@@ -156,26 +156,24 @@ class FluidCellTest {
     /// [FluidCell.Previous] の Getter と Setter をテスト.
     @Test
     void testGetterAndSetter() {
-      Supplier<FluidCell.Previous> supplier = () -> new LocalCell.Previous() {};
-
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.Previous::new)
           .getter(FluidCell.Previous::getTemperature)
           .setter(FluidCell.Previous::setTemperature)
           .valid(298.15)
           .thrown(IllegalArgumentException.class).value(0.)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.Previous::new)
           .getter(FluidCell.Previous::getDensity)
           .setter(FluidCell.Previous::setDensity)
           .valid(1.2)
           .thrown(IllegalArgumentException.class).value(0.)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.Previous::new)
           .getter(FluidCell.Previous::getSpecificEnthalpy)
           .setter(FluidCell.Previous::setSpecificEnthalpy)
           .valid(10000.)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.Previous::new)
           .getter(FluidCell.Previous::getSpecificConstantPressureSpecificHeat)
           .setter(FluidCell.Previous::setSpecificConstantPressureSpecificHeat)
           .valid(1000.)
@@ -192,36 +190,27 @@ class FluidCellTest {
     /// [FluidCell.ComponentValue] の Getter と Setter をテスト.
     @Test
     void testGetterAndSetter() {
-      Supplier<FluidCell.ComponentValue> supplier = () -> new LocalCell.ComponentValue() {
-
-        @Override
-        public FluidCell.ComponentValue.Previous previous() {
-          return null;
-        }
-
-      };
-
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.ComponentValue::new)
           .getter(FluidCell.ComponentValue::getFraction)
           .setter(FluidCell.ComponentValue::setFraction)
           .valid(0.1)
           .thrown(IllegalArgumentException.class).value(-0.1)
           .thrown(IllegalArgumentException.class).value(1.1)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.ComponentValue::new)
           .getter(FluidCell.ComponentValue::getDiffusivity)
           .setter(FluidCell.ComponentValue::setDiffusivity)
           .valid(4e-4)
           .thrown(IllegalArgumentException.class).value(0.)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.ComponentValue::new)
           .getter(FluidCell.ComponentValue::getMolarFraction)
           .setter(FluidCell.ComponentValue::setMolarFraction)
           .valid(0.1)
           .thrown(IllegalArgumentException.class).value(-0.1)
           .thrown(IllegalArgumentException.class).value(1.1)
           .test();
-      GetterSetterTester.supplier(supplier)
+      GetterSetterTester.supplier(LocalCell.ComponentValue::new)
           .getter(FluidCell.ComponentValue::getViscosity)
           .setter(FluidCell.ComponentValue::setViscosity)
           .valid(18e-6)
@@ -236,10 +225,7 @@ class FluidCellTest {
       /// [FluidCell.ComponentValue.Previous] の Getter と Setter をテスト.
       @Test
       void testGetterAndSetter() {
-        Supplier<FluidCell.ComponentValue.Previous> supplier
-            = () -> new LocalCell.ComponentValue.Previous() {};
-
-        GetterSetterTester.supplier(supplier)
+        GetterSetterTester.supplier(LocalCell.ComponentValue.Previous::new)
             .getter(FluidCell.ComponentValue.Previous::getFraction)
             .setter(FluidCell.ComponentValue.Previous::setFraction)
             .valid(0.1)
