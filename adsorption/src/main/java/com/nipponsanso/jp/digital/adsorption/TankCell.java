@@ -3,11 +3,9 @@
  * Copyright (c)  2026        Nippon Sanso Corporation
  */
 
-package com.nipponsanso.jp.digital.adsorption.internal;
+package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.collect.Maps;
-import com.nipponsanso.jp.digital.adsorption.ComponentKey;
-import com.nipponsanso.jp.digital.adsorption.Composition;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -32,7 +30,7 @@ public final class TankCell extends FluidCell {
   /// 貯槽のセルのインスタンスを生成する.
   ///
   /// @param composition 組成.
-  public TankCell(Composition composition) {
+  TankCell(Composition composition) {
     this.doubleArray = new double[
         SIZE + Previous.SIZE
             + composition.minorComponentKeySet().size()
@@ -54,7 +52,7 @@ public final class TankCell extends FluidCell {
   ///
   /// @return {@inheritDoc}
   @Override
-  public int offset() {
+  int offset() {
     return 0;
   }
 
@@ -62,7 +60,7 @@ public final class TankCell extends FluidCell {
   ///
   /// @return {@inheritDoc}
   @Override
-  public double[] doubleArray() {
+  double[] doubleArray() {
     return this.doubleArray;
   }
 
@@ -70,7 +68,7 @@ public final class TankCell extends FluidCell {
   ///
   /// @return {@inheritDoc}
   @Override
-  public Previous previous() {
+  Previous previous() {
     return this.previous;
   }
 
@@ -78,12 +76,12 @@ public final class TankCell extends FluidCell {
   ///
   /// @return {@inheritDoc}
   @Override
-  public Map<ComponentKey, ComponentValue> componentMap() {
+  Map<ComponentKey, ComponentValue> componentMap() {
     return this.componentMap;
   }
 
   /// 貯槽のセルの前ステップ値.
-  public final class Previous extends FluidCell.Previous {
+  final class Previous extends FluidCell.Previous {
 
     /// 変数の数.
     private static final int SIZE = FluidCell.Previous.SIZE;
@@ -95,7 +93,7 @@ public final class TankCell extends FluidCell {
     ///
     /// @return {@inheritDoc}
     @Override
-    public int offset() {
+    int offset() {
       return TankCell.this.offset() + TankCell.SIZE;
     }
 
@@ -103,14 +101,14 @@ public final class TankCell extends FluidCell {
     ///
     /// @return {@inheritDoc}
     @Override
-    public double[] doubleArray() {
+    double[] doubleArray() {
       return TankCell.this.doubleArray();
     }
 
   } // Previous
 
   /// 貯槽のセルの成分値.
-  public final class ComponentValue extends FluidCell.ComponentValue {
+  final class ComponentValue extends FluidCell.ComponentValue {
 
     /// 変数の数.
     private static final int SIZE = FluidCell.ComponentValue.SIZE;
@@ -133,7 +131,7 @@ public final class TankCell extends FluidCell {
     ///
     /// @return {@inheritDoc}
     @Override
-    public int offset() {
+    int offset() {
       return this.offset;
     }
 
@@ -141,7 +139,7 @@ public final class TankCell extends FluidCell {
     ///
     /// @return {@inheritDoc}
     @Override
-    public double[] doubleArray() {
+    double[] doubleArray() {
       return TankCell.this.doubleArray();
     }
 
@@ -149,12 +147,12 @@ public final class TankCell extends FluidCell {
     ///
     /// @return {@inheritDoc}
     @Override
-    public Previous previous() {
+    Previous previous() {
       return this.previous;
     }
 
     /// 貯槽のセルの成分値の前ステップ値.
-    public final class Previous extends FluidCell.ComponentValue.Previous {
+    final class Previous extends FluidCell.ComponentValue.Previous {
 
       /// 変数の数.
       private static final int SIZE = FluidCell.ComponentValue.Previous.SIZE;
@@ -166,7 +164,7 @@ public final class TankCell extends FluidCell {
       ///
       /// @return {@inheritDoc}
       @Override
-      public int offset() {
+      int offset() {
         return ComponentValue.this.offset() + ComponentValue.SIZE;
       }
 
@@ -174,7 +172,7 @@ public final class TankCell extends FluidCell {
       ///
       /// @return {@inheritDoc}
       @Override
-      public double[] doubleArray() {
+      double[] doubleArray() {
         return TankCell.this.doubleArray();
       }
 

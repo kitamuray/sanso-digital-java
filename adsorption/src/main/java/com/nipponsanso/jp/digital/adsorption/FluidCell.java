@@ -3,52 +3,51 @@
  * Copyright (c)  2026        Nippon Sanso Corporation
  */
 
-package com.nipponsanso.jp.digital.adsorption.internal;
+package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
-import com.nipponsanso.jp.digital.adsorption.ComponentKey;
 import java.util.Map;
 
 /// 流体を含むセル.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public abstract class FluidCell extends Cell {
+abstract class FluidCell extends Cell {
 
   /// 流体の熱力学的温度の位置.
-  public static final int TEMPERATURE = Cell.SIZE;
+  private static final int TEMPERATURE = Cell.SIZE;
 
   /// 流体の絶対圧力の位置.
-  public static final int PRESSURE = TEMPERATURE + 1;
+  private static final int PRESSURE = TEMPERATURE + 1;
 
   /// 流体の密度の位置.
-  public static final int DENSITY = PRESSURE + 1;
+  private static final int DENSITY = PRESSURE + 1;
 
   /// 流体の比エンタルピの位置.
-  public static final int SPECIFIC_ENTHALPY = DENSITY + 1;
+  private static final int SPECIFIC_ENTHALPY = DENSITY + 1;
 
   /// 流体の定圧比熱の位置.
-  public static final int SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT = SPECIFIC_ENTHALPY + 1;
+  private static final int SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT = SPECIFIC_ENTHALPY + 1;
 
   /// 流体の粘性係数の位置.
-  public static final int VISCOSITY = SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT + 1;
+  private static final int VISCOSITY = SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT + 1;
 
   /// 流体の熱伝導率の位置.
-  public static final int THERMAL_CONDUCTIVITY = VISCOSITY + 1;
+  private static final int THERMAL_CONDUCTIVITY = VISCOSITY + 1;
 
   /// 流体の平均分子量の位置.
-  public static final int MOLECULAR_WEIGHT = THERMAL_CONDUCTIVITY + 1;
+  private static final int MOLECULAR_WEIGHT = THERMAL_CONDUCTIVITY + 1;
 
   /// 変数の数.
-  public static final int SIZE = MOLECULAR_WEIGHT + 1;
+  static final int SIZE = MOLECULAR_WEIGHT + 1;
 
   /// 流体を含むセルのインスタンスを生成する.
-  public FluidCell() {}
+  FluidCell() {}
 
   /// 流体の熱力学的温度を返す.
   ///
   /// @return 流体の熱力学的温度 (K).
-  public double getTemperature() {
+  double getTemperature() {
     return this.doubleArray()[this.offset() + TEMPERATURE];
   }
 
@@ -57,7 +56,7 @@ public abstract class FluidCell extends Cell {
   /// @param temperature 流体の新たな熱力学的温度 (K).
   /// @throws IllegalArgumentException `temperature` が 0 以下の場合 (`temperature <= 0`).
   ///
-  public void setTemperature(double temperature) {
+  void setTemperature(double temperature) {
     Preconditions.checkArgument(temperature > 0.);
 
     this.doubleArray()[this.offset() + TEMPERATURE] = temperature;
@@ -65,7 +64,7 @@ public abstract class FluidCell extends Cell {
 
   /// 流体の絶対圧力を返す.
   /// @return 流体の絶対圧力 (Pa).
-  public double getPressure() {
+  double getPressure() {
     return this.doubleArray()[this.offset() + PRESSURE];
   }
 
@@ -73,7 +72,7 @@ public abstract class FluidCell extends Cell {
   ///
   /// @param pressure 流体の絶対圧力.
   /// @throws IllegalArgumentException `pressure` が 0 以下の場合 (`pressure <= 0`).
-  public void setPressure(double pressure) {
+  void setPressure(double pressure) {
     Preconditions.checkArgument(pressure > 0.);
 
     this.doubleArray()[this.offset() + PRESSURE] = pressure;
@@ -82,7 +81,7 @@ public abstract class FluidCell extends Cell {
   /// 流体の密度を返す.
   ///
   /// @return 流体の密度 (kg m<sup>-3</sup>).
-  public double getDensity() {
+  double getDensity() {
     return this.doubleArray()[this.offset() + DENSITY];
   }
 
@@ -90,7 +89,7 @@ public abstract class FluidCell extends Cell {
   ///
   /// @param density 流体の新たな密度 (kg m<sup>-3</sup>).
   /// @throws IllegalArgumentException `density` が 0 以下の場合 (`density <= 0`).
-  public void setDensity(double density) {
+  void setDensity(double density) {
     Preconditions.checkArgument(density > 0.);
 
     this.doubleArray()[this.offset() + DENSITY] = density;
@@ -99,21 +98,21 @@ public abstract class FluidCell extends Cell {
   /// 流体の比エンタルピを返す.
   ///
   /// @return 流体の比エンタルピ (J kg<sup>-1</sup>).
-  public double getSpecificEnthalpy() {
+  double getSpecificEnthalpy() {
     return this.doubleArray()[this.offset() + SPECIFIC_ENTHALPY];
   }
 
   /// 流体の比エンタルピを変更する.
   ///
   /// @param specificEnthalpy 流体の新たな比エンタルピ (J kg<sup>-1</sup>).
-  public void setSpecificEnthalpy(double specificEnthalpy) {
+  void setSpecificEnthalpy(double specificEnthalpy) {
     this.doubleArray()[this.offset() + SPECIFIC_ENTHALPY] = specificEnthalpy;
   }
 
   /// 流体の定圧比熱を返す.
   ///
   /// @return 流体の定圧比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-  public double getSpecificConstantPressureSpecificHeat() {
+  double getSpecificConstantPressureSpecificHeat() {
     return this.doubleArray()[this.offset() + SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT];
   }
 
@@ -123,7 +122,7 @@ public abstract class FluidCell extends Cell {
   ///                                             (J kg<sup>-1</sup> K<sup>-1</sup>).
   /// @throws IllegalArgumentException `specificConstantPressureSpecificHeat` が 0 以下の場合
   ///     (`specificConstantPressureSpecificHeat <= 0.`)
-  public void setSpecificConstantPressureSpecificHeat(double specificConstantPressureSpecificHeat) {
+  void setSpecificConstantPressureSpecificHeat(double specificConstantPressureSpecificHeat) {
     Preconditions.checkArgument(specificConstantPressureSpecificHeat > 0.);
 
     this.doubleArray()[this.offset() + SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT]
@@ -133,7 +132,7 @@ public abstract class FluidCell extends Cell {
   /// 流体の粘性係数を返す.
   ///
   /// @return 流体の粘性係数 (Pa s).
-  public double getViscosity() {
+  double getViscosity() {
     return this.doubleArray()[this.offset() + VISCOSITY];
   }
 
@@ -141,7 +140,7 @@ public abstract class FluidCell extends Cell {
   ///
   /// @param viscosity 流体の新たな粘性係数 (Pa s).
   /// @throws IllegalArgumentException `viscosity` が 0 以下の場合 (`viscosity <= 0`).
-  public void setViscosity(double viscosity) {
+  void setViscosity(double viscosity) {
     Preconditions.checkArgument(viscosity > 0.);
 
     this.doubleArray()[this.offset() + VISCOSITY] = viscosity;
@@ -150,7 +149,7 @@ public abstract class FluidCell extends Cell {
   /// 流体の熱伝導率を返す.
   ///
   /// @return 流体の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>).
-  public double getThermalConductivity() {
+  double getThermalConductivity() {
     return this.doubleArray()[this.offset() + THERMAL_CONDUCTIVITY];
   }
 
@@ -159,7 +158,7 @@ public abstract class FluidCell extends Cell {
   /// @param thermalConductivity 流体の新たな熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>).
   /// @throws IllegalArgumentException `thermalConductivity` が 0 以下の場合
   ///     (`thermalConductivity <= 0`).
-  public void setThermalConductivity(double thermalConductivity) {
+  void setThermalConductivity(double thermalConductivity) {
     Preconditions.checkArgument(thermalConductivity > 0.);
 
     this.doubleArray()[this.offset() + THERMAL_CONDUCTIVITY] = thermalConductivity;
@@ -170,7 +169,7 @@ public abstract class FluidCell extends Cell {
   /// 流体の平均分子量は永続化の対象外である.
   ///
   /// @return 流体の平均分子量.
-  public double getMolecularWeight() {
+  double getMolecularWeight() {
     return this.doubleArray()[this.offset() + MOLECULAR_WEIGHT];
   }
 
@@ -180,7 +179,7 @@ public abstract class FluidCell extends Cell {
   ///
   /// @param molecularWeight 流体の新たな平均分子量.
   /// @throws IllegalArgumentException `molecularWeight` が 0 以下の場合 (`molecularWeight <= 0`).
-  public void setMolecularWeight(double molecularWeight) {
+  void setMolecularWeight(double molecularWeight) {
     Preconditions.checkArgument(molecularWeight > 0.);
 
     this.doubleArray()[this.offset() + MOLECULAR_WEIGHT] = molecularWeight;
@@ -190,39 +189,39 @@ public abstract class FluidCell extends Cell {
   ///
   /// @return {@inheritDoc}
   @Override
-  public abstract Previous previous();
+  abstract Previous previous();
 
   /// {@inheritDoc}
   ///
   /// @return {@inheritDoc}
   @Override
-  public abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
+  abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
 
   /// 流体を含むセルの前ステップ値.
-  public abstract static class Previous extends Cell.Previous {
+  abstract static class Previous extends Cell.Previous {
 
     /// 流体の熱力学的温度の位置.
-    public static final int TEMPERATURE = Cell.Previous.SIZE;
+    private static final int TEMPERATURE = Cell.Previous.SIZE;
 
     /// 流体の密度の位置.
-    public static final int DENSITY = TEMPERATURE + 1;
+    private static final int DENSITY = TEMPERATURE + 1;
 
     /// 流体の比エンタルピの位置.
-    public static final int SPECIFIC_ENTHALPY = DENSITY + 1;
+    private static final int SPECIFIC_ENTHALPY = DENSITY + 1;
 
     /// 流体の定圧比熱の位置.
-    public static final int SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT = SPECIFIC_ENTHALPY + 1;
+    private static final int SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT = SPECIFIC_ENTHALPY + 1;
 
     /// 変数の数.
-    public static final int SIZE = SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT + 1;
+    static final int SIZE = SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT + 1;
 
     /// 流体を含むセルの前ステップ値のインスタンスを生成する.
-    public Previous() {}
+     Previous() {}
 
     /// 流体の熱力学的温度を返す.
     ///
     /// @return 流体の熱力学的温度 (K).
-    public double getTemperature() {
+    double getTemperature() {
       return this.doubleArray()[this.offset() + TEMPERATURE];
     }
 
@@ -230,7 +229,7 @@ public abstract class FluidCell extends Cell {
     ///
     /// @param temperature 流体の新たな熱力学的温度 (K).
     /// @throws IllegalArgumentException `temperature` が 0 以下の場合 (`temperature <= 0`).
-    public void setTemperature(double temperature) {
+    void setTemperature(double temperature) {
       Preconditions.checkArgument(temperature > 0.);
 
       this.doubleArray()[this.offset() + TEMPERATURE] = temperature;
@@ -239,7 +238,7 @@ public abstract class FluidCell extends Cell {
     /// 流体の密度を返す.
     ///
     /// @return 流体の密度 (kg m<sup>-3</sup>).
-    public double getDensity() {
+    double getDensity() {
       return this.doubleArray()[this.offset() + DENSITY];
     }
 
@@ -247,7 +246,7 @@ public abstract class FluidCell extends Cell {
     ///
     /// @param density 流体の新たな密度 (kg m<sup>-3</sup>).
     /// @throws IllegalArgumentException `density` が 0 以下の場合 (`density <= 0`).
-    public void setDensity(double density) {
+    void setDensity(double density) {
       Preconditions.checkArgument(density > 0.);
 
       this.doubleArray()[this.offset() + DENSITY] = density;
@@ -256,21 +255,21 @@ public abstract class FluidCell extends Cell {
     /// 流体の比エンタルピを返す.
     ///
     /// @return 流体の比エンタルピ (J kg<sup>-1</sup>).
-    public double getSpecificEnthalpy() {
+    double getSpecificEnthalpy() {
       return this.doubleArray()[this.offset() + SPECIFIC_ENTHALPY];
     }
 
     /// 流体の比エンタルピを変更する.
     ///
     /// @param specificEnthalpy 流体の新たな比エンタルピ (J kg<sup>-1</sup>).
-    public void setSpecificEnthalpy(double specificEnthalpy) {
+    void setSpecificEnthalpy(double specificEnthalpy) {
       this.doubleArray()[this.offset() + SPECIFIC_ENTHALPY] = specificEnthalpy;
     }
 
     /// 流体の定圧比熱を返す.
     ///
     /// @return 流体の定圧比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-    public double getSpecificConstantPressureSpecificHeat() {
+    double getSpecificConstantPressureSpecificHeat() {
       return this.doubleArray()[this.offset() + SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT];
     }
 
@@ -280,7 +279,7 @@ public abstract class FluidCell extends Cell {
     ///                                             (J kg<sup>-1</sup> K<sup>-1</sup>).
     /// @throws IllegalArgumentException `specificConstantPressureSpecificHeat` が 0 以下の場合
     ///     (`specificConstantPressureSpecificHeat <= 0.`)
-    public void setSpecificConstantPressureSpecificHeat(
+    void setSpecificConstantPressureSpecificHeat(
         double specificConstantPressureSpecificHeat) {
       Preconditions.checkArgument(specificConstantPressureSpecificHeat > 0.);
 
@@ -291,30 +290,30 @@ public abstract class FluidCell extends Cell {
   } // Previous
 
   /// 流体を含むセルの成分値.
-  public abstract static class ComponentValue extends Cell.ComponentValue {
+  abstract static class ComponentValue extends Cell.ComponentValue {
 
     /// 流体成分の質量分率の位置.
-    public static final int FRACTION = Cell.ComponentValue.SIZE;
+    private static final int FRACTION = Cell.ComponentValue.SIZE;
 
     /// 流体成分の物質拡散係数の位置.
-    public static final int DIFFUSIVITY = FRACTION + 1;
+    private static final int DIFFUSIVITY = FRACTION + 1;
 
     /// 流体成分のモル分率の位置.
-    public static final int MOLAR_FRACTION = DIFFUSIVITY + 1;
+    private static final int MOLAR_FRACTION = DIFFUSIVITY + 1;
 
     /// 流体成分の粘性係数の位置.
-    public static final int VISCOSITY = MOLAR_FRACTION + 1;
+    private static final int VISCOSITY = MOLAR_FRACTION + 1;
 
     /// 変数の数.
-    public static final int SIZE = VISCOSITY + 1;
+    static final int SIZE = VISCOSITY + 1;
 
     /// 流体を含むセルの成分値のインスタンスを生成する.
-    public ComponentValue() {}
+    ComponentValue() {}
 
     /// 流体成分の質量分率を返す.
     ///
     /// @return 流体成分の質量分率 (-)
-    public double getFraction() {
+    double getFraction() {
       return this.doubleArray()[this.offset() + FRACTION];
     }
 
@@ -323,7 +322,7 @@ public abstract class FluidCell extends Cell {
     /// @param fraction 流体成分の新たな質量分率 (-).
     /// @throws IllegalArgumentException `fraction` が 0 未満か 1 を超えている場合
     ///     (`fraction < 0 || 1 < fraction`).
-    public void setFraction(double fraction) {
+    void setFraction(double fraction) {
       Preconditions.checkArgument(0. <= fraction && fraction <= 1.);
 
       this.doubleArray()[this.offset() + FRACTION] = fraction;
@@ -332,7 +331,7 @@ public abstract class FluidCell extends Cell {
     /// 流体成分の物質拡散係数を返す.
     ///
     /// @return 流体成分の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>).
-    public double getDiffusivity() {
+    double getDiffusivity() {
       return this.doubleArray()[this.offset() + DIFFUSIVITY];
     }
 
@@ -340,7 +339,7 @@ public abstract class FluidCell extends Cell {
     ///
     /// @param diffusivity 流体成分の新たな物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>).
     /// @throws IllegalArgumentException `diffusivity` が 0 以下の場合 (`diffusivity <= 0`).
-    public void setDiffusivity(double diffusivity) {
+    void setDiffusivity(double diffusivity) {
       Preconditions.checkArgument(diffusivity > 0.);
 
       this.doubleArray()[this.offset() + DIFFUSIVITY] = diffusivity;
@@ -351,7 +350,7 @@ public abstract class FluidCell extends Cell {
     /// 流体成分のモル分率は永続化の対象外である.
     ///
     /// @return 流体成分のモル分率 (-).
-    public double getMolarFraction() {
+    double getMolarFraction() {
       return this.doubleArray()[this.offset() + MOLAR_FRACTION];
     }
 
@@ -362,7 +361,7 @@ public abstract class FluidCell extends Cell {
     /// @param molarFraction 流体成分の新たなモル分率 (-).
     /// @throws IllegalArgumentException `molarFraction` が 0 未満か 1 を超えている場合
     ///     (`molarFraction < 0 || 1 < molarFraction`).
-    public void setMolarFraction(double molarFraction) {
+    void setMolarFraction(double molarFraction) {
       Preconditions.checkArgument(0. <= molarFraction && molarFraction <= 1.);
 
       this.doubleArray()[this.offset() + MOLAR_FRACTION] = molarFraction;
@@ -373,7 +372,7 @@ public abstract class FluidCell extends Cell {
     /// 流体成分の粘性係数は永続化の対象外である.
     ///
     /// @return 流体成分の粘性係数 (Pa s).
-    public double getViscosity() {
+    double getViscosity() {
       return this.doubleArray()[this.offset() + VISCOSITY];
     }
 
@@ -383,7 +382,7 @@ public abstract class FluidCell extends Cell {
     ///
     /// @param viscosity 劉岱成分の新たな粘性係数 (Pa s).
     /// @throws IllegalArgumentException `viscosity` が 0 以下の場合 (`viscosity <= 0`)
-    public void setViscosity(double viscosity) {
+    void setViscosity(double viscosity) {
       Preconditions.checkArgument(viscosity > 0.);
 
       this.doubleArray()[this.offset() + VISCOSITY] = viscosity;
@@ -393,24 +392,24 @@ public abstract class FluidCell extends Cell {
     ///
     /// @return {@inheritDoc}
     @Override
-    public abstract Previous previous();
+    abstract Previous previous();
 
     /// 流体を含むセルの成分値の前ステップ値.
-    public abstract static class Previous extends Cell.ComponentValue.Previous {
+    abstract static class Previous extends Cell.ComponentValue.Previous {
 
       /// 流体成分の質量分率の位置.
-      public static final int FRACTION = Cell.ComponentValue.Previous.SIZE;
+      private static final int FRACTION = Cell.ComponentValue.Previous.SIZE;
 
       /// 変数の数.
-      public static final int SIZE = FRACTION + 1;
+      static final int SIZE = FRACTION + 1;
 
       /// 流体を含むセルの成分値のインスタンスを生成する.
-      public Previous() {}
+      Previous() {}
 
       /// 流体成分の質量分率を返す.
       ///
       /// @return 流体成分の質量分率 (-).
-      public double getFraction() {
+      double getFraction() {
         return this.doubleArray()[this.offset() + FRACTION];
       }
 
@@ -419,7 +418,7 @@ public abstract class FluidCell extends Cell {
       /// @param fraction 流体成分の新たな質量分率 (-).
       /// @throws IllegalArgumentException `fraction` が 0 未満か 1 を超えている場合
       ///     (`fraction < 0 || 1 < fraction`).
-      public void setFraction(double fraction) {
+      void setFraction(double fraction) {
         Preconditions.checkArgument(0. <= fraction && fraction <= 1.);
 
         this.doubleArray()[this.offset() + FRACTION] = fraction;

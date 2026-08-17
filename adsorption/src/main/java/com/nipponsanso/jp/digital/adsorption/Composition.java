@@ -130,7 +130,7 @@ public final class Composition {
   /// 全成分のキーの不変セットを返す.
   ///
   /// @return 全成分のキーの不変セット.
-  public Set<ComponentKey> componentKeySet() {
+  Set<ComponentKey> componentKeySet() {
     return this.componentKeySet;
   }
 

@@ -3,10 +3,8 @@
  * Copyright (c)  2026        Nippon Sanso Corporation
  */
 
-package com.nipponsanso.jp.digital.adsorption.internal;
+package com.nipponsanso.jp.digital.adsorption;
 
-import com.nipponsanso.jp.digital.adsorption.ComponentKey;
-import com.nipponsanso.jp.digital.adsorption.GetterSetterTester;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,12 +21,12 @@ class FluidCellTest {
     private final double[] doubleArray = new double[FluidCell.SIZE];
 
     @Override
-    public int offset() {
+    int offset() {
       return 0;
     }
 
     @Override
-    public double[] doubleArray() {
+    double[] doubleArray() {
       return this.doubleArray;
     }
 

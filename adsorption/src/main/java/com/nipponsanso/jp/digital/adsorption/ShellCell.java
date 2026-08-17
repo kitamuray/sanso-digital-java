@@ -3,11 +3,9 @@
  * Copyright (c)  2026        Nippon Sanso Corporation
  */
 
-package com.nipponsanso.jp.digital.adsorption.internal;
+package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
-import com.nipponsanso.jp.digital.adsorption.ComponentKey;
-import com.nipponsanso.jp.digital.adsorption.Shell;
 import java.util.Map;
 
 /// 容器を含むセル.
@@ -29,25 +27,25 @@ public abstract class ShellCell extends FluidCell {
   private static final int SHELL_THERMAL_CONDUCTIVITY = SHELL_SPECIFIC_HEAT + 1;
 
   /// 変数の数.
-  public static final int SIZE = SHELL_THERMAL_CONDUCTIVITY + 1;
+  static final int SIZE = SHELL_THERMAL_CONDUCTIVITY + 1;
 
   /// 容器を含むセルのインスタンスを生成する.
   ///
   /// @param shell 容器.
-  public ShellCell(Shell shell) {
+  ShellCell(Shell shell) {
     this.shell = shell;
   }
 
   /// 容器の密度を返す.
   /// @return 容器の密度 (kg m<sup>-3</sup>).
-  public double shellDensity() {
+  double shellDensity() {
     return this.shell.density();
   }
 
   /// 容器の熱力学的温度を返す.
   ///
   /// @return 容器の熱力学的温度 (K).
-  public double getShellTemperature() {
+  double getShellTemperature() {
     return this.doubleArray()[this.offset() + SHELL_TEMPERATURE];
   }
 
@@ -56,7 +54,7 @@ public abstract class ShellCell extends FluidCell {
   /// @param shellTemperature 容器の熱力学的温度 (K).
   /// @throws IllegalArgumentException `shellTemperature` が 0 以下の場合
   ///     (`shellTemperature <= 0`).
-  public void setShellTemperature(double shellTemperature) {
+  void setShellTemperature(double shellTemperature) {
     Preconditions.checkArgument(shellTemperature > 0.);
 
     this.doubleArray()[this.offset() + SHELL_TEMPERATURE] = shellTemperature;
@@ -65,7 +63,7 @@ public abstract class ShellCell extends FluidCell {
   /// 容器の比熱を返す.
   ///
   /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-  public double getShellSpecificHeat() {
+  double getShellSpecificHeat() {
     return this.doubleArray()[this.offset() + SHELL_SPECIFIC_HEAT];
   }
 
@@ -74,7 +72,7 @@ public abstract class ShellCell extends FluidCell {
   /// @param shellSpecificHeat 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
   /// @throws IllegalArgumentException `shellSpecificHeat` が 0 以下の場合
   ///     (`shellSpecificHeat <= 0`).
-  public void setShellSpecificHeat(double shellSpecificHeat) {
+  void setShellSpecificHeat(double shellSpecificHeat) {
     Preconditions.checkArgument(shellSpecificHeat > 0.);
 
     this.doubleArray()[this.offset() + SHELL_SPECIFIC_HEAT] = shellSpecificHeat;
@@ -83,7 +81,7 @@ public abstract class ShellCell extends FluidCell {
   /// 容器の熱伝導率を返す.
   ///
   /// @return 容器の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>).
-  public double getShellThermalConductivity() {
+  double getShellThermalConductivity() {
     return this.doubleArray()[this.offset() + SHELL_THERMAL_CONDUCTIVITY];
   }
 
@@ -92,7 +90,7 @@ public abstract class ShellCell extends FluidCell {
   /// @param shellThermalConductivity 容器の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>).
   /// @throws IllegalArgumentException `shellThermalConductivity` が 0 以下の場合
   ///     (`shellThermalConductivity <= 0`).
-  public void setShellThermalConductivity(double shellThermalConductivity) {
+  void setShellThermalConductivity(double shellThermalConductivity) {
     Preconditions.checkArgument(shellThermalConductivity > 0.);
 
     this.doubleArray()[this.offset() + SHELL_THERMAL_CONDUCTIVITY] = shellThermalConductivity;
@@ -102,16 +100,16 @@ public abstract class ShellCell extends FluidCell {
   ///
   /// @return {@inheritDoc}
   @Override
-  public abstract Previous previous();
+  abstract Previous previous();
 
   /// {@inheritDoc}
   ///
   /// @return {@inheritDoc}
   @Override
-  public abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
+  abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
 
   /// 容器を含むセルの前ステップ値.
-  public abstract static class Previous extends FluidCell.Previous {
+  abstract static class Previous extends FluidCell.Previous {
 
     /// 容器の熱力学的温度の位置.
     private static final int SHELL_TEMPERATURE = FluidCell.Previous.SIZE;
@@ -120,15 +118,15 @@ public abstract class ShellCell extends FluidCell {
     private static final int SHELL_SPECIFIC_HEAT = SHELL_TEMPERATURE + 1;
 
     /// 変数の数.
-    public static final int SIZE = SHELL_SPECIFIC_HEAT + 1;
+    static final int SIZE = SHELL_SPECIFIC_HEAT + 1;
 
     /// 容器を含むセルの前ステップ値のインスタンスを生成して返す.
-    public Previous() {}
+    Previous() {}
 
     /// 容器の熱力学的温度を返す.
     ///
     /// @return 容器の熱力学的温度 (K).
-    public double getShellTemperature() {
+    double getShellTemperature() {
       return this.doubleArray()[this.offset() + SHELL_TEMPERATURE];
     }
 
@@ -137,7 +135,7 @@ public abstract class ShellCell extends FluidCell {
     /// @param shellTemperature 容器の熱力学的温度 (K).
     /// @throws IllegalArgumentException `shellTemperature` が 0 以下の場合
     ///     (`shellTemperature <= 0`).
-    public void setShellTemperature(double shellTemperature) {
+    void setShellTemperature(double shellTemperature) {
       Preconditions.checkArgument(shellTemperature > 0.);
 
       this.doubleArray()[this.offset() + SHELL_TEMPERATURE] = shellTemperature;
@@ -146,7 +144,7 @@ public abstract class ShellCell extends FluidCell {
     /// 容器の比熱を返す.
     ///
     /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-    public double getShellSpecificHeat() {
+    double getShellSpecificHeat() {
       return this.doubleArray()[this.offset() + SHELL_SPECIFIC_HEAT];
     }
 
@@ -155,7 +153,7 @@ public abstract class ShellCell extends FluidCell {
     /// @param shellSpecificHeat 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
     /// @throws IllegalArgumentException `shellSpecificHeat` が 0 以下の場合
     ///     (`shellSpecificHeat <= 0`).
-    public void setShellSpecificHeat(double shellSpecificHeat) {
+    void setShellSpecificHeat(double shellSpecificHeat) {
       Preconditions.checkArgument(shellSpecificHeat > 0.);
 
       this.doubleArray()[this.offset() + SHELL_SPECIFIC_HEAT] = shellSpecificHeat;
@@ -164,28 +162,28 @@ public abstract class ShellCell extends FluidCell {
   } // Previous
 
   /// 容器を含むセルの成分値.
-  public abstract static class ComponentValue extends FluidCell.ComponentValue {
+  abstract static class ComponentValue extends FluidCell.ComponentValue {
 
     /// 変数の数.
-    public static final int SIZE = FluidCell.ComponentValue.SIZE;
+    static final int SIZE = FluidCell.ComponentValue.SIZE;
 
     /// 容器を含むセルの成分値のインスタンスを生成して返す.
-    public ComponentValue() {}
+    ComponentValue() {}
 
     /// {@inheritDoc}
     ///
     /// @return {@inheritDoc}
     @Override
-    public abstract Previous previous();
+    abstract Previous previous();
 
     /// 容器を含むセルの成分値の前ステップ値.
-    public abstract static class Previous extends FluidCell.ComponentValue.Previous {
+    abstract static class Previous extends FluidCell.ComponentValue.Previous {
 
       /// 変数の数.
-      public static final int SIZE = FluidCell.ComponentValue.Previous.SIZE;
+      static final int SIZE = FluidCell.ComponentValue.Previous.SIZE;
 
       /// 容器を含むセルの成分値の前ステップ値のインスタンスを生成して返す.
-      public Previous() {}
+      Previous() {}
 
     } // Previous
 
