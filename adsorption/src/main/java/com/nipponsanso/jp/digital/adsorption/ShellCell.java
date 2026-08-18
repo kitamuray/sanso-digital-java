@@ -96,6 +96,28 @@ public abstract class ShellCell extends FluidCell {
     this.doubleArray()[this.offset() + SHELL_THERMAL_CONDUCTIVITY] = shellThermalConductivity;
   }
 
+  /// 永続化オブジェクトへ情報を書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void write(ShellCellEntity<?, ?, ?> entity) {
+    super.write(entity);
+
+    entity.setShellTemperature(this.getShellTemperature());
+    entity.setShellSpecificHeat(this.getShellSpecificHeat());
+    entity.setShellThermalConductivity(this.getShellThermalConductivity());
+  }
+
+  /// 永続化オブジェクトから情報を読み込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void read(ShellCellEntity<?, ?, ?> entity) {
+    super.read(entity);
+
+    this.setShellTemperature(entity.getShellTemperature());
+    this.setShellSpecificHeat(entity.getShellSpecificHeat());
+    this.setShellThermalConductivity(entity.getShellThermalConductivity());
+  }
+
   /// {@inheritDoc}
   ///
   /// @return {@inheritDoc}
@@ -159,6 +181,26 @@ public abstract class ShellCell extends FluidCell {
       this.doubleArray()[this.offset() + SHELL_SPECIFIC_HEAT] = shellSpecificHeat;
     }
 
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(ShellCellEntity.Previous entity) {
+      super.write(entity);
+
+      entity.setShellTemperature(this.getShellTemperature());
+      entity.setShellSpecificHeat(this.getShellSpecificHeat());
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(ShellCellEntity.Previous entity) {
+      super.read(entity);
+
+      this.setShellTemperature(entity.getShellTemperature());
+      this.setShellSpecificHeat(entity.getShellSpecificHeat());
+    }
+
   } // Previous
 
   /// 容器を含むセルの成分値.
@@ -169,6 +211,20 @@ public abstract class ShellCell extends FluidCell {
 
     /// 容器を含むセルの成分値のインスタンスを生成して返す.
     ComponentValue() {}
+
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(ShellCellEntity.ComponentValue<?> entity) {
+      super.write(entity);
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(ShellCellEntity.ComponentValue<?> entity) {
+      super.read(entity);
+    }
 
     /// {@inheritDoc}
     ///
@@ -184,6 +240,20 @@ public abstract class ShellCell extends FluidCell {
 
       /// 容器を含むセルの成分値の前ステップ値のインスタンスを生成して返す.
       Previous() {}
+
+      /// 永続化オブジェクトへ情報を書き込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void write(ShellCellEntity.ComponentValue.Previous entity) {
+        super.write(entity);
+      }
+
+      /// 永続化オブジェクトから情報を読み込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void read(ShellCellEntity.ComponentValue.Previous entity) {
+        super.read(entity);
+      }
 
     } // Previous
 

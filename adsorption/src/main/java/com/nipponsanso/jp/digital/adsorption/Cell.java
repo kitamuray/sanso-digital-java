@@ -19,6 +19,16 @@ abstract class Cell {
   /// セルのインスタンスを生成する.
   Cell() {}
 
+  /// 永続化オブジェクトへ情報を書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void write(@SuppressWarnings("unused") CellEntity<?, ?, ?> entity) {}
+
+  /// 永続化オブジェクトから情報を読み込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void read(@SuppressWarnings("unused") CellEntity<?, ?, ?> entity) {}
+
   /// オフセット値を返す.
   ///
   /// @return オフセット値.
@@ -48,6 +58,16 @@ abstract class Cell {
     /// セルの前ステップ値のインスタンスを生成する.
     Previous() {}
 
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(@SuppressWarnings("unused") CellEntity.Previous entity) {}
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(@SuppressWarnings("unused") CellEntity.Previous entity) {}
+
     /// オフセット値を返す.
     ///
     /// @return オフセット値.
@@ -68,6 +88,16 @@ abstract class Cell {
 
     /// セルの成分値のインスタンスを生成する.
     ComponentValue() {}
+
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(@SuppressWarnings("unused") CellEntity.ComponentValue<?> entity) {}
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(@SuppressWarnings("unused") CellEntity.ComponentValue<?> entity) {}
 
     /// オフセット値を返す.
     ///
@@ -92,6 +122,16 @@ abstract class Cell {
 
       /// セルの成分値の前ステップ値のインスタンスを生成する.
       Previous() {}
+
+      /// 永続化オブジェクトへ情報を書き込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void write(@SuppressWarnings("unused") CellEntity.ComponentValue.Previous entity) {}
+
+      /// 永続化オブジェクトから情報を読み込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void read(@SuppressWarnings("unused") CellEntity.ComponentValue.Previous entity) {}
 
       /// オフセット値を返す.
       ///

@@ -70,6 +70,24 @@ abstract class AdsorbentCell extends ShellCell {
     this.doubleArray()[this.offset() + ADSORBENT_SPECIFIC_HEAT] = adsorbentSpecificHeat;
   }
 
+  /// 永続化オブジェクトへ情報を書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void write(AdsorbentCellEntity<?, ?, ?> entity) {
+    super.write(entity);
+
+    entity.setAdsorbentSpecificHeat(this.getAdsorbentSpecificHeat());
+  }
+
+  /// 永続化オブジェクトから情報を読み込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void read(AdsorbentCellEntity<?, ?, ?> entity) {
+    super.read(entity);
+
+    this.setAdsorbentSpecificHeat(entity.getAdsorbentSpecificHeat());
+  }
+
   /// {@inheritDoc}
   ///
   /// @return {@inheritDoc}
@@ -109,6 +127,24 @@ abstract class AdsorbentCell extends ShellCell {
     void setAdsorbentSpecificHeat(double adsorbentSpecificHeat) {
       Preconditions.checkArgument(adsorbentSpecificHeat > 0.);
       this.doubleArray()[this.offset() + ADSORBENT_SPECIFIC_HEAT] = adsorbentSpecificHeat;
+    }
+
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(AdsorbentCellEntity.Previous entity) {
+      super.write(entity);
+
+      entity.setAdsorbentSpecificHeat(this.getAdsorbentSpecificHeat());
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(AdsorbentCellEntity.Previous entity) {
+      super.read(entity);
+
+      this.setAdsorbentSpecificHeat(entity.getAdsorbentSpecificHeat());
     }
 
   } // Previous
@@ -164,6 +200,28 @@ abstract class AdsorbentCell extends ShellCell {
       Preconditions.checkArgument(molarSpecificConstantVolumeSpecificHeat > 0.);
       this.doubleArray()[this.offset() + MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT]
           = molarSpecificConstantVolumeSpecificHeat;
+    }
+
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(AdsorbentCellEntity.ComponentValue<?> entity) {
+      super.write(entity);
+
+      entity.setMolarQuantity(this.getMolarQuantity());
+      entity.setMolarSpecificConstantVolumeSpecificHeat(
+          this.getMolarSpecificConstantVolumeSpecificHeat());
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(AdsorbentCellEntity.ComponentValue<?> entity) {
+      super.read(entity);
+
+      this.setMolarQuantity(entity.getMolarQuantity());
+      this.setMolarSpecificConstantVolumeSpecificHeat(
+          entity.getMolarSpecificConstantVolumeSpecificHeat());
     }
 
     /// {@inheritDoc}
@@ -223,6 +281,28 @@ abstract class AdsorbentCell extends ShellCell {
         Preconditions.checkArgument(molarSpecificConstantVolumeSpecificHeat > 0.);
         this.doubleArray()[this.offset() + MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT]
             = molarSpecificConstantVolumeSpecificHeat;
+      }
+
+      /// 永続化オブジェクトへ情報を書き込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void write(AdsorbentCellEntity.ComponentValue.Previous entity) {
+        super.write(entity);
+
+        entity.setMolarQuantity(this.getMolarQuantity());
+        entity.setMolarSpecificConstantVolumeSpecificHeat(
+            this.getMolarSpecificConstantVolumeSpecificHeat());
+      }
+
+      /// 永続化オブジェクトから情報を読み込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void read(AdsorbentCellEntity.ComponentValue.Previous entity) {
+        super.read(entity);
+
+        this.setMolarQuantity(entity.getMolarQuantity());
+        this.setMolarSpecificConstantVolumeSpecificHeat(
+            entity.getMolarSpecificConstantVolumeSpecificHeat());
       }
 
     } // Previous

@@ -185,6 +185,37 @@ abstract class FluidCell extends Cell {
     this.doubleArray()[this.offset() + MOLECULAR_WEIGHT] = molecularWeight;
   }
 
+  /// 永続化オブジェクトへ情報を書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void write(FluidCellEntity<?, ?, ?> entity) {
+    super.write(entity);
+
+    entity.setTemperature(this.getTemperature());
+    entity.setPressure(this.getPressure());
+    entity.setDensity(this.getDensity());
+    entity.setSpecificEnthalpy(this.getSpecificEnthalpy());
+    entity.setSpecificConstantPressureSpecificHeat(
+        this.getSpecificConstantPressureSpecificHeat());
+    entity.setViscosity(this.getViscosity());
+    entity.setThermalConductivity(this.getThermalConductivity());
+  }
+
+  /// 永続化オブジェクトから情報を読み込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void read(FluidCellEntity<?, ?, ?> entity) {
+    super.read(entity);
+
+    this.setTemperature(entity.getTemperature());
+    this.setPressure(entity.getPressure());
+    this.setDensity(entity.getDensity());
+    this.setSpecificEnthalpy(entity.getSpecificEnthalpy());
+    this.setSpecificConstantPressureSpecificHeat(
+        entity.getSpecificConstantPressureSpecificHeat());
+    this.setViscosity(entity.getViscosity());
+  }
+
   /// {@inheritDoc}
   ///
   /// @return {@inheritDoc}
@@ -285,6 +316,32 @@ abstract class FluidCell extends Cell {
 
       this.doubleArray()[this.offset() + SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT]
           = specificConstantPressureSpecificHeat;
+    }
+
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(FluidCellEntity.Previous entity) {
+      super.write(entity);
+
+      entity.setTemperature(this.getTemperature());
+      entity.setDensity(this.getDensity());
+      entity.setSpecificEnthalpy(this.getSpecificEnthalpy());
+      entity.setSpecificConstantPressureSpecificHeat(
+          this.getSpecificConstantPressureSpecificHeat());
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(FluidCellEntity.Previous entity) {
+      super.read(entity);
+
+      this.setTemperature(entity.getTemperature());
+      this.setDensity(entity.getDensity());
+      this.setSpecificEnthalpy(entity.getSpecificEnthalpy());
+      this.setSpecificConstantPressureSpecificHeat(
+          entity.getSpecificConstantPressureSpecificHeat());
     }
 
   } // Previous
@@ -388,6 +445,26 @@ abstract class FluidCell extends Cell {
       this.doubleArray()[this.offset() + VISCOSITY] = viscosity;
     }
 
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void write(FluidCellEntity.ComponentValue<?> entity) {
+      super.write(entity);
+
+      entity.setFraction(this.getFraction());
+      entity.setDiffusivity(this.getDiffusivity());
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    void read(FluidCellEntity.ComponentValue<?> entity) {
+      super.read(entity);
+
+      this.setFraction(entity.getFraction());
+      this.setDiffusivity(entity.getDiffusivity());
+    }
+
     /// {@inheritDoc}
     ///
     /// @return {@inheritDoc}
@@ -422,6 +499,24 @@ abstract class FluidCell extends Cell {
         Preconditions.checkArgument(0. <= fraction && fraction <= 1.);
 
         this.doubleArray()[this.offset() + FRACTION] = fraction;
+      }
+
+      /// 永続化オブジェクトへ情報を書き込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void write(FluidCellEntity.ComponentValue.Previous entity) {
+        super.write(entity);
+
+        entity.setFraction(this.getFraction());
+      }
+
+      /// 永続化オブジェクトから情報を読み込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      void read(FluidCellEntity.ComponentValue.Previous entity) {
+        super.read(entity);
+
+        this.setFraction(entity.getFraction());
       }
 
     } // Previous

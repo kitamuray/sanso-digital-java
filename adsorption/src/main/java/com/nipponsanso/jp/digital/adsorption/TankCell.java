@@ -13,7 +13,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class TankCell extends FluidCell {
+final class TankCell extends FluidCell {
 
   /// 変数の数.
   private static final int SIZE = FluidCell.SIZE;
@@ -31,18 +31,15 @@ public final class TankCell extends FluidCell {
   ///
   /// @param composition 組成.
   TankCell(Composition composition) {
-    this.doubleArray = new double[
-        SIZE + Previous.SIZE
-            + composition.minorComponentKeySet().size()
-            * (ComponentValue.SIZE + ComponentValue.Previous.SIZE)];
+    this.doubleArray = new double[size(composition)];
 
     this.previous = new Previous();
 
     Map<ComponentKey, ComponentValue> componentMap = new EnumMap<>(ComponentKey.class);
-    int offset = SIZE + Previous.SIZE;
+    int offset = size();
     for (var componentKey : composition.componentKeySet()) {
       componentMap.put(componentKey, new ComponentValue(offset));
-      offset += ComponentValue.SIZE + ComponentValue.Previous.SIZE;
+      offset += ComponentValue.size();
     }
 
     this.componentMap = Maps.immutableEnumMap(componentMap);
@@ -62,6 +59,45 @@ public final class TankCell extends FluidCell {
   @Override
   double[] doubleArray() {
     return this.doubleArray;
+  }
+
+  /// 成分値以外における変数の数を返す.
+  ///
+  /// @return 成分値以外における変数の数.
+  private static int size() {
+    return SIZE + Previous.SIZE;
+  }
+
+  /// すべての変数の数を返す.
+  ///
+  /// @return すべての変数の数.
+  static int size(Composition composition) {
+    return size() + composition.componentKeySet().size() + ComponentValue.size();
+  }
+
+  /// 永続化オブジェクトへ情報を再帰的に書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void write(TankCellEntity entity) {
+    super.write(entity);
+
+    this.previous.write(entity.getPreviousEntity());
+    this.componentMap.forEach(
+        (key, value) -> value.write(
+            entity.getComponentEntityMap().computeIfAbsent(
+                key, _ -> new TankCellEntity.ComponentValue())));
+  }
+
+  /// 永続化オブジェクトから情報を再帰的に読み込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  void read(TankCellEntity entity) {
+    super.read(entity);
+
+    this.previous.read(entity.getPreviousEntity());
+    this.componentMap.forEach(
+        (key, value) -> value.read(
+            entity.getComponentEntityMap().get(key)));
   }
 
   /// {@inheritDoc}
@@ -105,6 +141,20 @@ public final class TankCell extends FluidCell {
       return TankCell.this.doubleArray();
     }
 
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void write(TankCellEntity.Previous entity) {
+      super.write(entity);
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void read(TankCellEntity.Previous entity) {
+      super.read(entity);
+    }
+
   } // Previous
 
   /// 貯槽のセルの成分値.
@@ -143,6 +193,31 @@ public final class TankCell extends FluidCell {
       return TankCell.this.doubleArray();
     }
 
+    /// 成分値全体における変数の数を返す.
+    ///
+    /// @return 成分値全体における変数の数.
+    private static int size() {
+      return SIZE + Previous.SIZE;
+    }
+
+    /// 永続化オブジェクトへ情報を再帰的に書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void write(TankCellEntity.ComponentValue entity) {
+      super.write(entity);
+
+      this.previous.write(entity.getPreviousEntity());
+    }
+
+    /// 永続化オブジェクトから情報を再帰的に読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void read(TankCellEntity.ComponentValue entity) {
+      super.read(entity);
+
+      this.previous.read(entity.getPreviousEntity());
+    }
+
     /// {@inheritDoc}
     ///
     /// @return {@inheritDoc}
@@ -159,6 +234,20 @@ public final class TankCell extends FluidCell {
 
       /// 貯槽のセルの成分値の前ステップ値のインスタンスを生成する.
       private Previous() {}
+
+      /// 永続化オブジェクトへ情報を再帰的に書き込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      private void write(TankCellEntity.ComponentValue.Previous entity) {
+        super.write(entity);
+      }
+
+      /// 永続化オブジェクトから情報を再帰的に読み込む.
+      ///
+      /// @param entity 永続化オブジェクト.
+      private void read(TankCellEntity.ComponentValue.Previous entity) {
+        super.read(entity);
+      }
 
       /// {@inheritDoc}
       ///
