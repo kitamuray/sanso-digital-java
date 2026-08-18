@@ -189,4 +189,58 @@ class MonitorTest {
         .isEqualTo(value);
   }
 
+  @Mock
+  private ShellCell shellCell;
+
+  /// [Monitor#shellTemperature()] のテスト.
+  @Test
+  void testShellTemperature() {
+    assertThatThrownBy(() -> Monitor.shellTemperature().applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.shellTemperature().applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.shellTemperature())
+        .hasToString("shellTemperature");
+
+    final double value = 303.15;
+    doReturn(value).when(this.shellCell).getShellTemperature();
+    assertThat(Monitor.shellTemperature().applyAsDouble(this.shellCell))
+        .isEqualTo(value);
+  }
+
+  /// [Monitor#shellSpecificHeat()] のテスト.
+  @Test
+  void testShellSpecificHeat() {
+    assertThatThrownBy(() -> Monitor.shellSpecificHeat().applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.shellSpecificHeat().applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.shellSpecificHeat())
+        .hasToString("shellSpecificHeat");
+
+    final double value = 640.;
+    doReturn(value).when(this.shellCell).getShellSpecificHeat();
+    assertThat(Monitor.shellSpecificHeat().applyAsDouble(this.shellCell))
+        .isEqualTo(value);
+  }
+
+  /// [Monitor#shellThermalConductivity()] のテスト.
+  @Test
+  void testShellThermalConductivity() {
+    assertThatThrownBy(() -> Monitor.shellThermalConductivity().applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.shellThermalConductivity().applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.shellThermalConductivity())
+        .hasToString("shellThermalConductivity");
+
+    final double value = 0.2;
+    doReturn(value).when(this.shellCell).getShellThermalConductivity();
+    assertThat(Monitor.shellThermalConductivity().applyAsDouble(this.shellCell))
+        .isEqualTo(value);
+  }
+
 }

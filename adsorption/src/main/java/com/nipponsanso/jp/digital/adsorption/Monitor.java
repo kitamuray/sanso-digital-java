@@ -214,8 +214,73 @@ public abstract class Monitor {
     return FluidValueMonitor.DIFFUSIVITY_MAP.computeIfAbsent(
         componentKey,
         key -> new FluidValueMonitor(
-            "fraction", key, FluidCell.ComponentValue::getDiffusivity));
+            "diffusivity", key, FluidCell.ComponentValue::getDiffusivity));
   }
 
+  /// 容器セルのモニタ.
+  private static final class ShellCellMonitor extends Monitor {
+
+    /// 容器セルを引数に取り従属変数の値を返す関数.
+    private final ToDoubleFunction<ShellCell> function;
+
+    /// 容器セルのモニタのインスタンスを生成する.
+    ///
+    /// @param toString 文字列表現.
+    /// @param function 容器セルを引数に取り従属変数の値を返す関数.
+    private ShellCellMonitor(String toString, ToDoubleFunction<ShellCell> function) {
+      super(toString);
+      this.function = function;
+    }
+
+    @Override
+    double applyAsDouble(Object object) {
+      Preconditions.checkNotNull(object);
+      if (!(object instanceof ShellCell)) {
+        throw new ClassCastException();
+      }
+
+      return this.function.applyAsDouble((ShellCell) object);
+    }
+
+    /// 容器の熱力学的温度 (K) のモニタ.
+    private static final ShellCellMonitor SHELL_TEMPERATURE
+        = new ShellCellMonitor(
+            "shellTemperature",
+            ShellCell::getShellTemperature);
+
+    /// 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+    private static final ShellCellMonitor SHELL_SPECIFIC_HEAT
+        = new ShellCellMonitor(
+            "shellSpecificHeat",
+            ShellCell::getShellSpecificHeat);
+
+    /// 容器の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+    private static final ShellCellMonitor SHELL_THERMAL_CONDUCTIVITY
+        = new ShellCellMonitor(
+            "shellThermalConductivity",
+            ShellCell::getShellThermalConductivity);
+
+  } // ShellCellMonitor
+
+  /// 容器の熱力学的温度 (K) のモニタを返す.
+  ///
+  /// @return 容器の熱力学的温度 (K) のモニタ.
+  public static Monitor shellTemperature() {
+    return ShellCellMonitor.SHELL_TEMPERATURE;
+  }
+
+  /// 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
+  ///
+  /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+  public static Monitor shellSpecificHeat() {
+    return ShellCellMonitor.SHELL_SPECIFIC_HEAT;
+  }
+
+  /// 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
+  ///
+  /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+  public static Monitor shellThermalConductivity() {
+    return ShellCellMonitor.SHELL_THERMAL_CONDUCTIVITY;
+  }
 
 }
