@@ -242,5 +242,81 @@ class MonitorTest {
     assertThat(Monitor.shellThermalConductivity().applyAsDouble(this.shellCell))
         .isEqualTo(value);
   }
+  
+  @Mock
+  private AdsorbentCell adsorbentCell;
+
+  /// [Monitor#adsorbentSpecificHeat()] のテスト.
+  @Test
+  void testAdsorbentSpecificHeat() {
+    assertThatThrownBy(() -> Monitor.adsorbentSpecificHeat().applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.adsorbentSpecificHeat().applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.adsorbentSpecificHeat())
+        .hasToString("adsorbentSpecificHeat");
+
+    final double value = 640.;
+    doReturn(value).when(this.adsorbentCell).getAdsorbentSpecificHeat();
+    assertThat(Monitor.adsorbentSpecificHeat().applyAsDouble(this.adsorbentCell))
+        .isEqualTo(value);
+  }
+  
+  @Mock
+  private AdsorbentCell.ComponentValue adsorbentValue;
+
+  /// [Monitor#molarQuantity(ComponentKey)] のテスト.
+  @Test
+  void testMolarQuantityComponentKey() {
+    assertThatThrownBy(() -> Monitor.molarQuantity(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.molarQuantity(ComponentKey.NITROGEN).applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.molarQuantity(ComponentKey.NITROGEN).applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.molarQuantity(ComponentKey.NITROGEN))
+        .hasToString("molarQuantity[" + ComponentKey.NITROGEN + "]");
+
+    final double value = 10.;
+    doReturn(value).when(this.adsorbentValue).getMolarQuantity();
+    doReturn(Map.of(ComponentKey.NITROGEN, this.adsorbentValue))
+        .when(this.adsorbentCell)
+        .componentMap();
+
+    assertThat(Monitor.molarQuantity(ComponentKey.NITROGEN).applyAsDouble(this.adsorbentCell))
+        .isEqualTo(value);
+  }
+
+  /// [Monitor#molarSpecificConstantVolumeSpecificHeat(ComponentKey)] のテスト.
+  @Test
+  void testMolarSpecificConstantVolumeSpecificHeatComponentKey() {
+    assertThatThrownBy(() -> Monitor.molarSpecificConstantVolumeSpecificHeat(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(
+        () -> Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN)
+            .applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(
+        () -> Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN)
+            .applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN))
+        .hasToString(
+            "molarSpecificConstantVolumeSpecificHeat[" + ComponentKey.NITROGEN + "]");
+
+    final double value = 12.;
+    doReturn(value).when(this.adsorbentValue).getMolarSpecificConstantVolumeSpecificHeat();
+    doReturn(Map.of(ComponentKey.NITROGEN, this.adsorbentValue))
+        .when(this.adsorbentCell)
+        .componentMap();
+
+    assertThat(
+        Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN)
+            .applyAsDouble(this.adsorbentCell))
+        .isEqualTo(value);
+  }
 
 }

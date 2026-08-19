@@ -283,4 +283,120 @@ public abstract class Monitor {
     return ShellCellMonitor.SHELL_THERMAL_CONDUCTIVITY;
   }
 
+  /// 吸着剤セルのモニタ.
+  private static final class AdsorbentCellMonitor extends Monitor {
+
+    /// 吸着剤セルを引数に取り従属変数の値を返す関数.
+    private final ToDoubleFunction<AdsorbentCell> function;
+
+    /// 吸着剤セルのモニタのインスタンスを生成する.
+    ///
+    /// @param toString 文字列表現.
+    /// @param function 吸着剤セルを引数に取り従属変数の値を返す関数.
+    private AdsorbentCellMonitor(String toString, ToDoubleFunction<AdsorbentCell> function) {
+      super(toString);
+      this.function = function;
+    }
+
+    @Override
+    double applyAsDouble(Object object) {
+      Preconditions.checkNotNull(object);
+      if (!(object instanceof AdsorbentCell)) {
+        throw new ClassCastException();
+      }
+
+      return this.function.applyAsDouble((AdsorbentCell) object);
+    }
+
+    /// 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+    private static final AdsorbentCellMonitor ADSORBENT_SPECIFIC_HEAT
+        = new AdsorbentCellMonitor(
+        "adsorbentSpecificHeat",
+        AdsorbentCell::getAdsorbentSpecificHeat);
+
+  } // AdsorbentCellMonitor
+
+  /// 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
+  ///
+  /// @return 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+  public static Monitor adsorbentSpecificHeat() {
+    return AdsorbentCellMonitor.ADSORBENT_SPECIFIC_HEAT;
+  }
+
+  /// 吸着剤セル成分値のモニタ.
+  private static final class AdsorbentValueMonitor extends Monitor {
+
+    /// 成分のキー.
+    private final ComponentKey componentKey;
+
+    /// 吸着剤セル成分値を引数に取り従属変数の値を返す関数.
+    private final ToDoubleFunction<AdsorbentCell.ComponentValue> function;
+
+    /// 吸着剤セル成分値のモニタのインスタンスを生成する.
+    ///
+    /// @param toString 文字列表現.
+    /// @param componentKey 成分のキー.
+    /// @param function 吸着剤セル成分値を引数に取り従属変数の値を返す関数.
+    private AdsorbentValueMonitor(
+        String toString,
+        ComponentKey componentKey,
+        ToDoubleFunction<AdsorbentCell.ComponentValue> function) {
+      super(toString + "[" + componentKey + "]");
+      this.componentKey = componentKey;
+      this.function = function;
+    }
+
+    @Override
+    double applyAsDouble(Object object) {
+      Preconditions.checkNotNull(object);
+      if (!(object instanceof AdsorbentCell)) {
+        throw new ClassCastException();
+      }
+
+      return this.function.applyAsDouble(
+          ((AdsorbentCell) object).componentMap().get(this.componentKey));
+    }
+
+    /// 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタのマップ.
+    private static final Map<ComponentKey, AdsorbentValueMonitor> MOLAR_QUANTITY_MAP
+        = new EnumMap<>(ComponentKey.class);
+
+    /// 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタのマップ.
+    private static final Map<ComponentKey, AdsorbentValueMonitor>
+        MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
+          = new EnumMap<>(ComponentKey.class);
+
+  } // AdsorbentValueMonitor
+
+  /// 吸着質成分のモル吸着量のモニタを返す.
+  ///
+  /// @param componentKey 成分のキー.
+  /// @return 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタ.
+  /// @throws NullPointerException `componentKey` が `null` の場合.
+  public static Monitor molarQuantity(ComponentKey componentKey) {
+    Preconditions.checkNotNull(componentKey);
+
+    return AdsorbentValueMonitor.MOLAR_QUANTITY_MAP.computeIfAbsent(
+        componentKey,
+        key -> new AdsorbentValueMonitor(
+            "molarQuantity", key, AdsorbentCell.ComponentValue::getMolarQuantity));
+  }
+
+  /// 吸着質成分のモル定積比熱のモニタを返す.
+  ///
+  /// @param componentKey 成分のキー.
+  /// @return 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタ.
+  /// @throws NullPointerException `componentKey` が `null` の場合.
+  public static Monitor molarSpecificConstantVolumeSpecificHeat(ComponentKey componentKey) {
+    Preconditions.checkNotNull(componentKey);
+
+    return AdsorbentValueMonitor.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
+        .computeIfAbsent(
+            componentKey,
+            key -> new AdsorbentValueMonitor(
+                "molarSpecificConstantVolumeSpecificHeat",
+                key,
+                AdsorbentCell.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat));
+  }
+
 }
