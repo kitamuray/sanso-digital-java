@@ -169,7 +169,7 @@ public abstract class Monitor {
   }
 
   /// 流体セル成分値のモニタ.
-  private static final class FluidValueMonitor extends Monitor {
+  private static final class FluidCellComponentValueMonitor extends Monitor {
 
     /// 成分のキー.
     private final ComponentKey componentKey;
@@ -182,7 +182,7 @@ public abstract class Monitor {
     /// @param toString 文字列表現.
     /// @param componentKey 成分のキー.
     /// @param function 流体セル成分値を引数に取り従属変数の値を返す関数.
-    private FluidValueMonitor(
+    private FluidCellComponentValueMonitor(
         String toString,
         ComponentKey componentKey,
         ToDoubleFunction<FluidCell.ComponentValue> function) {
@@ -203,14 +203,14 @@ public abstract class Monitor {
     }
 
     /// 流体成分の質量分率 (-) のモニタのマップ.
-    private static final Map<ComponentKey, FluidValueMonitor> FRACTION_MAP
+    private static final Map<ComponentKey, FluidCellComponentValueMonitor> FRACTION_MAP
         = new ConcurrentHashMap<>();
 
     /// 流体成分の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, FluidValueMonitor> DIFFUSIVITY_MAP
+    private static final Map<ComponentKey, FluidCellComponentValueMonitor> DIFFUSIVITY_MAP
         = new ConcurrentHashMap<>();
 
-  } // FluidValueMonitor
+  } // FluidCellComponentValueMonitor
 
   /// 流体成分の質量分率のモニタを返す.
   ///
@@ -223,9 +223,9 @@ public abstract class Monitor {
   public static Monitor fraction(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
-    return FluidValueMonitor.FRACTION_MAP.computeIfAbsent(
+    return FluidCellComponentValueMonitor.FRACTION_MAP.computeIfAbsent(
         componentKey,
-        key -> new FluidValueMonitor(
+        key -> new FluidCellComponentValueMonitor(
             "fraction", key, FluidCell.ComponentValue::getFraction));
   }
 
@@ -240,9 +240,9 @@ public abstract class Monitor {
   public static Monitor diffusivity(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
-    return FluidValueMonitor.DIFFUSIVITY_MAP.computeIfAbsent(
+    return FluidCellComponentValueMonitor.DIFFUSIVITY_MAP.computeIfAbsent(
         componentKey,
-        key -> new FluidValueMonitor(
+        key -> new FluidCellComponentValueMonitor(
             "diffusivity", key, FluidCell.ComponentValue::getDiffusivity));
   }
 
@@ -365,7 +365,7 @@ public abstract class Monitor {
   }
 
   /// 吸着剤セル成分値のモニタ.
-  private static final class AdsorbentValueMonitor extends Monitor {
+  private static final class AdsorbentCellComponentValueMonitor extends Monitor {
 
     /// 成分のキー.
     private final ComponentKey componentKey;
@@ -378,7 +378,7 @@ public abstract class Monitor {
     /// @param toString 文字列表現.
     /// @param componentKey 成分のキー.
     /// @param function 吸着剤セル成分値を引数に取り従属変数の値を返す関数.
-    private AdsorbentValueMonitor(
+    private AdsorbentCellComponentValueMonitor(
         String toString,
         ComponentKey componentKey,
         ToDoubleFunction<AdsorbentCell.ComponentValue> function) {
@@ -399,15 +399,15 @@ public abstract class Monitor {
     }
 
     /// 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, AdsorbentValueMonitor> MOLAR_QUANTITY_MAP
+    private static final Map<ComponentKey, AdsorbentCellComponentValueMonitor> MOLAR_QUANTITY_MAP
         = new ConcurrentHashMap<>();
 
     /// 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, AdsorbentValueMonitor>
+    private static final Map<ComponentKey, AdsorbentCellComponentValueMonitor>
         MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
           = new ConcurrentHashMap<>();
 
-  } // AdsorbentValueMonitor
+  } // AdsorbentCellComponentValueMonitor
 
   /// 吸着質成分のモル吸着量のモニタを返す.
   ///
@@ -420,9 +420,9 @@ public abstract class Monitor {
   public static Monitor molarQuantity(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
-    return AdsorbentValueMonitor.MOLAR_QUANTITY_MAP.computeIfAbsent(
+    return AdsorbentCellComponentValueMonitor.MOLAR_QUANTITY_MAP.computeIfAbsent(
         componentKey,
-        key -> new AdsorbentValueMonitor(
+        key -> new AdsorbentCellComponentValueMonitor(
             "molarQuantity", key, AdsorbentCell.ComponentValue::getMolarQuantity));
   }
 
@@ -437,10 +437,10 @@ public abstract class Monitor {
   public static Monitor molarSpecificConstantVolumeSpecificHeat(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
-    return AdsorbentValueMonitor.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
+    return AdsorbentCellComponentValueMonitor.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
         .computeIfAbsent(
             componentKey,
-            key -> new AdsorbentValueMonitor(
+            key -> new AdsorbentCellComponentValueMonitor(
                 "molarSpecificConstantVolumeSpecificHeat",
                 key,
                 AdsorbentCell.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat));
