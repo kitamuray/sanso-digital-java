@@ -6,11 +6,13 @@
 package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
-import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.ToDoubleFunction;
 
 /// モニタ.
+///
+/// このクラスを実装した具象クラスのインスタンスは不変（Immutable）である.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
@@ -98,12 +100,18 @@ public abstract class Monitor {
 
   /// 流体の熱力学的温度のモニタを返す.
   ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
   /// @return 流体の熱力学的温度 (K) のモニタ.
   public static Monitor temperature() {
     return FluidCellMonitor.TEMPERATURE;
   }
 
   /// 流体の絶対圧力のモニタを返す.
+  ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @return 流体の絶対圧力 (Pa) のモニタ.
   public static Monitor pressure() {
@@ -112,12 +120,18 @@ public abstract class Monitor {
 
   /// 流体の密度のモニタを返す.
   ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
   /// @return 流体の密度 (kg m<sup>-3</sup>) のモニタ.
   public static Monitor density() {
     return FluidCellMonitor.DENSITY;
   }
 
   /// 流体の比エンタルピのモニタを返す.
+  ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @return 流体の比エンタルピ (J kg<sup>-1</sup>) のモニタ.
   public static Monitor specificEnthalpy() {
@@ -126,6 +140,9 @@ public abstract class Monitor {
 
   /// 流体の定圧比熱のモニタを返す.
   ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
   /// @return 流体の定圧比熱 (J kg<sup>-1</sup> K<sup>-1</sup>)のモニタ.
   public static Monitor specificConstantPressureSpecificHeat() {
     return FluidCellMonitor.SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT;
@@ -133,12 +150,18 @@ public abstract class Monitor {
 
   /// 流体の粘性係数のモニタを返す.
   ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
   /// @return 流体の粘性係数 (Pa s) のモニタ.
   public static Monitor viscosity() {
     return FluidCellMonitor.VISCOSITY;
   }
 
   /// 流体の熱伝導率のモニタを返す.
+  ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @return 流体の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>) のモニタ.
   public static Monitor thermalConductivity() {
@@ -181,15 +204,18 @@ public abstract class Monitor {
 
     /// 流体成分の質量分率 (-) のモニタのマップ.
     private static final Map<ComponentKey, FluidValueMonitor> FRACTION_MAP
-        = new EnumMap<>(ComponentKey.class);
+        = new ConcurrentHashMap<>();
 
     /// 流体成分の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>) のモニタのマップ.
     private static final Map<ComponentKey, FluidValueMonitor> DIFFUSIVITY_MAP
-        = new EnumMap<>(ComponentKey.class);
+        = new ConcurrentHashMap<>();
 
   } // FluidValueMonitor
 
   /// 流体成分の質量分率のモニタを返す.
+  ///
+  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 流体成分の質量分率 (-) のモニタ.
@@ -204,6 +230,9 @@ public abstract class Monitor {
   }
 
   /// 流体成分の質量分率のモニタを返す.
+  ///
+  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 流体成分の質量分率 (-) のモニタ.
@@ -264,6 +293,9 @@ public abstract class Monitor {
 
   /// 容器の熱力学的温度 (K) のモニタを返す.
   ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
   /// @return 容器の熱力学的温度 (K) のモニタ.
   public static Monitor shellTemperature() {
     return ShellCellMonitor.SHELL_TEMPERATURE;
@@ -271,12 +303,18 @@ public abstract class Monitor {
 
   /// 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
   ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
   /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
   public static Monitor shellSpecificHeat() {
     return ShellCellMonitor.SHELL_SPECIFIC_HEAT;
   }
 
   /// 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
+  ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
   public static Monitor shellThermalConductivity() {
@@ -317,6 +355,9 @@ public abstract class Monitor {
   } // AdsorbentCellMonitor
 
   /// 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
+  ///
+  /// このメソッドは常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @return 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
   public static Monitor adsorbentSpecificHeat() {
@@ -359,16 +400,19 @@ public abstract class Monitor {
 
     /// 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタのマップ.
     private static final Map<ComponentKey, AdsorbentValueMonitor> MOLAR_QUANTITY_MAP
-        = new EnumMap<>(ComponentKey.class);
+        = new ConcurrentHashMap<>();
 
     /// 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタのマップ.
     private static final Map<ComponentKey, AdsorbentValueMonitor>
         MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
-          = new EnumMap<>(ComponentKey.class);
+          = new ConcurrentHashMap<>();
 
   } // AdsorbentValueMonitor
 
   /// 吸着質成分のモル吸着量のモニタを返す.
+  ///
+  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタ.
@@ -383,6 +427,9 @@ public abstract class Monitor {
   }
 
   /// 吸着質成分のモル定積比熱のモニタを返す.
+  ///
+  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタ.
