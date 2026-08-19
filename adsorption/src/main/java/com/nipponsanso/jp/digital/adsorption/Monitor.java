@@ -42,7 +42,7 @@ public abstract class Monitor {
   }
 
   /// 流体セルのモニタ.
-  private static final class FluidCellMonitor extends Monitor {
+  static final class FluidCellMonitor extends Monitor {
 
     /// 流体セルを引数に取り従属変数の値を返す関数.
     private final ToDoubleFunction<FluidCell> function;
@@ -169,7 +169,7 @@ public abstract class Monitor {
   }
 
   /// 流体セル成分値のモニタ.
-  private static final class FluidCellComponentValueMonitor extends Monitor {
+  static final class FluidCellComponentValueMonitor extends Monitor {
 
     /// 成分のキー.
     private final ComponentKey componentKey;
@@ -247,7 +247,7 @@ public abstract class Monitor {
   }
 
   /// 容器セルのモニタ.
-  private static final class ShellCellMonitor extends Monitor {
+  static final class ShellCellMonitor extends Monitor {
 
     /// 容器セルを引数に取り従属変数の値を返す関数.
     private final ToDoubleFunction<ShellCell> function;
@@ -322,7 +322,7 @@ public abstract class Monitor {
   }
 
   /// 吸着剤セルのモニタ.
-  private static final class AdsorbentCellMonitor extends Monitor {
+  static final class AdsorbentCellMonitor extends Monitor {
 
     /// 吸着剤セルを引数に取り従属変数の値を返す関数.
     private final ToDoubleFunction<AdsorbentCell> function;
@@ -365,7 +365,7 @@ public abstract class Monitor {
   }
 
   /// 吸着剤セル成分値のモニタ.
-  private static final class AdsorbentCellComponentValueMonitor extends Monitor {
+  static final class AdsorbentCellComponentValueMonitor extends Monitor {
 
     /// 成分のキー.
     private final ComponentKey componentKey;
