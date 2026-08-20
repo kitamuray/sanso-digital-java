@@ -186,4 +186,17 @@ public final class Adsorbent {
         .toString();
   }
 
+  /// 空筒領域の疑似的な吸着剤のインスタンス.
+  private static final Adsorbent EMPTY = Adsorbent.builder()
+      .diameter(Double.MAX_VALUE)
+      .voidFraction(1.)
+      .bulkDensity(Double.MIN_VALUE)
+      .specificHeat(ConstantSpecificHeat.valueOf(Double.MIN_VALUE))
+      .build();
+
+  /// 空筒領域の疑似的な吸着剤のインスタンスを返す.
+  static Adsorbent empty() {
+    return EMPTY;
+  }
+
 }
