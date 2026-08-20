@@ -45,36 +45,6 @@ final class TankCell extends FluidCell {
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
-  @Override
-  int offset() {
-    return 0;
-  }
-
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
-  @Override
-  double[] doubleArray() {
-    return this.doubleArray;
-  }
-
-  /// 成分値以外における変数の数を返す.
-  ///
-  /// @return 成分値以外における変数の数.
-  private static int size() {
-    return SIZE + Previous.SIZE;
-  }
-
-  /// すべての変数の数を返す.
-  ///
-  /// @return すべての変数の数.
-  static int size(Composition composition) {
-    return size() + composition.componentKeySet().size() + ComponentValue.size();
-  }
-
   /// 永続化オブジェクトへ情報を再帰的に書き込む.
   ///
   /// @param entity 永続化オブジェクト.
@@ -116,6 +86,36 @@ final class TankCell extends FluidCell {
     return this.componentMap;
   }
 
+  /// {@inheritDoc}
+  ///
+  /// @return {@inheritDoc}
+  @Override
+  int offset() {
+    return 0;
+  }
+
+  /// {@inheritDoc}
+  ///
+  /// @return {@inheritDoc}
+  @Override
+  double[] doubleArray() {
+    return this.doubleArray;
+  }
+
+  /// 成分値以外における変数の数を返す.
+  ///
+  /// @return 成分値以外における変数の数.
+  private static int size() {
+    return SIZE + Previous.SIZE;
+  }
+
+  /// すべての変数の数を返す.
+  ///
+  /// @return すべての変数の数.
+  static int size(Composition composition) {
+    return size() + composition.componentKeySet().size() * ComponentValue.size();
+  }
+
   /// 貯槽のセルの前ステップ値.
   final class Previous extends FluidCell.Previous {
 
@@ -124,6 +124,20 @@ final class TankCell extends FluidCell {
 
     /// 貯槽のセルの前ステップ値のインスタンスを生成する.
     private Previous() {}
+
+    /// 永続化オブジェクトへ情報を書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void write(TankCellEntity.Previous entity) {
+      super.write(entity);
+    }
+
+    /// 永続化オブジェクトから情報を読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void read(TankCellEntity.Previous entity) {
+      super.read(entity);
+    }
 
     /// {@inheritDoc}
     ///
@@ -139,20 +153,6 @@ final class TankCell extends FluidCell {
     @Override
     double[] doubleArray() {
       return TankCell.this.doubleArray();
-    }
-
-    /// 永続化オブジェクトへ情報を書き込む.
-    ///
-    /// @param entity 永続化オブジェクト.
-    private void write(TankCellEntity.Previous entity) {
-      super.write(entity);
-    }
-
-    /// 永続化オブジェクトから情報を読み込む.
-    ///
-    /// @param entity 永続化オブジェクト.
-    private void read(TankCellEntity.Previous entity) {
-      super.read(entity);
     }
 
   } // Previous
@@ -177,6 +177,24 @@ final class TankCell extends FluidCell {
       this.previous = new Previous();
     }
 
+    /// 永続化オブジェクトへ情報を再帰的に書き込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void write(TankCellEntity.ComponentValue entity) {
+      super.write(entity);
+
+      this.previous.write(entity.getPreviousEntity());
+    }
+
+    /// 永続化オブジェクトから情報を再帰的に読み込む.
+    ///
+    /// @param entity 永続化オブジェクト.
+    private void read(TankCellEntity.ComponentValue entity) {
+      super.read(entity);
+
+      this.previous.read(entity.getPreviousEntity());
+    }
+
     /// {@inheritDoc}
     ///
     /// @return {@inheritDoc}
@@ -198,24 +216,6 @@ final class TankCell extends FluidCell {
     /// @return 成分値全体における変数の数.
     private static int size() {
       return SIZE + Previous.SIZE;
-    }
-
-    /// 永続化オブジェクトへ情報を再帰的に書き込む.
-    ///
-    /// @param entity 永続化オブジェクト.
-    private void write(TankCellEntity.ComponentValue entity) {
-      super.write(entity);
-
-      this.previous.write(entity.getPreviousEntity());
-    }
-
-    /// 永続化オブジェクトから情報を再帰的に読み込む.
-    ///
-    /// @param entity 永続化オブジェクト.
-    private void read(TankCellEntity.ComponentValue entity) {
-      super.read(entity);
-
-      this.previous.read(entity.getPreviousEntity());
     }
 
     /// {@inheritDoc}
