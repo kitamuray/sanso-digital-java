@@ -76,12 +76,12 @@ abstract class ColumnCell extends AdsorbentCell {
     super(adsorbent, shell);
     this.offset = offset;
 
-    this.doubleArray()[this.offset() + CENTROID] = 0.5 * (fromX + toX);
-    this.doubleArray()[this.offset() + LENGTH] = toX - fromX;
-    this.doubleArray()[this.offset() + FLUID_VOLUME] = shape.fluidVolume(fromX, toX);
-    this.doubleArray()[this.offset() + SHELL_VOLUME] = shape.shellVolume(fromX, toX);
-    this.doubleArray()[this.offset() + INSIDE_AREA] = shape.insideArea(fromX, toX);
-    this.doubleArray()[this.offset() + OUTSIDE_AREA] = shape.outsideArea(fromX, toX);
+    this.doubleArray()[this.offset + CENTROID] = 0.5 * (fromX + toX);
+    this.doubleArray()[this.offset + LENGTH] = toX - fromX;
+    this.doubleArray()[this.offset + FLUID_VOLUME] = shape.fluidVolume(fromX, toX);
+    this.doubleArray()[this.offset + SHELL_VOLUME] = shape.shellVolume(fromX, toX);
+    this.doubleArray()[this.offset + INSIDE_AREA] = shape.insideArea(fromX, toX);
+    this.doubleArray()[this.offset + OUTSIDE_AREA] = shape.outsideArea(fromX, toX);
 
     this.previous = new Previous();
 
