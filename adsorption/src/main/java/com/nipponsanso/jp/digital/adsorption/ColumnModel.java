@@ -21,6 +21,7 @@ final class ColumnModel {
   /// 吸着筒.
   private final Column column;
 
+  /// セル・フェイスのプリミティブ double 値を一括保持する配列.
   private final double[] doubleArray;
 
   /// 西側境界セル.
@@ -60,7 +61,7 @@ final class ColumnModel {
 
     final int cellSize = ColumnCell.size(composition);
     final int faceSize = ColumnFace.size(composition);
-    this.doubleArray = new double[size * (cellSize + faceSize) - faceSize];
+    this.doubleArray = new double[size * cellSize + (size - 1) * faceSize];
 
     double origin = column.origin();
     int offset = 0;

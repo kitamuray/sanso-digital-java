@@ -13,7 +13,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-abstract class ColumnCell extends AdsorbentCell {
+abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell {
 
   /// 重心座標 (m) の位置.
   private static final int CENTROID = AdsorbentCell.SIZE;
@@ -95,108 +95,108 @@ abstract class ColumnCell extends AdsorbentCell {
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// 重心座標を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 重心座標 (m).
-  double centroid() {
+  /// @return {@inheritDoc}
+  public double centroid() {
     return this.doubleArray()[this.offset() + CENTROID];
   }
 
-  /// 長さを返す.
+  /// {@inheritDoc}
   ///
-  /// @return 長さ (m).
-  double length() {
+  /// @return {@inheritDoc}
+  public double length() {
     return this.doubleArray()[this.offset() + LENGTH];
   }
 
-  /// 流体領域の体積を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 流体領域の体積 (m<sup>3</sup>).
-  double fluidVolume() {
+  /// @return {@inheritDoc}
+  public double fluidVolume() {
     return this.doubleArray()[this.offset() + FLUID_VOLUME];
   }
 
-  /// 容器内面の面積を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 容器内面の面積 (m<sup>2</sup>).
-  double insideArea() {
+  /// @return {@inheritDoc}
+  public double insideArea() {
     return this.doubleArray()[this.offset() + INSIDE_AREA];
   }
 
-  /// 容器外面の面積を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 容器外面の面積 (m<sup>2</sup>).
-  double outsideArea() {
+  /// @return {@inheritDoc}
+  public double outsideArea() {
     return this.doubleArray()[this.offset() + OUTSIDE_AREA];
   }
 
-  /// 当該セルに対する離散化係数 <i>a</i><sub><i>p</i></sub> を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 当該セルに対する離散化係数 <i>a</i><sub><i>p</i></sub>.
-  double getAp() {
+  /// @return {@inheritDoc}
+  public double getAp() {
     return this.doubleArray()[this.offset() + AP];
   }
 
-  /// 当該セルに対する離散化係数 <i>a</i><sub><i>p</i></sub> を設定する.
+  /// {@inheritDoc}
   ///
-  /// @param ap 当該セルに対する新たな離散化係数 <i>a</i><sub><i>p</i></sub>.
-  void setAp(double ap) {
+  /// @param ap {@inheritDoc}
+  public void setAp(double ap) {
     this.doubleArray()[this.offset() + AP] = ap;
   }
 
-  /// 西側セルに対する離散化係数 <i>a</i><sub><i>w</i></sub> を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 西側セルに対する離散化係数 <i>a</i><sub><i>w</i></sub>.
-  double getAw() {
+  /// @return {@inheritDoc}
+  public double getAw() {
     return this.doubleArray()[this.offset() + AW];
   }
 
-  /// 西側セルに対する離散化係数 <i>a</i><sub><i>w</i></sub> を設定する.
+  /// {@inheritDoc}
   ///
-  /// @param aw 西側セルに対する新たな離散化係数 <i>a</i><sub><i>w</i></sub>.
-  void setAw(double aw) {
+  /// @param aw {@inheritDoc}
+  public void setAw(double aw) {
     this.doubleArray()[this.offset() + AW] = aw;
   }
 
-  /// 西側セルに対する離散化係数 <i>a</i><sub><i>e</i></sub> を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 西側セルに対する離散化係数 <i>a</i><sub><i>e</i></sub>.
-  double getAe() {
+  /// @return {@inheritDoc}
+  public double getAe() {
     return this.doubleArray()[this.offset() + AE];
   }
 
-  /// 西側セルに対する離散化係数 <i>a</i><sub><i>e</i></sub> を設定する.
+  /// {@inheritDoc}
   ///
-  /// @param ae 西側セルに対する新たな離散化係数 <i>a</i><sub><i>e</i></sub>.
-  void setAe(double ae) {
+  /// @param ae {@inheritDoc}
+  public void setAe(double ae) {
     this.doubleArray()[this.offset() + AE] = ae;
   }
 
-  /// 生成項比例係数 <i>S</i><sub><i>p</i></sub> を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 生成項比例係数 <i>S</i><sub><i>p</i></sub>.
-  double getSp() {
+  /// @return {@inheritDoc}
+  public double getSp() {
     return this.doubleArray()[this.offset() + SP];
   }
 
-  /// 生成項比例係数 <i>S</i><sub><i>p</i></sub> を設定する.
+  /// {@inheritDoc}
   ///
-  /// @param sp 新たな生成項比例係数 <i>S</i><sub><i>p</i></sub>.
-  void setSp(double sp) {
+  /// @param sp {@inheritDoc}
+  public void setSp(double sp) {
     this.doubleArray()[this.offset() + SP] = sp;
   }
 
-  /// 生成項定数係数 <i>S</i><sub><i>c</i></sub> を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 生成項定数係数 <i>S</i><sub><i>c</i></sub>.
-  double getSc() {
+  /// @return {@inheritDoc}
+  public double getSc() {
     return this.doubleArray()[this.offset() + SC];
   }
 
-  /// 生成項定数係数 <i>S</i><sub><i>c</i></sub> を設定する.
+  /// {@inheritDoc}
   ///
-  /// @param sc 新たな生成項定数係数 <i>S</i><sub><i>c</i></sub>.
-  void setSc(double sc) {
+  /// @param sc {@inheritDoc}
+  public void setSc(double sc) {
     this.doubleArray()[this.offset() + SC] = sc;
   }
 

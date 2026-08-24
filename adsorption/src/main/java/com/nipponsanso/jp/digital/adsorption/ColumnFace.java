@@ -13,7 +13,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-abstract class ColumnFace extends FluidFace {
+abstract class ColumnFace extends FluidFace implements GridFace {
 
   /// 座標の位置.
   private static final int COORDINATE = FluidFace.SIZE;
@@ -56,24 +56,24 @@ abstract class ColumnFace extends FluidFace {
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// 座標を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 座標 (m).
-  double coordinate() {
+  /// @return {@inheritDoc}
+  public double coordinate() {
     return this.doubleArray()[this.offset() + COORDINATE];
   }
 
-  /// 流体領域の断面積を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 流体領域の断面積 (m<sup>2</sup>).
-  double fluidArea() {
+  /// @return {@inheritDoc}
+  public double fluidArea() {
     return this.doubleArray()[this.offset() + FLUID_AREA];
   }
 
-  /// 容器領域の断面積を返す.
+  /// {@inheritDoc}
   ///
-  /// @return 容器領域の断面積 (m<sup>2</sup>).
-  double shellArea() {
+  /// @return {@inheritDoc}
+  public double shellArea() {
     return this.doubleArray()[this.offset() + SHELL_AREA];
   }
 
