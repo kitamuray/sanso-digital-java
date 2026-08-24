@@ -5,25 +5,21 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /// 組成.
 ///
-/// このクラスのインスタンスは不変（immutable）である.
-///
-/// @since 1.0
-/// @author KITAMURA Yuichiro
-public final class Composition {
-
-  private static final Logger LOGGER = LogManager.getLogger(Composition.class);
+/// @param majorComponentKey 主成分のキー.
+/// @param minorComponentKeySet 副成分のキーの不変セット.
+/// @param componentKeySet 全成分のキーの不変セット.
+public record Composition(
+    ComponentKey majorComponentKey,
+    Set<ComponentKey> minorComponentKeySet,
+    Set<ComponentKey> componentKeySet) {
 
   /// 組成のビルダ.
   public static final class Builder {
@@ -80,30 +76,18 @@ public final class Composition {
 
   } // Builder
 
-  /// 主成分のキー.
-  private final ComponentKey majorComponentKey;
-
-  /// 副成分のキーの不変セット.
-  private final Set<ComponentKey> minorComponentKeySet;
-
-  /// 全成分のキーの不変セット.
-  private final Set<ComponentKey> componentKeySet;
-
   /// 組成のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private Composition(Builder builder) {
-    this.majorComponentKey = builder.majorComponentKey;
-    this.minorComponentKeySet = Sets.immutableEnumSet(builder.minorComponentKeySet);
-
-    LOGGER.debug("majorComponentKey = {}", this.majorComponentKey);
-    LOGGER.debug("minorComponentKeySet = {}", this.minorComponentKeySet);
-
-    this.componentKeySet =
-        Stream.concat(Stream.of(this.majorComponentKey), this.minorComponentKeySet.stream())
-            .collect(Sets.toImmutableEnumSet());
-
-    LOGGER.trace("componentKey = {}", this.componentKeySet);
+    this(
+        builder.majorComponentKey,
+        builder.minorComponentKeySet,
+        Stream.concat(
+            Stream.of(
+                builder.majorComponentKey),
+                builder.minorComponentKeySet.stream())
+            .collect(Sets.toImmutableEnumSet()));
   }
 
   /// ビルダのインスタンスを生成して返す.
@@ -111,58 +95,6 @@ public final class Composition {
   /// @return ビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
-  }
-
-  /// 主成分のキーを返す.
-  ///
-  /// @return 主成分のキー.
-  public ComponentKey majorComponentKey() {
-    return this.majorComponentKey;
-  }
-
-  /// 副成分のキーの不変セットを返す.
-  ///
-  /// @return 副成分のキーの不変セット.
-  public Set<ComponentKey> minorComponentKeySet() {
-    return this.minorComponentKeySet;
-  }
-
-  /// 全成分のキーの不変セットを返す.
-  ///
-  /// @return 全成分のキーの不変セット.
-  Set<ComponentKey> componentKeySet() {
-    return this.componentKeySet;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || o.getClass() != this.getClass()) {
-      return false;
-    }
-
-    Composition that = (Composition) o;
-
-    return that.majorComponentKey == this.majorComponentKey
-        && this.minorComponentKeySet.equals(that.minorComponentKeySet);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        this.getClass(),
-        this.majorComponentKey,
-        this.minorComponentKeySet);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("majorComponentKey", this.majorComponentKey)
-        .add("minorComponentKeySet", this.minorComponentKeySet)
-        .toString();
   }
 
 }

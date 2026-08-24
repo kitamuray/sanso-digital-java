@@ -214,12 +214,12 @@ public abstract class Monitor {
 
   /// 流体成分の質量分率のモニタを返す.
   ///
-  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 流体成分の質量分率 (-) のモニタ.
-  /// @throws NullPointerException `componentKey` が `null` の場合.
+  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
   public static Monitor fraction(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
@@ -231,12 +231,12 @@ public abstract class Monitor {
 
   /// 流体成分の質量分率のモニタを返す.
   ///
-  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 流体成分の質量分率 (-) のモニタ.
-  /// @throws NullPointerException `componentKey` が `null` の場合.
+  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
   public static Monitor diffusivity(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
@@ -411,12 +411,12 @@ public abstract class Monitor {
 
   /// 吸着質成分のモル吸着量のモニタを返す.
   ///
-  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタ.
-  /// @throws NullPointerException `componentKey` が `null` の場合.
+  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
   public static Monitor molarQuantity(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 
@@ -428,12 +428,12 @@ public abstract class Monitor {
 
   /// 吸着質成分のモル定積比熱のモニタを返す.
   ///
-  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタ.
-  /// @throws NullPointerException `componentKey` が `null` の場合.
+  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
   public static Monitor molarSpecificConstantVolumeSpecificHeat(ComponentKey componentKey) {
     Preconditions.checkNotNull(componentKey);
 

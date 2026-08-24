@@ -5,21 +5,22 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /// 容器.
 ///
-/// このクラスのインスタンスは不変（immutable）である.
-///
-/// @since 1.0
-/// @author KITAMURA Yuichiro
-public final class Shell {
+/// @param density 密度 (kg m<sup>-3</sup>).
+/// @param specificHeat 比熱.
+/// @param thermalConductivity 熱伝導率.
+public record Shell(
+    double density,
+    SpecificHeat specificHeat,
+    ThermalConductivity thermalConductivity) {
 
-  private static final Logger LOGGER = LogManager.getLogger(Shell.class);
+  static {
+    LogManager.getLogger(Shell.class);
+  }
 
   /// ビルダ.
   public static final class Builder {
@@ -85,26 +86,11 @@ public final class Shell {
 
   } // Builder
 
-  /// 密度 (kg m<sup>-3</sup>).
-  private final double density;
-
-  /// 比熱.
-  private final SpecificHeat specificHeat;
-
-  /// 熱伝導率.
-  private final ThermalConductivity thermalConductivity;
-
   /// 容器のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private Shell(Builder builder) {
-    this.density = builder.density;
-    this.specificHeat = builder.specificHeat;
-    this.thermalConductivity = builder.thermalConductivity;
-
-    LOGGER.debug("density = {} (kg m^-3)", this.density);
-    LOGGER.debug("specificHeat = {}", this.specificHeat);
-    LOGGER.debug("thermalConductivity = {}", this.thermalConductivity);
+    this(builder.density, builder.specificHeat, builder.thermalConductivity);
   }
 
   /// ビルダのインスタンスを生成して返す.
@@ -112,61 +98,6 @@ public final class Shell {
   /// @return ビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
-  }
-
-  /// 密度を返す.
-  ///
-  /// @return 密度 (kg m<sup>-3</sup>).
-  public double density() {
-    return this.density;
-  }
-
-  /// 比熱を返す.
-  ///
-  /// @return 比熱.
-  public SpecificHeat specificHeat() {
-    return this.specificHeat;
-  }
-
-  /// 熱伝導率を返す.
-  ///
-  /// @return 熱伝導率.
-  public ThermalConductivity thermalConductivity() {
-    return this.thermalConductivity;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || o.getClass() != this.getClass()) {
-      return false;
-    }
-
-    Shell that = (Shell) o;
-
-    return Double.compare(this.density, that.density) == 0
-        && this.specificHeat.equals(that.specificHeat)
-        && this.thermalConductivity.equals(that.thermalConductivity);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        this.getClass(),
-        this.density,
-        this.specificHeat,
-        this.thermalConductivity);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("density", this.density)
-        .add("specificHeat", this.specificHeat)
-        .add("thermalConductivity", this.thermalConductivity)
-        .toString();
   }
 
 }

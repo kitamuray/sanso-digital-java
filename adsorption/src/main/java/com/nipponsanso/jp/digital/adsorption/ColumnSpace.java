@@ -5,18 +5,17 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /// 吸着筒の空筒空間.
 ///
+/// @param length 長さ (m).
+/// @param monitorMap モニタの不変マップ.
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class ColumnSpace {
+public record ColumnSpace(double length, Map<String, Monitor> monitorMap) {
 
   /// 吸着筒の空筒空間のビルダ.
   public static final class Builder {
@@ -97,18 +96,11 @@ public final class ColumnSpace {
 
   } // Builder
 
-  /// 長さ (m).
-  private final double length;
-
-  /// モニタの不変マップ.
-  private final Map<String, Monitor> monitorMap;
-
   /// 吸着筒の空筒空間のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private ColumnSpace(Builder builder) {
-    this.length = builder.length;
-    this.monitorMap = ImmutableMap.copyOf(builder.monitorMap);
+    this(builder.length, Map.copyOf(builder.monitorMap));
   }
 
   /// ビルダのインスタンスを生成して返す.
@@ -116,51 +108,6 @@ public final class ColumnSpace {
   /// @return ビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
-  }
-
-  /// 長さを返す.
-  ///
-  /// @return 長さ (m).
-  public double length() {
-    return this.length;
-  }
-
-  /// モニタの不変マップを返す.
-  ///
-  /// @return モニタの不変マップ.
-  public Map<String, Monitor> monitorMap() {
-    return this.monitorMap;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || o.getClass() != this.getClass()) {
-      return false;
-    }
-
-    ColumnSpace that = (ColumnSpace) o;
-
-    return Double.compare(this.length, that.length) == 0
-        && this.monitorMap.equals(that.monitorMap);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        this.getClass(),
-        this.length,
-        this.monitorMap);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("length", this.length)
-        .add("monitorMap", this.monitorMap)
-        .toString();
   }
 
 }

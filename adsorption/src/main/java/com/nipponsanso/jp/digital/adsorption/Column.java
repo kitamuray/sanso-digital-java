@@ -5,22 +5,23 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /// 吸着筒.
 ///
-/// @since 1.0
-/// @author KITAMURA Yucihiro
-public final class Column {
-
-  private static final Logger LOGGER = LogManager.getLogger(Column.class);
+/// @param shape 形状.
+/// @param origin 原点座標 (m).
+/// @param shell 容器.
+/// @param spaceList 空間の不変リスト.
+/// @param zoneListList 領域の不変リストの不変リスト.
+public record Column(
+    ColumnShape shape,
+    double origin,
+    Shell shell,
+    List<ColumnSpace> spaceList,
+    List<List<ColumnZone>> zoneListList) {
 
   /// 吸着筒のビルダ.
   public static final class Builder {
@@ -119,38 +120,16 @@ public final class Column {
 
   } // Builder
 
-  /// 形状.
-  private final ColumnShape shape;
-
-  /// 原点座標 (m).
-  private final double origin;
-
-  /// 容器.
-  private final Shell shell;
-
-  /// 空間の不変リスト.
-  private final List<ColumnSpace> spaceList;
-
-  /// 領域の不変リストの不変リスト.
-  private final List<List<ColumnZone>> zoneListList;
-
   /// 吸着筒のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private Column(Builder builder) {
-    this.shape = builder.shape;
-    this.origin = builder.origin;
-    this.shell = builder.shell;
-    this.spaceList = ImmutableList.copyOf(builder.spaceList);
-    this.zoneListList = builder.zoneListList.stream()
-        .map(ImmutableList::copyOf)
-        .collect(ImmutableList.toImmutableList());
-
-    LOGGER.debug("shape = {}", this.shape);
-    LOGGER.debug("origin = {}", this.origin);
-    LOGGER.debug("shell = {}", this.shell);
-    LOGGER.debug("spaceList = {}", this.spaceList);
-    LOGGER.debug("zoneListList = {}", this.zoneListList);
+    this(
+        builder.shape,
+        builder.origin,
+        builder.shell,
+        builder.spaceList,
+        builder.zoneListList);
   }
 
   /// 吸着筒のビルダのインスタンスを生成して返す.
@@ -158,81 +137,6 @@ public final class Column {
   /// @return 吸着筒のビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
-  }
-
-  /// 形状を返す.
-  ///
-  /// @return 形状.
-  public ColumnShape shape() {
-    return this.shape;
-  }
-
-  /// 原点座標を返す.
-  ///
-  /// @return 原点座標 (m).
-  public double origin() {
-    return this.origin;
-  }
-
-  /// 容器を返す.
-  ///
-  /// @return 容器.
-  public Shell shell() {
-    return this.shell;
-  }
-
-  /// 空間の不変リストを返す.
-  ///
-  /// @return 空間の不変リスト.
-  public List<ColumnSpace> spaceList() {
-    return this.spaceList;
-  }
-
-  /// 領域の不変リストの不変リストを返す.
-  ///
-  /// @return 領域の不変リストの不変リスト.
-  public List<List<ColumnZone>> zoneListList() {
-    return this.zoneListList;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o == null || o.getClass() != this.getClass()) {
-      return false;
-    }
-
-    Column that = (Column) o;
-
-    return Double.compare(this.origin, that.origin) == 0
-        && this.shape.equals(that.shape)
-        && this.shell.equals(that.shell)
-        && this.spaceList.equals(that.spaceList)
-        && this.zoneListList.equals(that.zoneListList);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        this.getClass(),
-        this.shape,
-        this.origin,
-        this.shell,
-        this.spaceList,
-        this.zoneListList);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("shape", this.shape)
-        .add("origin", this.origin)
-        .add("shell", this.shell)
-        .add("spaceList", this.spaceList)
-        .add("zoneListList", this.zoneListList)
-        .toString();
   }
 
 }
