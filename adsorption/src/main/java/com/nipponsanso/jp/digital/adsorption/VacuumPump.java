@@ -13,7 +13,7 @@ import java.util.Objects;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class VacuumPump {
+public final class VacuumPump extends Port {
 
   /// 真空ポンプのビルダ.
   public static final class Builder {

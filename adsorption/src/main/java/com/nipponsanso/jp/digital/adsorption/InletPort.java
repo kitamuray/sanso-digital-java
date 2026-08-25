@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class InletPort {
+public final class InletPort extends Port {
 
   private static final Logger LOGGER = LogManager.getLogger(InletPort.class);
 
