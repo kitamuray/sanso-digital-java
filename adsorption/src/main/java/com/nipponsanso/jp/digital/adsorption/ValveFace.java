@@ -44,14 +44,6 @@ final class ValveFace extends FluidFace {
   ///
   /// @return {@inheritDoc}
   @Override
-  Map<ComponentKey, ? extends ComponentValue> componentMap() {
-    return this.componentMap;
-  }
-
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
-  @Override
   int offset() {
     return 0;
   }
@@ -62,6 +54,14 @@ final class ValveFace extends FluidFace {
   @Override
   double[] doubleArray() {
     return this.doubleArray;
+  }
+
+  /// {@inheritDoc}
+  ///
+  /// @return {@inheritDoc}
+  @Override
+  Map<ComponentKey, ? extends ComponentValue> componentMap() {
+    return this.componentMap;
   }
 
   /// 弁フェイスの成分値.
