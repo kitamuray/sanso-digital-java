@@ -5,10 +5,12 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,6 +36,9 @@ public final class BasicPsaProcess {
 
     /// 製品槽.
     private Tank productTank;
+
+    /// 製品槽の開始条件.
+    private TankStart productTankStart;
 
     /// 原料供給境界.
     private InletPort feedPort;
@@ -73,6 +78,9 @@ public final class BasicPsaProcess {
 
     /// 真空排気弁.
     private OnOffValve vacuumValve;
+
+    /// 吸着筒のエントリのマップ.
+    private final Map<ColumnKey, ColumnEntry> columnEntryMap = new EnumMap<>(ColumnKey.class);
 
     /// 脱圧弁のマップ.
     private final Map<LineKey, OnOffAndRestrictValve> blowValveMap = new EnumMap<>(LineKey.class);
@@ -118,6 +126,15 @@ public final class BasicPsaProcess {
       return this;
     }
 
+    /// 吸着筒のエントリのビルダのインスタンスを生成して返す.
+    ///
+    /// @param columnKey 吸着筒のキー.
+    /// @return 吸着筒のエントリのビルダのインスタンス.
+    /// @throws NullPointerException `columnKey` が `null` の場合.
+    public ColumnEntryBuilder column(ColumnKey columnKey) {
+      return new ColumnEntryBuilder(columnKey);
+    }
+
     /// 製品槽を設定する.
     ///
     /// @param productTank 製品槽.
@@ -125,6 +142,16 @@ public final class BasicPsaProcess {
     /// @throws NullPointerException `productTank` が `null` の場合.
     public Builder productTank(Tank productTank) {
       this.productTank = Preconditions.checkNotNull(productTank);
+      return this;
+    }
+
+    /// 製品槽の開始条件を設定する.
+    ///
+    /// @param productTankStart 製品槽の開始条件.
+    /// @return ビルダのインスタンス.
+    /// @throws NullPointerException `productTankStart` が `null` の場合.
+    public Builder productTankStart(TankStart productTankStart) {
+      this.productTankStart = Preconditions.checkNotNull(productTankStart);
       return this;
     }
 
@@ -292,7 +319,9 @@ public final class BasicPsaProcess {
       Preconditions.checkState(this.composition != null);
       Preconditions.checkState(this.fluid != null);
       Preconditions.checkState(this.column != null);
+      Preconditions.checkState(!this.columnEntryMap.isEmpty());
       Preconditions.checkState(this.productTank != null);
+      Preconditions.checkState(this.productTankStart != null);
       Preconditions.checkState(this.feedPort != null);
       Preconditions.checkState(this.productPort != null);
       Preconditions.checkState(this.exhaustPort != null);
@@ -312,6 +341,34 @@ public final class BasicPsaProcess {
 
       return new BasicPsaProcess(this);
     }
+
+    /// 吸着筒のエントリのビルダ.
+    public final class ColumnEntryBuilder extends ColumnEntryMapBuilder<Builder> {
+
+      /// 吸着筒のエントリのビルダのインスタンスを生成する.
+      ///
+      /// @param columnKey 吸着筒のキー.
+      /// @throws NullPointerException `columnKey` が `null` の場合.
+      private ColumnEntryBuilder(ColumnKey columnKey) {
+        super(columnKey);
+      }
+
+      /// {@inheritDoc}
+      ///
+      /// @return {@inheritDoc}
+      @Override
+      Builder self() {
+        return Builder.this;
+      }
+
+      /// {@inheritDoc}
+      ///
+      /// @return {@inheritDoc}
+      @Override
+      Map<ColumnKey, ColumnEntry> map() {
+        return Builder.this.columnEntryMap;
+      }
+    } // ColumnEntryBuilder
 
     /// 脱圧弁のビルダ.
     public final class BlowValveBuilder
@@ -414,8 +471,14 @@ public final class BasicPsaProcess {
   /// 吸着筒.
   private final Column column;
 
+  /// 吸着筒のエントリの不変マップ.
+  private final Map<ColumnKey, ColumnEntry> columnEntryMap;
+
   /// 製品槽.
   private final Tank productTank;
+
+  /// 製品槽の開始条件.
+  private final TankStart productTankStart;
 
   /// 原料供給境界.
   private final InletPort feedPort;
@@ -472,7 +535,9 @@ public final class BasicPsaProcess {
     this.composition = builder.composition;
     this.fluid = builder.fluid;
     this.column = builder.column;
+    this.columnEntryMap = Maps.immutableEnumMap(builder.columnEntryMap);
     this.productTank = builder.productTank;
+    this.productTankStart = builder.productTankStart;
     this.feedPort = builder.feedPort;
     this.productPort = builder.productPort;
     this.exhaustPort = builder.exhaustPort;
@@ -493,7 +558,9 @@ public final class BasicPsaProcess {
     LOGGER.debug("composition = {}", this.composition);
     LOGGER.debug("fluid = {}", this.fluid);
     LOGGER.debug("column = {}", this.column);
+    LOGGER.debug("columnEntryMap = {}", this.columnEntryMap);
     LOGGER.debug("productTank = {}", this.productTank);
+    LOGGER.debug("productTankStart = {}", this.productTankStart);
     LOGGER.debug("feedPort = {}", this.feedPort);
     LOGGER.debug("productPort = {}", this.productPort);
     LOGGER.debug("exhaustPort = {}", this.exhaustPort);
@@ -533,11 +600,47 @@ public final class BasicPsaProcess {
     return this.column;
   }
 
+  /// 吸着筒のエントリの不変マップを返す.
+  ///
+  /// @return 吸着筒のエントリの不変マップ.
+  Map<ColumnKey, ColumnEntry> columnEntryMap() {
+    return this.columnEntryMap;
+  }
+
+  /// 吸着筒の開始条件の不変マップを返す.
+  ///
+  /// @return 吸着筒の開始条件の不変マップ.
+  public Map<ColumnKey, ColumnStart> columnStartMap() {
+    return this.columnEntryMap.entrySet().stream()
+        .collect(
+            Maps.toImmutableEnumMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().start()));
+  }
+
+  /// 吸着筒の次サイクルにおけるキーの不変マップを返す.
+  ///
+  /// @return 吸着筒の次サイクルにおけるキーの不変マップ.
+  public Map<ColumnKey, ColumnKey> columnNextKeyMap() {
+    return this.columnEntryMap.entrySet().stream()
+        .collect(
+            Maps.toImmutableEnumMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().nextKey()));
+  }
+
   /// 製品槽を返す.
   ///
   /// @return 製品槽.
   public Tank productTank() {
     return this.productTank;
+  }
+
+  /// 製品槽の開始条件を返す.
+  ///
+  /// @return 製品槽の開始条件.
+  public TankStart productTankStart() {
+    return this.productTankStart;
   }
 
   /// 原料供給境界を返す.
@@ -716,6 +819,101 @@ public final class BasicPsaProcess {
             Maps.toImmutableEnumMap(
                 Map.Entry::getKey,
                 entry -> entry.getValue().restrictValve()));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o == null || o.getClass() != this.getClass()) {
+      return false;
+    }
+
+    BasicPsaProcess that = (BasicPsaProcess) o;
+
+    return this.composition.equals(that.composition)
+        && this.fluid.equals(that.fluid)
+        && this.column.equals(that.column)
+        && this.columnEntryMap.equals(that.columnEntryMap)
+        && this.productTank.equals(that.productTank)
+        && this.productTankStart.equals(that.productTankStart)
+        && this.feedPort.equals(that.feedPort)
+        && this.productPort.equals(that.productPort)
+        && this.exhaustPort.equals(that.exhaustPort)
+        && this.vacuumPump.equals(that.vacuumPump)
+        && this.mainFeedValve.equals(that.mainFeedValve)
+        && this.mainProductValve.equals(that.mainProductValve)
+        && this.mainPressurizationValve.equals(that.mainPressurizationValve)
+        && this.mainRinseValve.equals(that.mainRinseValve)
+        && this.feedValve.equals(that.feedValve)
+        && this.productValve.equals(that.productValve)
+        && this.pressurizationValve.equals(that.pressurizationValve)
+        && this.rinseValve.equals(that.rinseValve)
+        && this.vacuumValve.equals(that.vacuumValve)
+        && this.blowValveMap.equals(that.blowValveMap)
+        && this.upperEqualizationValveMap.equals(that.upperEqualizationValveMap)
+        && this.lowerEqualizationValveMap.equals(that.lowerEqualizationValveMap);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        this.getClass(),
+        this.composition,
+        this.fluid,
+        this.column,
+        this.columnEntryMap,
+        this.productTank,
+        this.productTankStart,
+        this.feedPort,
+        this.productPort,
+        this.exhaustPort,
+        this.vacuumPump,
+        this.mainFeedValve,
+        this.mainProductValve,
+        this.mainPressurizationValve,
+        this.mainRinseValve,
+        this.feedValve,
+        this.productValve,
+        this.pressurizationValve,
+        this.rinseValve,
+        this.vacuumValve,
+        this.blowValveMap,
+        this.upperEqualizationValveMap,
+        this.lowerEqualizationValveMap);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("composition", this.composition)
+        .add("fluid", this.fluid)
+        .add("column", this.column)
+        .add("columnStartMap", this.columnStartMap())
+        .add("columnNextKeyMap", this.columnNextKeyMap())
+        .add("productTank", this.productTank)
+        .add("productTankStart", this.productTankStart)
+        .add("feedPort", this.feedPort)
+        .add("productPort", this.productPort)
+        .add("exhaustPort", this.exhaustPort)
+        .add("vacuumPump", this.vacuumPump)
+        .add("mainFeedValve", this.mainFeedValve)
+        .add("mainProductValve", this.mainProductValve)
+        .add("mainPressurizationValve", this.mainPressurizationValve)
+        .add("mainRinseValve", this.mainRinseValve)
+        .add("feedValve", this.feedValve)
+        .add("productValve", this.productValve)
+        .add("pressurizationValve", this.pressurizationValve)
+        .add("rinseValve", this.rinseValve)
+        .add("vacuumValve", this.vacuumValve)
+        .add("onOffBlowValveMap", this.onOffBlowValveMap())
+        .add("restrictBlowValveMap", this.restrictBlowValveMap())
+        .add("onOffUpperEqualizationValveMap", this.onOffUpperEqualizationValveMap())
+        .add("restrictUpperEqualizationValveMap", this.restrictUpperEqualizationValveMap())
+        .add("onOffLowerEqualizationValveMap", this.onOffLowerEqualizationValveMap())
+        .add("restrictLowerEqualizationValveMap", this.restrictLowerEqualizationValveMap())
+        .toString();
   }
 
 }
