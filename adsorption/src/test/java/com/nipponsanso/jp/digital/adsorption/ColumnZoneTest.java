@@ -70,6 +70,8 @@ class ColumnZoneTest {
     /// [ColumnZone.Builder#build()] のテスト.
     @Test
     void testBuild() {
+      doReturn(5).when(this.section).number();
+
       assertThatThrownBy(
           () -> ColumnZone.builder()
               .adsorbent(this.adsorbent)
@@ -93,7 +95,7 @@ class ColumnZoneTest {
       @Test
       void testIndexInt() {
         assertThatThrownBy(() -> ColumnZone.builder().fileName("foo").index(-1))
-            .isInstanceOf(IndexOutOfBoundsException.class);
+            .isInstanceOf(IllegalArgumentException.class);
 
         doReturn(3).when(this.section).number();
 
@@ -102,13 +104,13 @@ class ColumnZoneTest {
                 .section(this.section)
                 .fileName("foo")
                   .index(-1))
-            .isInstanceOf(IndexOutOfBoundsException.class);
+            .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(
             () -> ColumnZone.builder()
                 .section(this.section)
                 .fileName("foo")
                   .index(3))
-            .isInstanceOf(IndexOutOfBoundsException.class);
+            .isInstanceOf(IllegalArgumentException.class);
       }
 
       /// [ColumnZone.Builder.IndexMonitorBuilder#monitor(Monitor)] のテスト.
@@ -150,7 +152,7 @@ class ColumnZoneTest {
                   .fileName("foo")
                     .monitor(Monitor.temperature())
                     .index(-1))
-              .isInstanceOf(IndexOutOfBoundsException.class);
+              .isInstanceOf(IllegalArgumentException.class);
 
           doReturn(5).when(this.section).number();
 
@@ -160,14 +162,14 @@ class ColumnZoneTest {
                   .fileName("foo")
                     .monitor(Monitor.temperature())
                     .index(-1))
-              .isInstanceOf(IndexOutOfBoundsException.class);
+              .isInstanceOf(IllegalArgumentException.class);
           assertThatThrownBy(
               () -> ColumnZone.builder()
                   .section(this.section)
                   .fileName("foo")
                     .monitor(Monitor.temperature())
                     .index(5))
-              .isInstanceOf(IndexOutOfBoundsException.class);
+              .isInstanceOf(IllegalArgumentException.class);
         }
 
       } // IndexBuilderTest
@@ -185,6 +187,8 @@ class ColumnZoneTest {
   /// [ColumnZone#section()] のテスト.
   @Test
   void testSection() {
+    doReturn(5).when(this.section).number();
+
     assertThat(
         ColumnZone.builder()
             .section(this.section)
@@ -197,6 +201,8 @@ class ColumnZoneTest {
   /// [ColumnZone#adsorbent()] のテスト.
   @Test
   void testAdsorbent() {
+    doReturn(5).when(this.section).number();
+
     assertThat(
         ColumnZone.builder()
             .section(this.section)
@@ -209,6 +215,8 @@ class ColumnZoneTest {
   /// [ColumnZone#indexMap()] のテスト.
   @Test
   void testIndexMap() {
+    doReturn(5).when(this.section).number();
+
     assertThat(
         ColumnZone.builder()
             .section(this.section)
@@ -216,8 +224,6 @@ class ColumnZoneTest {
             .build()
             .indexMap())
         .isEmpty();
-
-    doReturn(5).when(this.section).number();
 
     assertThat(
         ColumnZone.builder()
@@ -234,6 +240,8 @@ class ColumnZoneTest {
   /// [ColumnZone#monitorMap()] のテスト.
   @Test
   void testMonitorMap() {
+    doReturn(5).when(this.section).number();
+
     assertThat(
         ColumnZone.builder()
             .section(this.section)
@@ -241,8 +249,6 @@ class ColumnZoneTest {
             .build()
             .monitorMap())
         .isEmpty();
-
-    doReturn(5).when(this.section).number();
 
     assertThat(
         ColumnZone.builder()
@@ -259,6 +265,8 @@ class ColumnZoneTest {
   /// [ColumnZone#indexMonitorMap()] のテスト.
   @Test
   void testIndexMonitorMap() {
+    doReturn(5).when(this.section).number();
+
     assertThat(
         ColumnZone.builder()
             .section(this.section)
@@ -266,8 +274,6 @@ class ColumnZoneTest {
             .build()
             .indexMonitorMap())
         .isEmpty();
-
-    doReturn(5).when(this.section).number();
 
     assertThat(
         ColumnZone.builder()
@@ -291,6 +297,7 @@ class ColumnZoneTest {
   @Test
   void testEquals() {
     doReturn(5).when(this.section).number();
+    doReturn(4).when(this.section2).number();
 
     EqualsTester tester = new EqualsTester();
 
@@ -358,9 +365,8 @@ class ColumnZoneTest {
             MoreObjects.toStringHelper(ColumnZone.class)
                 .add("section", this.section)
                 .add("adsorbent", this.adsorbent)
-                .add(
-                    "indexMonitorMap",
-                    Map.of("foo", new IndexMonitor(3, Monitor.temperature())))
+                .add("indexMap", Map.of("foo", 3))
+                .add("monitorMap", Map.of("foo", Monitor.temperature()))
                 .toString());
   }
 

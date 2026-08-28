@@ -40,7 +40,7 @@ public final class ColumnZone {
     /// @throws IllegalStateException `section` の分割数が小さい場合.
     public Builder section(Section section) {
       Preconditions.checkNotNull(section);
-      Preconditions.checkArgument(section.number() > this.maxIndex());
+      Preconditions.checkArgument(this.maxIndex() < section.number());
 
       this.section = section;
       return this;
@@ -128,7 +128,7 @@ public final class ColumnZone {
         /// @param index 位置番号.
         /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
         private MonitorBuilder(int index) {
-          Preconditions.checkArgument(index < Builder.this.size());
+          Preconditions.checkArgument(0 <= index && index < Builder.this.size());
 
           this.index = index;
         }
@@ -169,7 +169,7 @@ public final class ColumnZone {
         /// @param index 位置番号.
         /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
         public Builder index(int index) {
-          Preconditions.checkArgument(index < Builder.this.size());
+          Preconditions.checkArgument(0 <= index && index < Builder.this.size());
 
           Builder.this.indexMonitorMap.put(
               IndexMonitorBuilder.this.fileName,
