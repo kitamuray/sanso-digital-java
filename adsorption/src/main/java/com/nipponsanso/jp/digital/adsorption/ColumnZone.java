@@ -5,21 +5,18 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// 吸着筒の充填層領域.
 ///
-/// @param section 区間.
-/// @param adsorbent 吸着剤.
-/// @param indexMap 位置番号の不変マップ.
-/// @param monitorMap モニタの不変マップ.
-public record ColumnZone(
-    Section section,
-    Adsorbent adsorbent,
-    Map<String, Integer> indexMap,
-    Map<String, Monitor> monitorMap) {
+/// @since 1.0
+/// @author KITAMURA Yuichiro
+public final class ColumnZone {
 
   /// 吸着筒の領域のビルダ.
   public static final class Builder {
@@ -30,15 +27,8 @@ public record ColumnZone(
     /// 吸着剤.
     private Adsorbent adsorbent;
 
-    /// 位置番号のマップ.
-    ///
-    /// keySet は [#monitorMap] に等しい.
-    private final Map<String, Integer> indexMap = new HashMap<>();
-
-    /// モニタのマップ.
-    ///
-    /// keySet は [#indexMap] に等しい.
-    private final Map<String, Monitor> monitorMap = new HashMap<>();
+    /// 位置番号とモニタのマップ.
+    private final Map<String, IndexMonitor> indexMonitorMap = new HashMap<>();
 
     /// 吸着筒の領域のビルダのインスタンスを生成する.
     private Builder() {}
@@ -50,15 +40,20 @@ public record ColumnZone(
     /// @throws IllegalStateException `section` の分割数が小さい場合.
     public Builder section(Section section) {
       Preconditions.checkNotNull(section);
-      if (!this.indexMap.isEmpty()) {
-        Preconditions.checkArgument(
-            section.number() > this.indexMap.values().stream()
-                .mapToInt(Integer::intValue)
-                .max().getAsInt());
-      }
+      Preconditions.checkArgument(section.number() > this.maxIndex());
 
       this.section = section;
       return this;
+    }
+
+    private int maxIndex() {
+      return this.indexMonitorMap.values().stream()
+          .mapToInt(IndexMonitor::index)
+          .max().orElse(0);
+    }
+
+    private int size() {
+      return this.section == null ? Integer.MAX_VALUE : this.section.number();
     }
 
     /// 吸着剤を設定する.
@@ -133,11 +128,7 @@ public record ColumnZone(
         /// @param index 位置番号.
         /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
         private MonitorBuilder(int index) {
-          if (Builder.this.section == null) {
-            Preconditions.checkElementIndex(index, Integer.MAX_VALUE);
-          } else {
-            Preconditions.checkElementIndex(index, Builder.this.section.number());
-          }
+          Preconditions.checkArgument(index < Builder.this.size());
 
           this.index = index;
         }
@@ -150,8 +141,9 @@ public record ColumnZone(
         public Builder monitor(Monitor monitor) {
           Preconditions.checkNotNull(monitor);
 
-          Builder.this.indexMap.put(IndexMonitorBuilder.this.fileName, this.index);
-          Builder.this.monitorMap.put(IndexMonitorBuilder.this.fileName, monitor);
+          Builder.this.indexMonitorMap.put(
+              IndexMonitorBuilder.this.fileName,
+              new IndexMonitor(this.index, monitor));
 
           return Builder.this;
         }
@@ -177,14 +169,11 @@ public record ColumnZone(
         /// @param index 位置番号.
         /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
         public Builder index(int index) {
-          if (Builder.this.section == null) {
-            Preconditions.checkElementIndex(index, Integer.MAX_VALUE);
-          } else {
-            Preconditions.checkElementIndex(index, Builder.this.section.number());
-          }
+          Preconditions.checkArgument(index < Builder.this.size());
 
-          Builder.this.indexMap.put(IndexMonitorBuilder.this.fileName, index);
-          Builder.this.monitorMap.put(IndexMonitorBuilder.this.fileName, this.monitor);
+          Builder.this.indexMonitorMap.put(
+              IndexMonitorBuilder.this.fileName,
+              new IndexMonitor(index, this.monitor));
 
           return Builder.this;
         }
@@ -195,11 +184,22 @@ public record ColumnZone(
 
   } // Builder
 
+  /// 区間.
+  private final Section section;
+
+  /// 吸着剤.
+  private final Adsorbent adsorbent;
+
+  /// 位置番号とモニタの不変マップ.
+  private final Map<String, IndexMonitor> indexMonitorMap;
+
   /// 吸着筒の領域のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private ColumnZone(Builder builder) {
-    this(builder.section, builder.adsorbent, builder.indexMap, builder.monitorMap);
+    this.section = builder.section;
+    this.adsorbent = builder.adsorbent;
+    this.indexMonitorMap = ImmutableMap.copyOf(builder.indexMonitorMap);
   }
 
   /// ビルダのインスタンスを生成して返す.
@@ -207,6 +207,84 @@ public record ColumnZone(
   /// @return ビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
+  }
+
+  /// 区間を返す.
+  ///
+  /// @return 区間.
+  public Section section() {
+    return this.section;
+  }
+
+  /// 吸着剤を返す.
+  ///
+  /// @return 吸着剤.
+  public Adsorbent adsorbent() {
+    return this.adsorbent;
+  }
+
+  /// 位置番号とモニタの不変マップを返す.
+  ///
+  /// @return 位置番号とモニタの不変マップ.
+  Map<String, IndexMonitor> indexMonitorMap() {
+    return this.indexMonitorMap;
+  }
+
+  /// 位置番号の不変マップを返す.
+  ///
+  /// @return 位置番号の不変マップ.
+  public Map<String, Integer> indexMap() {
+    return this.indexMonitorMap.entrySet().stream()
+        .collect(
+            ImmutableMap.toImmutableMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().index()));
+  }
+
+  /// モニタの不変マップを返す.
+  ///
+  /// @return モニタの不変マップ.
+  public Map<String, Monitor> monitorMap() {
+    return this.indexMonitorMap.entrySet().stream()
+        .collect(
+            ImmutableMap.toImmutableMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().monitor()));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o == null || o.getClass() != this.getClass()) {
+      return false;
+    }
+
+    ColumnZone that = (ColumnZone) o;
+
+    return this.section.equals(that.section)
+        && this.adsorbent.equals(that.adsorbent)
+        && this.indexMonitorMap.equals(that.indexMonitorMap);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        this.getClass(),
+        this.section,
+        this.adsorbent,
+        this.indexMonitorMap);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("section", this.section)
+        .add("adsorbent", this.adsorbent)
+        .add("indexMap", this.indexMap())
+        .add("monitorMap", this.monitorMap())
+        .toString();
   }
 
 }
