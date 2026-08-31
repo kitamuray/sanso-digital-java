@@ -36,9 +36,9 @@ abstract class OnOffAndRestrictValveMapBuilder<B> extends OnOffAndRestrictValveB
   /// @return ビルダのインスタンス.
   abstract B self();
 
-  /// 指定された On-Off 弁と調節弁を反映する.
+  /// {@inheritDoc}
   ///
-  /// @param onOffValve    On-Off 弁.
+  /// @param onOffValve {@inheritDoc}
   /// @param restrictValve 調節弁.
   /// @return ビルダのインスタンス.
   @Override

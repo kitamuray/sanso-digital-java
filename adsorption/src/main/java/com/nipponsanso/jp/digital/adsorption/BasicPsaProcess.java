@@ -357,17 +357,18 @@ public final class BasicPsaProcess {
       ///
       /// @return {@inheritDoc}
       @Override
-      Builder self() {
-        return Builder.this;
+      Map<ColumnKey, ColumnEntry> columnEntryMap() {
+        return Builder.this.columnEntryMap;
       }
 
       /// {@inheritDoc}
       ///
       /// @return {@inheritDoc}
       @Override
-      Map<ColumnKey, ColumnEntry> map() {
-        return Builder.this.columnEntryMap;
+      Builder self() {
+        return Builder.this;
       }
+
     } // ColumnEntryBuilder
 
     /// 脱圧弁のビルダ.
