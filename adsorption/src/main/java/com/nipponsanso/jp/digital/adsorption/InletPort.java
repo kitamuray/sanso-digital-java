@@ -29,9 +29,6 @@ public final class InletPort extends Port {
     /// 流体の絶対圧力 (Pa).
     private double pressure = 101325.;
 
-    /// 流体成分のキー.
-    private ComponentKey componentKey;
-
     /// 流体成分の質量分率 (-) のマップ.
     private final Map<ComponentKey, Double> fractionMap = new EnumMap<>(ComponentKey.class);
 
@@ -66,35 +63,9 @@ public final class InletPort extends Port {
     ///
     /// @param componentKey 流体成分のキー.
     /// @return ビルダのインスタンス.
-    /// @throws IllegalStateException 流体成分のキーが設定済みの場合.
     /// @throws NullPointerException `componentKey` が `null` の場合.
-    public Builder componentKey(ComponentKey componentKey) {
-      Preconditions.checkState(this.componentKey == null);
-      Preconditions.checkNotNull(componentKey);
-
-      this.componentKey = componentKey;
-      return this;
-    }
-
-    /// 流体成分の質量分率を設定する.
-    ///
-    /// @param fraction 流体成分の質量分率 (-).
-    /// @return ビルダのインスタンス.
-    /// @throws IllegalStateException 流体成分のキーが未設定の場合.
-    /// @throws IllegalArgumentException `fraction` が 0 未満か, 既設定値との総和が 1 を超える場合.
-    public Builder fraction(double fraction) {
-      Preconditions.checkState(this.componentKey != null);
-      Preconditions.checkArgument(
-          0. <= fraction
-              && fraction + this.fractionMap.entrySet().stream()
-              .filter(entry -> entry.getKey() != this.componentKey)
-              .map(Map.Entry::getValue)
-              .mapToDouble(x -> x)
-              .sum() <= 1.);
-
-      this.fractionMap.put(this.componentKey, fraction);
-      this.componentKey = null;
-      return this;
+    public InnerFractionMapBuilder componentKey(ComponentKey componentKey) {
+      return new InnerFractionMapBuilder(componentKey);
     }
 
     /// 流入境界条件のインスタンスを生成して返す.
@@ -103,6 +74,35 @@ public final class InletPort extends Port {
     public InletPort build() {
       return new InletPort(this);
     }
+
+    /// 質量分率のマップのビルダ.
+    public final class InnerFractionMapBuilder extends FractionMapBuilder<Builder> {
+
+      /// 質量分率のマップのビルダを生成する.
+      ///
+      /// @param componentKey 成分のキー.
+      /// @throws NullPointerException `componentKey` が `null` の場合.
+      private InnerFractionMapBuilder(ComponentKey componentKey) {
+        super(componentKey);
+      }
+
+      /// {@inheritDoc}
+      ///
+      /// @return {@inheritDoc}
+      @Override
+      Map<ComponentKey, Double> fractionMap() {
+        return Builder.this.fractionMap;
+      }
+
+      /// {@inheritDoc}
+      ///
+      /// @return {@inheritDoc}
+      @Override
+      Builder self() {
+        return Builder.this;
+      }
+
+    } // InnerFractionMapBuilder
 
   } // Builder
 

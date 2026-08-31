@@ -8,37 +8,54 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// 質量分率のマップのビルダのスケルトン実装.
+/// 質量分率のマップのビルダ.
 ///
-/// @param <B> 最上位のビルダの型.
-/// @param <K> マップのキーの型.
+/// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class FractionMapBuilder<B, K> extends MapBuilder<B, K, Double> {
+abstract class FractionMapBuilder<B> {
+
+  /// 成分のキー.
+  private final ComponentKey componentKey;
 
   /// 質量分率のマップのビルダのインスタンスを生成する.
   ///
-  /// @param key キー.
-  /// @throws NullPointerException `key` が `null` の場合.
-  FractionMapBuilder(K key) {
-    super(key);
+  /// @param componentKey 成分のキー.
+  /// @throws NullPointerException `componentKey` が `null` の場合.
+  FractionMapBuilder(ComponentKey componentKey) {
+    this.componentKey = Preconditions.checkNotNull(componentKey);
+  }
+
+  /// 質量分率の可変マップを返す.
+  ///
+  /// @return 質量分率の可変マップ.
+  abstract Map<ComponentKey, Double> fractionMap();
+
+  /// ビルダのインスタンスを返す.
+  ///
+  /// @return ビルダのインスタンス.
+  abstract B self();
+
+  /// 他成分の質量分率の総計値を返す.
+  ///
+  /// @return 他成分の質量分率の総計値 (-).
+  private double sumFraction() {
+    return this.fractionMap().entrySet().stream()
+        .filter(entry -> entry.getKey() != this.componentKey)
+        .mapToDouble(Map.Entry::getValue)
+        .sum();
   }
 
   /// 質量分率を設定する.
   ///
   /// @param fraction 質量分率 (-).
-  /// @return 最上位のビルダのインスタンス.
-  /// @throws IllegalArgumentException `fraction` が 0 未満か, 既設定値総計との和が 1 を超えている場合.
+  /// @return ビルダのインスタンス.
+  /// @throws IllegalArgumentException `fraction` が範囲外の場合.
   public B fraction(double fraction) {
-    double sum = this.map().entrySet().stream()
-        .filter(entry -> entry.getKey() != this.key())
-        .map(Map.Entry::getValue)
-        .mapToDouble(doubleValue -> doubleValue)
-        .sum();
+    Preconditions.checkArgument(0. <= fraction && fraction <= (1. - this.sumFraction()));
 
-    Preconditions.checkArgument(0. <= fraction && (fraction + sum) <= 1.);
-
-    return this.put(fraction);
+    this.fractionMap().put(this.componentKey, fraction);
+    return this.self();
   }
 
-} // FractionMapBuilder
+}
