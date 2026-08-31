@@ -73,8 +73,7 @@ abstract class ColumnEntryMapBuilder<B> extends MapBuilder<B, ColumnKey, ColumnE
     /// @return 最上位のビルダのインスタンス.
     /// @throws NullPointerException `nextKey` が `null` の場合.
     public B nextKey(ColumnKey nextKey) {
-      ColumnEntryMapBuilder.this.map().put(
-          ColumnEntryMapBuilder.this.key(),
+      ColumnEntryMapBuilder.this.put(
           new ColumnEntry(
               this.start,
               Preconditions.checkNotNull(nextKey)));
@@ -103,8 +102,7 @@ abstract class ColumnEntryMapBuilder<B> extends MapBuilder<B, ColumnKey, ColumnE
     /// @return 最上位のビルダのインスタンス.
     /// @throws NullPointerException `start` が `null` の場合.
     public B start(ColumnStart start) {
-      ColumnEntryMapBuilder.this.map().put(
-          ColumnEntryMapBuilder.this.key,
+      ColumnEntryMapBuilder.this.put(
           new ColumnEntry(
               Preconditions.checkNotNull(start),
               this.nextKey));

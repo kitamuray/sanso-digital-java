@@ -38,8 +38,7 @@ abstract class FractionMapBuilder<B, K> extends MapBuilder<B, K, Double> {
 
     Preconditions.checkArgument(0. <= fraction && (fraction + sum) <= 1.);
 
-    this.map().put(this.key(), fraction);
-    return this.self();
+    return this.put(fraction);
   }
 
 } // FractionMapBuilder

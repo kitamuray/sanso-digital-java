@@ -18,7 +18,7 @@ import java.util.Map;
 abstract class MapBuilder<B, K, V> {
 
   /// キー.
-  final K key;
+  private final K key;
 
   /// マップのビルダのインスタンスを生成する.
   ///
@@ -28,8 +28,21 @@ abstract class MapBuilder<B, K, V> {
     this.key = Preconditions.checkNotNull(key);
   }
 
+  /// マップのキーを返す.
+  ///
+  /// @return マップのキー.
   final K key() {
     return this.key;
+  }
+
+  /// 指定されたマップの値をマップへ追加する.
+  ///
+  /// @param value マップの値.
+  /// @return ビルダのインスタンス.
+  @SuppressWarnings("UnusedReturnValue")
+  final B put(V value) {
+    this.map().put(this.key, value);
+    return this.self();
   }
 
   /// 最上位のビルダのインスタンスを返す.

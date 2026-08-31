@@ -61,12 +61,10 @@ abstract class OnOffAndRestrictValveMapBuilder<B, K>
     /// @param restrictValve 調節弁.
     /// @return 最上位のビルダのインスタンス.
     public B restrictValve(RestrictValve restrictValve) {
-      com.nipponsanso.jp.digital.adsorption.OnOffAndRestrictValveMapBuilder.this.map().put(
-          com.nipponsanso.jp.digital.adsorption.OnOffAndRestrictValveMapBuilder.this.key(),
+      return OnOffAndRestrictValveMapBuilder.this.put(
           new OnOffAndRestrictValve(
               this.onOffValve,
               Preconditions.checkNotNull(restrictValve)));
-      return com.nipponsanso.jp.digital.adsorption.OnOffAndRestrictValveMapBuilder.this.self();
     }
 
   } // OnOffValveBuilder
@@ -91,12 +89,10 @@ abstract class OnOffAndRestrictValveMapBuilder<B, K>
     /// @return 最上位のビルダのインスタンス.
     /// @throws NullPointerException `onOffValve` が `null` の場合.
     public B onOffValve(OnOffValve onOffValve) {
-      com.nipponsanso.jp.digital.adsorption.OnOffAndRestrictValveMapBuilder.this.map().put(
-          com.nipponsanso.jp.digital.adsorption.OnOffAndRestrictValveMapBuilder.this.key(),
+      return OnOffAndRestrictValveMapBuilder.this.put(
           new OnOffAndRestrictValve(
               Preconditions.checkNotNull(onOffValve),
               this.restrictValve));
-      return com.nipponsanso.jp.digital.adsorption.OnOffAndRestrictValveMapBuilder.this.self();
     }
 
   } // RestrictValveBuilder
