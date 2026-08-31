@@ -372,7 +372,7 @@ public final class BasicPsaProcess {
 
     /// 脱圧弁のビルダ.
     public final class BlowValveBuilder
-        extends OnOffAndRestrictValveMapBuilder<Builder, LineKey> {
+        extends OnOffAndRestrictValveMapBuilder<Builder> {
 
       /// 脱圧弁のビルダのインスタンスを生成する.
       ///
@@ -386,23 +386,23 @@ public final class BasicPsaProcess {
       ///
       /// @return {@inheritDoc}
       @Override
-      Builder self() {
-        return Builder.this;
+      Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
+        return Builder.this.blowValveMap;
       }
 
       /// {@inheritDoc}
       ///
       /// @return {@inheritDoc}
       @Override
-      Map<LineKey, OnOffAndRestrictValve> map() {
-        return Builder.this.blowValveMap;
+      Builder self() {
+        return Builder.this;
       }
 
     } // BlowValveBuilder
 
     /// 上部均圧弁のビルダ.
     public final class UpperEqualizationValveBuilder
-        extends OnOffAndRestrictValveMapBuilder<Builder, LineKey> {
+        extends OnOffAndRestrictValveMapBuilder<Builder> {
 
       /// 上部均圧弁のビルダのインスタンスを生成する.
       ///
@@ -416,23 +416,23 @@ public final class BasicPsaProcess {
       ///
       /// @return {@inheritDoc}
       @Override
-      Builder self() {
-        return Builder.this;
+      Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
+        return Builder.this.upperEqualizationValveMap;
       }
 
       /// {@inheritDoc}
       ///
       /// @return {@inheritDoc}
       @Override
-      Map<LineKey, OnOffAndRestrictValve> map() {
-        return Builder.this.upperEqualizationValveMap;
+      Builder self() {
+        return Builder.this;
       }
 
     } // UpperEqualizationValveBuilder
 
     /// 下部均圧弁のビルダ.
     public final class LowerEqualizationValveBuilder
-        extends OnOffAndRestrictValveMapBuilder<Builder, LineKey> {
+        extends OnOffAndRestrictValveMapBuilder<Builder> {
 
       /// 下部均圧弁のビルダのインスタンスを生成する.
       ///
@@ -446,16 +446,16 @@ public final class BasicPsaProcess {
       ///
       /// @return {@inheritDoc}
       @Override
-      Builder self() {
-        return Builder.this;
+      Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
+        return Builder.this.lowerEqualizationValveMap;
       }
 
       /// {@inheritDoc}
       ///
       /// @return {@inheritDoc}
       @Override
-      Map<LineKey, OnOffAndRestrictValve> map() {
-        return Builder.this.lowerEqualizationValveMap;
+      Builder self() {
+        return Builder.this;
       }
 
     } // LowerEqualizationValveBuilder

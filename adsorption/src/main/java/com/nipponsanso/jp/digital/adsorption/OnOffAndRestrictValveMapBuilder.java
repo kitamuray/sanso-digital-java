@@ -6,95 +6,47 @@
 package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
+import java.util.Map;
 
-/// On-Off 弁と調節弁の連結のマップのビルダのスケルトン実装.
+/// On-Off 弁と調節弁の連結のマップのビルダ.
 ///
-/// @param <B> 最上位のビルダの型.
-/// @param <K> マップのキーの型.
-/// @since 1.0
+/// @param <B> ビルダの型.
+/// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class OnOffAndRestrictValveMapBuilder<B, K>
-    extends MapBuilder<B, K, OnOffAndRestrictValve> {
+abstract class OnOffAndRestrictValveMapBuilder<B> extends OnOffAndRestrictValveBuilder<B> {
+
+  /// 系統のキー.
+  private final LineKey lineKey;
 
   /// On-Off 弁と調節弁の連結のマップのビルダのインスタンスを生成する.
   ///
-  /// @param key キー.
-  /// @throws NullPointerException `key` が `null` の場合.
-  OnOffAndRestrictValveMapBuilder(K key) {
-    super(key);
+  /// @param lineKey 系統のキー.
+  /// @throws NullPointerException `lineKey` が `null` の場合.
+  OnOffAndRestrictValveMapBuilder(LineKey lineKey) {
+    this.lineKey = Preconditions.checkNotNull(lineKey);
   }
 
-  /// On-Off 弁が設定されたビルダのインスタンスを生成して返す.
+  /// On-Off 弁と調節弁の連結の可変マップを返す.
   ///
-  /// @param onOffValve On-Off 弁.
-  /// @return On-Off 弁が設定されたビルダのインスタンス.
-  /// @throws NullPointerException `onOffValve` が `null` の場合.
-  public OnOffValveBuilder onOffValve(OnOffValve onOffValve) {
-    return new OnOffValveBuilder(onOffValve);
-  }
+  /// @return On-Off 弁と調節弁の連結の可変マップ.
+  abstract Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap();
 
-  /// 調節弁が設定されたビルダのインスタンスを生成して返す.
+  /// ビルダのインスタンスを返す.
   ///
+  /// @return ビルダのインスタンス.
+  abstract B self();
+
+  /// 指定された On-Off 弁と調節弁を反映する.
+  ///
+  /// @param onOffValve    On-Off 弁.
   /// @param restrictValve 調節弁.
-  /// @return 調節弁が設定されたビルダのインスタンス.
-  /// @throws NullPointerException `restrictValve` が `null` の場合.
-  public RestrictValveBuilder restrictValve(RestrictValve restrictValve) {
-    return new RestrictValveBuilder(restrictValve);
+  /// @return ビルダのインスタンス.
+  @Override
+  final B end(OnOffValve onOffValve, RestrictValve restrictValve) {
+    this.onOffAndRestrictValveMap().put(
+        this.lineKey,
+        new OnOffAndRestrictValve(onOffValve, restrictValve));
+    return this.self();
   }
 
-  /// On-Off 弁が設定されたビルダ.
-  public final class OnOffValveBuilder {
-
-    /// On-Off 弁.
-    private final OnOffValve onOffValve;
-
-    /// On-Off 弁が設定されたビルダのインスタンスを生成する.
-    ///
-    /// @param onOffValve On-Off 弁.
-    /// @throws NullPointerException `onOffValve` が `null` の場合.
-    private OnOffValveBuilder(OnOffValve onOffValve) {
-      this.onOffValve = Preconditions.checkNotNull(onOffValve);
-    }
-
-    /// 調節弁を設定する.
-    ///
-    /// @param restrictValve 調節弁.
-    /// @return 最上位のビルダのインスタンス.
-    public B restrictValve(RestrictValve restrictValve) {
-      return OnOffAndRestrictValveMapBuilder.this.put(
-          new OnOffAndRestrictValve(
-              this.onOffValve,
-              Preconditions.checkNotNull(restrictValve)));
-    }
-
-  } // OnOffValveBuilder
-
-  /// 調節弁が設定されたビルダ.
-  public final class RestrictValveBuilder {
-
-    /// 調節弁.
-    private final RestrictValve restrictValve;
-
-    /// 調節弁が設定されたビルダのインスタンスを生成する.
-    ///
-    /// @param restrictValve 調節弁.
-    /// @throws NullPointerException `restrictValve` が `null` の場合.
-    private RestrictValveBuilder(RestrictValve restrictValve) {
-      this.restrictValve = Preconditions.checkNotNull(restrictValve);
-    }
-
-    /// On-Off 弁を設定する.
-    ///
-    /// @param onOffValve On-Off 弁.
-    /// @return 最上位のビルダのインスタンス.
-    /// @throws NullPointerException `onOffValve` が `null` の場合.
-    public B onOffValve(OnOffValve onOffValve) {
-      return OnOffAndRestrictValveMapBuilder.this.put(
-          new OnOffAndRestrictValve(
-              Preconditions.checkNotNull(onOffValve),
-              this.restrictValve));
-    }
-
-  } // RestrictValveBuilder
-
-} // OnOffAndRestrictValveMapBuilder
+}
