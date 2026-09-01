@@ -40,20 +40,15 @@ public final class ColumnZone {
     /// @throws IllegalStateException `section` の分割数が小さい場合.
     public Builder section(Section section) {
       Preconditions.checkNotNull(section);
-      Preconditions.checkArgument(this.maxIndex() < section.number());
+
+      int maxIndex = this.indexMonitorMap.values().stream()
+          .mapToInt(IndexMonitor::index)
+          .max().orElse(0);
+
+      Preconditions.checkArgument(maxIndex < section.number());
 
       this.section = section;
       return this;
-    }
-
-    private int maxIndex() {
-      return this.indexMonitorMap.values().stream()
-          .mapToInt(IndexMonitor::index)
-          .max().orElse(0);
-    }
-
-    private int size() {
-      return this.section == null ? Integer.MAX_VALUE : this.section.number();
     }
 
     /// 吸着剤を設定する.
@@ -68,10 +63,10 @@ public final class ColumnZone {
     /// 出力ファイル名を設定する.
     ///
     /// @param fileName 出力ファイル名.
-    /// @return [IndexMonitor] のマップのビルダのインスタンス.
+    /// @return 位置番号とモニタのマップのビルダのインスタンス.
     /// @throws NullPointerException `fileName` が `null` の場合.
-    public IndexMonitorBuilder fileName(String fileName) {
-      return new IndexMonitorBuilder(fileName);
+    public IndexMonitorMapBuilder fileName(String fileName) {
+      return new IndexMonitorMapBuilder(fileName);
     }
 
     /// 吸着筒の領域のインスタンスを生成して返す.
@@ -85,102 +80,42 @@ public final class ColumnZone {
       return new ColumnZone(this);
     }
 
-    /// [IndexMonitor] のマップのビルダ.
-    public final class IndexMonitorBuilder {
+    /// 位置番号とモニタのマップのビルダ.
+    public final class IndexMonitorMapBuilder extends AbstractIndexMonitorMapBuilder<Builder> {
 
-      /// 出力ファイル名.
-      private final String fileName;
-
-      /// [IndexMonitor] のマップのビルダのインスタンスを生成する.
+      /// 位置番号とモニタのマップのビルダのインスタンスを生成する.
       ///
       /// @param fileName 出力ファイル名.
       /// @throws NullPointerException `fileName` が `null` の場合.
-      private IndexMonitorBuilder(String fileName) {
-        this.fileName = Preconditions.checkNotNull(fileName);
+      private IndexMonitorMapBuilder(String fileName) {
+        super(fileName);
       }
 
-      /// 位置番号を設定する.
+      /// {@inheritDoc}
       ///
-      /// @param index 位置番号.
-      /// @return モニタを設定するビルダのインスタンス.
-      /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
-      public MonitorBuilder index(int index) {
-        return new MonitorBuilder(index);
+      /// @return {@inheritDoc}
+      @Override
+      int size() {
+        return Builder.this.section == null ? Integer.MAX_VALUE : Builder.this.section.number();
       }
 
-      /// モニタを設定する.
+      /// {@inheritDoc}
       ///
-      /// @param monitor モニタ.
-      /// @return 位置番号を設定するビルダのインスタンス.
-      /// @throws NullPointerException `monitor` が `null` の場合.
-      public IndexBuilder monitor(Monitor monitor) {
-        return new IndexBuilder(monitor);
+      /// @return {@inheritDoc}
+      @Override
+      Map<String, IndexMonitor> indexMonitorMap() {
+        return Builder.this.indexMonitorMap;
       }
 
-      /// モニタを設定するビルダ.
-      public final class MonitorBuilder {
+      /// {@inheritDoc}
+      ///
+      /// @return {@inheritDoc}
+      @Override
+      Builder self() {
+        return Builder.this;
+      }
 
-        /// 位置番号.
-        private final int index;
-
-        /// モニタを設定するビルダのインスタンスを生成する.
-        ///
-        /// @param index 位置番号.
-        /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
-        private MonitorBuilder(int index) {
-          Preconditions.checkArgument(0 <= index && index < Builder.this.size());
-
-          this.index = index;
-        }
-
-        /// モニタを設定する.
-        ///
-        /// @param monitor モニタ.
-        /// @return ビルダのインスタンス.
-        /// @throws NullPointerException `monitor` が `null` の場合.
-        public Builder monitor(Monitor monitor) {
-          Preconditions.checkNotNull(monitor);
-
-          Builder.this.indexMonitorMap.put(
-              IndexMonitorBuilder.this.fileName,
-              new IndexMonitor(this.index, monitor));
-
-          return Builder.this;
-        }
-
-      } // MonitorBuilder
-
-      /// 位置番号を設定するビルダ.
-      public final class IndexBuilder {
-
-        /// モニタ.
-        private final Monitor monitor;
-
-        /// 位置番号を設定するビルダのインスタンスを生成する.
-        ///
-        /// @param monitor モニタ.
-        /// @throws NullPointerException `monitor` が `null` の場合.
-        private IndexBuilder(Monitor monitor) {
-          this.monitor = Preconditions.checkNotNull(monitor);
-        }
-
-        /// 位置番号を設定する.
-        ///
-        /// @param index 位置番号.
-        /// @throws IndexOutOfBoundsException `index` が範囲外の場合.
-        public Builder index(int index) {
-          Preconditions.checkArgument(0 <= index && index < Builder.this.size());
-
-          Builder.this.indexMonitorMap.put(
-              IndexMonitorBuilder.this.fileName,
-              new IndexMonitor(index, this.monitor));
-
-          return Builder.this;
-        }
-
-      } // IndexBuilder
-
-    } // IndexMonitorBuilder
+    } // IndexMonitorMapBuilder
 
   } // Builder
 
