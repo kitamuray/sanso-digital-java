@@ -110,6 +110,30 @@ abstract class FluidStart {
     /// @return 流体の開始条件のインスタンス.
     public abstract FluidStart build();
 
+    public final class FractionMapBuilder extends AbstractFractionMapBuilder<B> {
+
+      private FractionMapBuilder(ComponentKey componentKey) {
+        super(componentKey);
+      }
+
+      /// 質量分率の可変マップを返す.
+      ///
+      /// @return 質量分率の可変マップ.
+      @Override
+      Map<ComponentKey, Double> fractionMap() {
+        return Builder.this.fractionMap;
+      }
+
+      /// ビルダのインスタンスを返す.
+      ///
+      /// @return ビルダのインスタンス.
+      @Override
+      B self() {
+        return Builder.this.self();
+      }
+
+    } // FractionMapBuilder
+
   } // Builder
 
   /// 流体の熱力学的温度 (K).
