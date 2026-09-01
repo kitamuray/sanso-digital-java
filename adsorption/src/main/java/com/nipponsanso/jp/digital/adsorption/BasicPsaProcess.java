@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -320,6 +321,11 @@ public final class BasicPsaProcess {
       Preconditions.checkState(this.fluid != null);
       Preconditions.checkState(this.column != null);
       Preconditions.checkState(!this.columnEntryMap.isEmpty());
+      Preconditions.checkState(
+          this.columnEntryMap.keySet().equals(
+              this.columnEntryMap.values().stream()
+                  .map(ColumnEntry::nextKey)
+                  .collect(Collectors.toSet())));
       Preconditions.checkState(this.productTank != null);
       Preconditions.checkState(this.productTankStart != null);
       Preconditions.checkState(this.feedPort != null);
