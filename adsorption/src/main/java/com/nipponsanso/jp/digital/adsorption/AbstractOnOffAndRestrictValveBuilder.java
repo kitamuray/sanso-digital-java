@@ -7,12 +7,12 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
 
-/// On-Off 弁と調節弁の連結のビルダ.
+/// On-Off 弁と調節弁の連結のビルダのスケルトン実装.
 ///
 /// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class OnOffAndRestrictValveBuilder<B> {
+abstract class AbstractOnOffAndRestrictValveBuilder<B> {
 
   /// On-Off 弁.
   private OnOffValve onOffValve;
@@ -21,7 +21,7 @@ abstract class OnOffAndRestrictValveBuilder<B> {
   private RestrictValve restrictValve;
 
   /// On-Off 弁と調節弁の連結のビルダのインスタンスを生成する.
-  OnOffAndRestrictValveBuilder() {}
+  AbstractOnOffAndRestrictValveBuilder() {}
 
   /// 指定された On-Off 弁と調節弁を反映する.
   ///
@@ -63,7 +63,7 @@ abstract class OnOffAndRestrictValveBuilder<B> {
     /// @param onOffValve On-Off 弁.
     /// @throws NullPointerException `onOffValve` が `null` の場合.
     private OnOffValveBuilder(OnOffValve onOffValve) {
-      OnOffAndRestrictValveBuilder.this.onOffValve = Preconditions.checkNotNull(onOffValve);
+      AbstractOnOffAndRestrictValveBuilder.this.onOffValve = Preconditions.checkNotNull(onOffValve);
     }
 
     /// 調節弁を設定する.
@@ -72,8 +72,8 @@ abstract class OnOffAndRestrictValveBuilder<B> {
     /// @return ビルダのインスタンス.
     /// @throws NullPointerException `restrictValve` が `null` の場合.
     public B restrictValve(RestrictValve restrictValve) {
-      OnOffAndRestrictValveBuilder.this.restrictValve = Preconditions.checkNotNull(restrictValve);
-      return OnOffAndRestrictValveBuilder.this.end();
+      AbstractOnOffAndRestrictValveBuilder.this.restrictValve = Preconditions.checkNotNull(restrictValve);
+      return AbstractOnOffAndRestrictValveBuilder.this.end();
     }
 
   } // OnOfValveBuilder
@@ -86,7 +86,7 @@ abstract class OnOffAndRestrictValveBuilder<B> {
     /// @param restrictValve 調節弁.
     /// @throws NullPointerException `restrictValve` が `null` の場合.
     private RestrictValveBuilder(RestrictValve restrictValve) {
-      OnOffAndRestrictValveBuilder.this.restrictValve = Preconditions.checkNotNull(restrictValve);
+      AbstractOnOffAndRestrictValveBuilder.this.restrictValve = Preconditions.checkNotNull(restrictValve);
     }
 
     /// On-Off 弁を設定する.
@@ -94,8 +94,8 @@ abstract class OnOffAndRestrictValveBuilder<B> {
     /// @return ビルダのインスタンス.
     /// @throws NullPointerException `onOffValve` が `null` の場合.
     public B onOffValve(OnOffValve onOffValve) {
-      OnOffAndRestrictValveBuilder.this.onOffValve = Preconditions.checkNotNull(onOffValve);
-      return OnOffAndRestrictValveBuilder.this.end();
+      AbstractOnOffAndRestrictValveBuilder.this.onOffValve = Preconditions.checkNotNull(onOffValve);
+      return AbstractOnOffAndRestrictValveBuilder.this.end();
     }
 
   } // RestrictValveBuilder

@@ -8,12 +8,13 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// On-Off 弁と調節弁の連結のマップのビルダ.
+/// On-Off 弁と調節弁の連結のマップのビルダのスケルトン実装.
 ///
 /// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class OnOffAndRestrictValveMapBuilder<B> extends OnOffAndRestrictValveBuilder<B> {
+abstract class AbstractOnOffAndRestrictValveMapBuilder<B>
+    extends AbstractOnOffAndRestrictValveBuilder<B> {
 
   /// 系統のキー.
   private final LineKey lineKey;
@@ -22,7 +23,7 @@ abstract class OnOffAndRestrictValveMapBuilder<B> extends OnOffAndRestrictValveB
   ///
   /// @param lineKey 系統のキー.
   /// @throws NullPointerException `lineKey` が `null` の場合.
-  OnOffAndRestrictValveMapBuilder(LineKey lineKey) {
+  AbstractOnOffAndRestrictValveMapBuilder(LineKey lineKey) {
     this.lineKey = Preconditions.checkNotNull(lineKey);
   }
 

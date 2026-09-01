@@ -8,12 +8,12 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// 吸着筒エントリのマップのビルダ.
+/// 吸着筒エントリのマップのビルダのスケルトン実装.
 ///
 /// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class ColumnEntryMapBuilder<B> extends ColumnEntryBuilder<B> {
+abstract class AbstractColumnEntryMapBuilder<B> extends AbstractColumnEntryBuilder<B> {
 
   /// 吸着筒のキー.
   private final ColumnKey columnKey;
@@ -22,7 +22,7 @@ abstract class ColumnEntryMapBuilder<B> extends ColumnEntryBuilder<B> {
   ///
   /// @param columnKey 吸着筒のキー.
   /// @throws NullPointerException `columnKey` が `null` の場合.
-  ColumnEntryMapBuilder(ColumnKey columnKey) {
+  AbstractColumnEntryMapBuilder(ColumnKey columnKey) {
     this.columnKey = Preconditions.checkNotNull(columnKey);
   }
 

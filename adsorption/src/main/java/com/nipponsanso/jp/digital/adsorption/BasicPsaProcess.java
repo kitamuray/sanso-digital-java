@@ -131,8 +131,8 @@ public final class BasicPsaProcess {
     /// @param columnKey 吸着筒のキー.
     /// @return 吸着筒のエントリのビルダのインスタンス.
     /// @throws NullPointerException `columnKey` が `null` の場合.
-    public ColumnEntryBuilder column(ColumnKey columnKey) {
-      return new ColumnEntryBuilder(columnKey);
+    public ColumnEntryMapBuilder column(ColumnKey columnKey) {
+      return new ColumnEntryMapBuilder(columnKey);
     }
 
     /// 製品槽を設定する.
@@ -342,14 +342,14 @@ public final class BasicPsaProcess {
       return new BasicPsaProcess(this);
     }
 
-    /// 吸着筒のエントリのビルダ.
-    public final class ColumnEntryBuilder extends ColumnEntryMapBuilder<Builder> {
+    /// 吸着筒のエントリのマップのビルダ.
+    public final class ColumnEntryMapBuilder extends AbstractColumnEntryMapBuilder<Builder> {
 
-      /// 吸着筒のエントリのビルダのインスタンスを生成する.
+      /// 吸着筒のエントリのマップのビルダのインスタンスを生成する.
       ///
       /// @param columnKey 吸着筒のキー.
       /// @throws NullPointerException `columnKey` が `null` の場合.
-      private ColumnEntryBuilder(ColumnKey columnKey) {
+      private ColumnEntryMapBuilder(ColumnKey columnKey) {
         super(columnKey);
       }
 
@@ -369,11 +369,11 @@ public final class BasicPsaProcess {
         return Builder.this;
       }
 
-    } // ColumnEntryBuilder
+    } // ColumnEntryMapBuilder
 
     /// 脱圧弁のビルダ.
     public final class BlowValveBuilder
-        extends OnOffAndRestrictValveMapBuilder<Builder> {
+        extends AbstractOnOffAndRestrictValveMapBuilder<Builder> {
 
       /// 脱圧弁のビルダのインスタンスを生成する.
       ///
@@ -403,7 +403,7 @@ public final class BasicPsaProcess {
 
     /// 上部均圧弁のビルダ.
     public final class UpperEqualizationValveBuilder
-        extends OnOffAndRestrictValveMapBuilder<Builder> {
+        extends AbstractOnOffAndRestrictValveMapBuilder<Builder> {
 
       /// 上部均圧弁のビルダのインスタンスを生成する.
       ///
@@ -433,7 +433,7 @@ public final class BasicPsaProcess {
 
     /// 下部均圧弁のビルダ.
     public final class LowerEqualizationValveBuilder
-        extends OnOffAndRestrictValveMapBuilder<Builder> {
+        extends AbstractOnOffAndRestrictValveMapBuilder<Builder> {
 
       /// 下部均圧弁のビルダのインスタンスを生成する.
       ///

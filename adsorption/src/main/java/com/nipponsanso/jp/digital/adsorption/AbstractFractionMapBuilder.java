@@ -8,12 +8,12 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// 質量分率のマップのビルダ.
+/// 質量分率のマップのビルダのスケルトン実装.
 ///
 /// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class FractionMapBuilder<B> {
+abstract class AbstractFractionMapBuilder<B> {
 
   /// 成分のキー.
   private final ComponentKey componentKey;
@@ -22,7 +22,7 @@ abstract class FractionMapBuilder<B> {
   ///
   /// @param componentKey 成分のキー.
   /// @throws NullPointerException `componentKey` が `null` の場合.
-  FractionMapBuilder(ComponentKey componentKey) {
+  AbstractFractionMapBuilder(ComponentKey componentKey) {
     this.componentKey = Preconditions.checkNotNull(componentKey);
   }
 
@@ -51,7 +51,7 @@ abstract class FractionMapBuilder<B> {
   /// @param fraction 質量分率 (-).
   /// @return ビルダのインスタンス.
   /// @throws IllegalArgumentException `fraction` が範囲外の場合.
-  public B fraction(double fraction) {
+  public final B fraction(double fraction) {
     Preconditions.checkArgument(0. <= fraction && fraction <= (1. - this.sumFraction()));
 
     this.fractionMap().put(this.componentKey, fraction);

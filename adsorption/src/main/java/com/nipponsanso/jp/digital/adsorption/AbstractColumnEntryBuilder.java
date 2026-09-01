@@ -7,12 +7,12 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
 
-/// 吸着筒エントリのビルダ.
+/// 吸着筒エントリのビルダのスケルトン実装.
 ///
 /// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class ColumnEntryBuilder<B> {
+abstract class AbstractColumnEntryBuilder<B> {
 
   /// 開始条件.
   private ColumnStart start;
@@ -21,7 +21,7 @@ abstract class ColumnEntryBuilder<B> {
   private ColumnKey nextKey;
 
   /// 吸着筒エントリのビルダのインスタンスを生成する.
-  ColumnEntryBuilder() {}
+  AbstractColumnEntryBuilder() {}
 
   /// 開始条件を設定する.
   ///
@@ -63,7 +63,7 @@ abstract class ColumnEntryBuilder<B> {
     /// @param start 開始条件.
     /// @throws NullPointerException `start` が `null` の場合.
     private StartBuilder(ColumnStart start) {
-      ColumnEntryBuilder.this.start = Preconditions.checkNotNull(start);
+      AbstractColumnEntryBuilder.this.start = Preconditions.checkNotNull(start);
     }
 
     /// 次サイクルにおけるキーを設定する.
@@ -72,8 +72,8 @@ abstract class ColumnEntryBuilder<B> {
     /// @return ビルダのインスタンス.
     /// @throws NullPointerException `nextKey` が `null` の場合.
     public B nextKey(ColumnKey nextKey) {
-      ColumnEntryBuilder.this.nextKey = Preconditions.checkNotNull(nextKey);
-      return ColumnEntryBuilder.this.end();
+      AbstractColumnEntryBuilder.this.nextKey = Preconditions.checkNotNull(nextKey);
+      return AbstractColumnEntryBuilder.this.end();
     }
 
   } // StartBuilder
@@ -86,7 +86,7 @@ abstract class ColumnEntryBuilder<B> {
     /// @param nextKey 次サイクルにおけるキー.
     /// @throws NullPointerException `nextKey` が `null` の場合.
     private NextKeyBuilder(ColumnKey nextKey) {
-      ColumnEntryBuilder.this.nextKey = Preconditions.checkNotNull(nextKey);
+      AbstractColumnEntryBuilder.this.nextKey = Preconditions.checkNotNull(nextKey);
     }
 
     /// 開始条件を設定する.
@@ -95,8 +95,8 @@ abstract class ColumnEntryBuilder<B> {
     /// @return ビルダのインスタンス.
     /// @throws NullPointerException `start` が `null` の場合.
     public B start(ColumnStart start) {
-      ColumnEntryBuilder.this.start = Preconditions.checkNotNull(start);
-      return ColumnEntryBuilder.this.end();
+      AbstractColumnEntryBuilder.this.start = Preconditions.checkNotNull(start);
+      return AbstractColumnEntryBuilder.this.end();
     }
 
   } // NextKeyBuilder
