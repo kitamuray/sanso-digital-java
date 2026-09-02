@@ -58,6 +58,7 @@ public class ColumnStart extends AdsorbentStart {
         .add("pressure", this.pressure())
         .add("fractionMap", this.fractionMap())
         .add("shellTemperature", this.shellTemperature())
+        .add("fractionMap", this.fractionMap())
         .toString();
   }
 
