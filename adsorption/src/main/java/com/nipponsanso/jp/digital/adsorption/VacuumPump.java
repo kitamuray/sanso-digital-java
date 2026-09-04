@@ -92,6 +92,10 @@ public final class VacuumPump extends Port {
     return this.minPressure;
   }
 
+  void set(VacuumPumpCell cell) {
+    cell.setPressure(this.minPressure);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == this) {

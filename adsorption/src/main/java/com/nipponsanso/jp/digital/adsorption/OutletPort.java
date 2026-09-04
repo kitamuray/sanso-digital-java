@@ -49,6 +49,10 @@ public final class OutletPort extends Port {
     return this.pressure;
   }
 
+  void set(PortCell cell) {
+    cell.setPressure(this.pressure);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == this) {

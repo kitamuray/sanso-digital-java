@@ -36,4 +36,11 @@ abstract class AdsorbentStart extends ShellStart {
     super(builder);
   }
 
+  /// 指定されたセルへ開始条件を設定する.
+  ///
+  /// @param cell セル.
+  void start(AdsorbentCell cell) {
+    super.start(cell);
+  }
+
 }

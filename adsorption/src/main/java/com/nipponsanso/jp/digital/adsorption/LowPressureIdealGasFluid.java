@@ -9,10 +9,19 @@ package com.nipponsanso.jp.digital.adsorption;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class LowPressureIdealGasFluid {
+public final class LowPressureIdealGasFluid extends Fluid {
 
   /// 低圧下の理想気体の流体のインスタンスを生成する.
   private LowPressureIdealGasFluid() {}
+
+  /// {@inheritDoc}
+  ///
+  /// @param composition {@inheritDoc}
+  /// @return {@inheritDoc}
+  @Override
+  LowPressureIdealGasFluidModel model(Composition composition) {
+    return new LowPressureIdealGasFluidModel(composition);
+  }
 
   /// 唯一のインスタンス.
   private static final LowPressureIdealGasFluid INSTANCE = new LowPressureIdealGasFluid();

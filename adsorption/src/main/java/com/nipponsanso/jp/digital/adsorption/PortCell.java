@@ -29,17 +29,17 @@ final class PortCell extends FluidCell {
   /// @param composition 組成.
   PortCell(Composition composition) {
     this.doubleArray = new double[
-        FluidCell.SIZE + FluidCell.Previous.SIZE
+        SIZE + Previous.SIZE
             + composition.componentKeySet().size()
-            * (FluidCell.ComponentValue.SIZE + FluidCell.ComponentValue.Previous.SIZE)];
+            * (ComponentValue.SIZE + ComponentValue.Previous.SIZE)];
 
     this.previous = new Previous();
 
-    int offset = FluidCell.SIZE + FluidCell.Previous.SIZE;
+    int offset = SIZE + Previous.SIZE;
     Map<ComponentKey, ComponentValue> componentMap = new EnumMap<>(ComponentKey.class);
     for (ComponentKey componentKey : composition.componentKeySet()) {
       componentMap.put(componentKey, new ComponentValue(offset));
-      offset += FluidCell.ComponentValue.SIZE + FluidCell.ComponentValue.Previous.SIZE;
+      offset += ComponentValue.SIZE + ComponentValue.Previous.SIZE;
     }
 
     this.componentMap = Maps.immutableEnumMap(componentMap);
@@ -153,7 +153,7 @@ final class PortCell extends FluidCell {
       /// @return {@inheritDoc}
       @Override
       int offset() {
-        return ComponentValue.this.offset + FluidCell.ComponentValue.SIZE;
+        return ComponentValue.this.offset + ComponentValue.SIZE;
       }
 
       /// {@inheritDoc}

@@ -65,39 +65,12 @@ abstract class FluidStart {
       return this.self();
     }
 
-    /// 流体成分のキーを設定する.
+    /// 流体成分の質量分率のマップを設定するビルダのインスタンスを生成して返す.
     ///
-    /// @param componentKey 流体成分のキー.
-    /// @return ビルダのインスタンス.
+    /// @param componentKey 成分のキー.
     /// @throws NullPointerException `componentKey` が `null` の場合.
-    /// @throws IllegalStateException `componentKey` が設定済の場合.
-    public final B componentKey(ComponentKey componentKey) {
-      Preconditions.checkNotNull(componentKey);
-      Preconditions.checkState(this.componentKey == null);
-
-      this.componentKey = componentKey;
-      return this.self();
-    }
-
-    /// 流体成分の質量分率を設定する.
-    ///
-    /// @param fraction 流体成分の質量分率 (-)
-    /// @return ビルダのインスタンス.
-    /// @throws IllegalStateException 流体成分のキーが未設定の場合.
-    /// @throws IllegalArgumentException `fraction` が 0 未満か, 既設定値との総計が 1 を超える場合.
-    public final B fraction(double fraction) {
-      Preconditions.checkState(this.componentKey != null);
-      Preconditions.checkArgument(
-          0. <= fraction
-              && fraction + this.fractionMap.entrySet().stream()
-              .filter(entry -> entry.getKey() != this.componentKey)
-              .map(Map.Entry::getValue)
-              .mapToDouble(x -> x)
-              .sum() <= 1.);
-
-      this.fractionMap.put(this.componentKey, fraction);
-      this.componentKey = null;
-      return this.self();
+    public final FractionMapBuilder componentKey(ComponentKey componentKey) {
+      return new FractionMapBuilder(componentKey);
     }
 
     /// ビルダのインスタンスを返す.
@@ -110,23 +83,28 @@ abstract class FluidStart {
     /// @return 流体の開始条件のインスタンス.
     public abstract FluidStart build();
 
+    /// 流体成分の質量分率のマップを設定するビルダ.
     public final class FractionMapBuilder extends AbstractFractionMapBuilder<B> {
 
+      /// 流体成分の質量分率のマップを設定するビルダのインスタンスを生成する.
+      ///
+      /// @param componentKey 成分のキー.
+      /// @throws NullPointerException `componentKey` が `null` の場合.
       private FractionMapBuilder(ComponentKey componentKey) {
         super(componentKey);
       }
 
-      /// 質量分率の可変マップを返す.
+      /// {@inheritDoc}
       ///
-      /// @return 質量分率の可変マップ.
+      /// @return {@inheritDoc}
       @Override
       Map<ComponentKey, Double> fractionMap() {
         return Builder.this.fractionMap;
       }
 
-      /// ビルダのインスタンスを返す.
+      /// {@inheritDoc}
       ///
-      /// @return ビルダのインスタンス.
+      /// @return {@inheritDoc}
       @Override
       B self() {
         return Builder.this.self();
@@ -177,6 +155,17 @@ abstract class FluidStart {
   /// 流体成分の質量分率 (-) の不変マップ.
   public Map<ComponentKey, Double> fractionMap() {
     return this.fractionMap;
+  }
+
+  /// 指定されたセルへ初期条件を設定する.
+  ///
+  /// @param cell セル.
+  void start(FluidCell cell) {
+    cell.setTemperature(this.temperature);
+    cell.setPressure(this.pressure);
+    cell.componentMap().forEach(
+        (componentKey, componentValue) -> componentValue.setFraction(
+            this.fractionMap.getOrDefault(componentKey, 0.)));
   }
 
   @Override

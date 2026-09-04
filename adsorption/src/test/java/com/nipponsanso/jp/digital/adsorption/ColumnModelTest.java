@@ -13,6 +13,7 @@ import static org.mockito.Mockito.doReturn;
 
 import com.google.common.collect.Sets;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,6 +75,9 @@ class ColumnModelTest {
   @Mock
   private Column column;
 
+  @Mock
+  private ColumnStart start;
+
   /// [ColumnModel] の格子情報をテスト.
   @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
   @Test
@@ -124,6 +128,17 @@ class ColumnModelTest {
         ComponentKey.OXYGEN,
         ComponentKey.NITROGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
+
+    final double temperature = 298.15;
+    doReturn(temperature).when(this.start).temperature();
+    final double pressure = 101325.;
+    doReturn(pressure).when(this.start).pressure();
+    final double argonFraction = 0.01;
+    final double oxygenFraction = 0.20;
+    doReturn(Map.of(ComponentKey.ARGON, argonFraction, ComponentKey.OXYGEN, oxygenFraction))
+        .when(this.start).fractionMap();
+    final double shellTemperature = 303.15;
+    doReturn(shellTemperature).when(this.start).shellTemperature();
 
     ColumnModel model = new ColumnModel(this.column, this.composition);
 
@@ -176,6 +191,18 @@ class ColumnModelTest {
     assertThat(faceList.get(10).coordinate()).isCloseTo(2.20, within(1e-6));
     assertThat(faceList.get(11).coordinate()).isCloseTo(2.40, within(1e-6));
     assertThat(faceList.get(12).coordinate()).isCloseTo(2.80, within(1e-6));
+
+    cellList.forEach(cell -> {
+      assertThat(cell.getTemperature()).isEqualTo(temperature);
+      assertThat(cell.getPressure()).isEqualTo(pressure);
+      assertThat(cell.componentMap().get(ComponentKey.ARGON).getFraction())
+          .isEqualTo(argonFraction);
+      assertThat(cell.componentMap().get(ComponentKey.OXYGEN).getFraction())
+          .isEqualTo(oxygenFraction);
+      assertThat(cell.componentMap().get(ComponentKey.NITROGEN).getFraction())
+          .isZero();
+      assertThat(cell.getShellTemperature()).isEqualTo(shellTemperature);
+    });
   }
 
 }

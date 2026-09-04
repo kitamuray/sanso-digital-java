@@ -149,4 +149,12 @@ public final class InletPort extends Port {
     return this.fractionMap;
   }
 
+  void set(PortCell cell) {
+    cell.setTemperature(this.temperature);
+    cell.setPressure(this.pressure);
+    cell.componentMap().forEach(
+        (componentKey, componentValue) -> componentValue.setFraction(
+            this.fractionMap.getOrDefault(componentKey, 0.)));
+  }
+
 }

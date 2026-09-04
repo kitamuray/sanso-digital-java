@@ -828,6 +828,13 @@ public final class BasicPsaProcess {
                 entry -> entry.getValue().restrictValve()));
   }
 
+  /// サービスのインスタンスを生成して返す.
+  ///
+  /// @return サービスのインスタンス.
+  public BasicPsaSolver newService() {
+    return new BasicPsaSolver(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == this) {
