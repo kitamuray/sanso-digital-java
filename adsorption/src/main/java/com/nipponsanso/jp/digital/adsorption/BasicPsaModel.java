@@ -464,6 +464,42 @@ public class BasicPsaModel {
     }
   }
 
+  /// 吸着筒のスナップショットを出力する.
+  ///
+  /// @param fileName 出力ファイル名.
+  /// @param monitor モニタ.
+  void snapshot(String fileName, Monitor monitor) {
+    Map<ColumnKey, Iterator<ColumnCell>> cellIteratorMap = this.columnGroupMap.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().columnModel().cellList().iterator(),
+                (a, _) -> a,
+                () -> new EnumMap<>(ColumnKey.class)));
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    List<ColumnCell> axisCellList = this.columnGroupMap.values().stream()
+        .findAny().get()
+        .columnModel()
+        .cellList();
+
+    List<String> stringList = new ArrayList<>();
+    Path file = Paths.get(fileName);
+
+    try (CsvWriter csv = CsvWriter.builder().build(file, StandardCharsets.UTF_8)) {
+      for (ColumnCell axisCell : axisCellList) {
+        stringList.add(Double.toString(axisCell.centroid()));
+        cellIteratorMap.values().forEach(
+            cellIterator -> stringList.add(
+                Double.toString(monitor.applyAsDouble(cellIterator.next()))));
+
+        csv.writeRecord(stringList);
+        stringList.clear();
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /// 吸着筒周辺モデル.
   static final class ColumnGroup {
 
