@@ -5,21 +5,38 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /// 貯槽モデル.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 final class TankModel {
 
+  /// 貯槽.
+  private final Tank tank;
+
   /// セル.
   private final TankCell cell;
+
+  /// モニタ値の可変リストの不変マップ.
+  private final Map<String, List<Double>> historyListMap;
 
   /// 貯槽モデルのインスタンスを生成する.
   ///
   /// @param tank 貯槽.
   /// @param composition 組成.
   TankModel(Tank tank, Composition composition) {
+    this.tank = tank;
     this.cell = new TankCell(composition);
+    this.historyListMap = this.tank.monitorMap().keySet().stream()
+        .collect(
+            ImmutableMap.toImmutableMap(
+                fileName -> fileName,
+                _ -> new ArrayList<>()));
   }
 
   /// セルを返す.
@@ -39,6 +56,21 @@ final class TankModel {
   /// @param entity 永続化オブジェクト.
   void read(TankModelEntity entity) {
     this.cell.read(entity.getCellEntity());
+  }
+
+  void clearHistories() {
+    this.historyListMap.values().forEach(List::clear);
+  }
+
+  void addHistories() {
+    this.tank.monitorMap().forEach((fileName, monitor) -> {
+      List<Double> monitorList = this.historyListMap.get(fileName);
+      monitorList.add(monitor.applyAsDouble(this.cell));
+    });
+  }
+
+  Map<String, List<Double>> historyListMap() {
+    return this.historyListMap;
   }
 
 }

@@ -7,7 +7,17 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import de.siegmar.fastcsv.writer.CsvWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +27,9 @@ import java.util.stream.Collectors;
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 public class BasicPsaModel {
+
+  /// プロセス.
+  private final BasicPsaProcess process;
 
   /// 流体モデル.
   private final FluidModel fluidModel;
@@ -81,10 +94,18 @@ public class BasicPsaModel {
   /// リンス主弁フェイス.
   private final ValveFace mainRinseValveFace;
 
+  /// 履歴時刻 (s) の可変リスト.
+  private final List<Double> historyTimeList = new ArrayList<>();
+
+  /// 現在時刻.
+  private double time;
+
   /// 指定されたプロセスで構成されたモデルのインスタンスを生成する.
   ///
   /// @param process プロセス.
   BasicPsaModel(BasicPsaProcess process) {
+    this.process = process;
+
     this.fluidModel = process.fluid().model(process.composition());
     this.columnGroupMap = process.columnEntryMap().entrySet().stream()
         .collect(
@@ -289,6 +310,9 @@ public class BasicPsaModel {
     return this.mainRinseValveFace;
   }
 
+  /// 永続化オブジェクトへ情報を書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
   void write(BasicPsaModelEntity entity) {
     entity.setColumnModelEntityMap(
         this.columnGroupMap.entrySet().stream()
@@ -306,6 +330,10 @@ public class BasicPsaModel {
     entity.setProductTankModelEntity(productTankEntity);
   }
 
+  /// 永続化オブジェクトから情報を読み取る.
+  ///
+  /// @param entity 永続化オブジェクト.
+  /// @throws IllegalArgumentException 永続化オブジェクトが不完全な場合.
   void read(BasicPsaModelEntity entity) {
     Preconditions.checkArgument(
         this.columnGroupMap.keySet().equals(
@@ -315,6 +343,125 @@ public class BasicPsaModel {
             entity.getColumnModelEntityMap().get(columnKey)));
 
     this.productTankModel.read(entity.getProductTankModelEntity());
+  }
+
+  /// 履歴情報を追記する.
+  void addHistories() {
+    this.historyTimeList.add(this.time);
+    this.columnGroupMap.values().stream()
+        .map(ColumnGroup::columnModel)
+        .forEach(ColumnModel::addHistories);
+    this.productTankModel.addHistories();
+  }
+
+  /// 履歴情報を初期化する.
+  void clearHistories() {
+    this.time = 0.;
+    this.historyTimeList.clear();
+    this.columnGroupMap.values().stream()
+        .map(ColumnGroup::columnModel)
+        .forEach(ColumnModel::clearHistories);
+    this.productTankModel.clearHistories();
+  }
+
+  /// 履歴情報を出力する.
+  void flushHistories() {
+    this.flushColumnSpaceHistories();
+    this.flushColumnSpaceHistories();
+    this.flushProductTankHistories();
+  }
+
+  /// 吸着筒空間の履歴情報を出力する.
+  private void flushColumnSpaceHistories() {
+    for (ColumnSpace space : this.process.column().spaceList()) { // 空間のループ
+      Map<ColumnKey, Iterator<ColumnSpaceModel>> modelIteratorMap
+          = this.columnGroupMap.entrySet().stream()
+          .collect(
+              Collectors.toMap(
+                  Map.Entry::getKey,
+                  entry -> entry.getValue().columnModel().spaceModelList().iterator(),
+                  (a, _) -> a,
+                  () -> new EnumMap<>(ColumnKey.class)));
+
+      for (String fileName : space.monitorMap().keySet()) { // 出力ファイル名のループ
+        Map<ColumnKey, Iterator<Double>> historyIteratorMap = modelIteratorMap.entrySet().stream()
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().next().historyListMap().get(fileName).iterator(),
+                    (a, _) -> a,
+                    () -> new EnumMap<>(ColumnKey.class)));
+
+        this.flushHistories(fileName, historyIteratorMap.values());
+      } // 出力ファイル名のループ
+    } // 空間のループ
+  }
+
+  /// 吸着筒領域の履歴情報を出力する.
+  private void flushColumnZoneHistories() {
+    for (List<ColumnZone> zoneList : this.process.column().zoneListList()) { // 領域リストのループ
+      Map<ColumnKey, Iterator<List<ColumnZoneModel>>> modelListIteratorMap
+          = this.columnGroupMap.entrySet().stream()
+          .collect(
+              Collectors.toMap(
+                  Map.Entry::getKey,
+                  entry -> entry.getValue().columnModel().zoneModelListList().iterator(),
+                  (a, _) -> a,
+                  () -> new EnumMap<>(ColumnKey.class)));
+
+      for (ColumnZone zone : zoneList) { // 領域のループ
+        Map<ColumnKey, Iterator<ColumnZoneModel>> modelIteratorMap
+            = modelListIteratorMap.entrySet().stream()
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().next().iterator(),
+                    (a, _) -> a,
+                    () -> new EnumMap<>(ColumnKey.class)));
+
+        for (String fileName : zone.indexMonitorMap().keySet()) { // 出力ファイル名のループ
+          Map<ColumnKey, Iterator<Double>> historyIteratorMap = modelIteratorMap.entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry -> entry.getValue().next().historyListMap().get(fileName).iterator(),
+                      (a, _) -> a,
+                      () -> new EnumMap<>(ColumnKey.class)));
+          this.flushHistories(fileName, historyIteratorMap.values());
+        } // 出力ファイル名のループ
+      } // 領域のループ
+    } // 領域リストのループ
+  }
+
+  /// 製品槽の履歴情報を出力する.
+  private void flushProductTankHistories() {
+    this.productTankModel.historyListMap().forEach(
+        (fileName, historyList) -> this.flushHistories(
+            fileName,
+            Collections.singleton(historyList.iterator())));
+  }
+
+  /// 履歴情報を出力する共通処理.
+  ///
+  /// @param fileName 出力ファイル名.
+  /// @param historyIterators 履歴情報イタレータのコレクション.
+  private void flushHistories(String fileName, Collection<Iterator<Double>> historyIterators) {
+    List<String> stringList = new ArrayList<>();
+    Path file = Paths.get(fileName);
+
+    try (CsvWriter csv = CsvWriter.builder().build(file, StandardCharsets.UTF_8)) {
+      for (Double historyTime : this.historyTimeList) {
+        stringList.add(historyTime.toString());
+        for (Iterator<Double> historyIterator : historyIterators) {
+          stringList.add(historyIterator.next().toString());
+        }
+
+        csv.writeRecord(stringList);
+        stringList.clear();
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /// 吸着筒周辺モデル.

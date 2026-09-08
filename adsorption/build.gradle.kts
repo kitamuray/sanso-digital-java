@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":base"))
     testImplementation(platform(libs.assertj.bom))
     testImplementation(libs.assertj.core)
+    implementation(libs.fastcsv)
     implementation(platform(libs.guava.bom))
     implementation(libs.guava)
     testImplementation(libs.guava.testlib)

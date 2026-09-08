@@ -42,6 +42,12 @@ final class ColumnModel {
   /// 全フェイスの不変リスト.
   private final List<ColumnFace> faceList;
 
+  /// 空間モデルの不変リスト.
+  private final List<ColumnSpaceModel> spaceModelList;
+
+  /// 領域モデルの不変リストの不変リスト.
+  private final List<List<ColumnZoneModel>> zoneModelListList;
+
   /// 吸着筒モデルのインスタンスを生成する.
   ///
   /// @param column 吸着筒.
@@ -72,21 +78,27 @@ final class ColumnModel {
     offset += stride;
 
     ImmutableList.Builder<ColumnCell> spaceCellListBuilder = ImmutableList.builder();
+    ImmutableList.Builder<ColumnSpaceModel> spaceModelListBuilder = ImmutableList.builder();
+
     ImmutableList.Builder<List<List<ColumnCell>>> zoneCellListListListBuilder
+        = ImmutableList.builder();
+    ImmutableList.Builder<List<ColumnZoneModel>> zoneModelListListBuilder
         = ImmutableList.builder();
 
     Iterator<ColumnSpace> spaceIterator = column.spaceList().iterator();
 
     for (List<ColumnZone> zoneList : column.zoneListList()) {
       ColumnSpace space = spaceIterator.next();
-      spaceCellListBuilder.add(
-          new InnerCell(
-              offset, column.shape(), origin, origin + space.length(),
-              composition, Adsorbent.empty(), column.shell()));
+      ColumnCell spaceCell = new InnerCell(
+          offset, column.shape(), origin, origin + space.length(),
+          composition, Adsorbent.empty(), column.shell());
+      spaceCellListBuilder.add(spaceCell);
+      spaceModelListBuilder.add(new ColumnSpaceModel(space, spaceCell));
       origin += space.length();
       offset += stride;
 
       ImmutableList.Builder<List<ColumnCell>> zoneCellListListBuilder = ImmutableList.builder();
+      ImmutableList.Builder<ColumnZoneModel> zoneModelListBuilder = ImmutableList.builder();
       for (ColumnZone zone : zoneList) {
         ImmutableList.Builder<ColumnCell> zoneCellListBuilder = ImmutableList.builder();
         for (double segment : zone.section().segments()) {
@@ -97,23 +109,29 @@ final class ColumnModel {
           origin += segment;
           offset += stride;
         }
-        zoneCellListListBuilder.add(zoneCellListBuilder.build());
+        List<ColumnCell> zoneCellList = zoneCellListBuilder.build();
+        zoneCellListListBuilder.add(zoneCellList);
+        zoneModelListBuilder.add(new ColumnZoneModel(zone, zoneCellList));
       }
       zoneCellListListListBuilder.add(zoneCellListListBuilder.build());
+      zoneModelListListBuilder.add(zoneModelListBuilder.build());
     }
 
     {
       ColumnSpace space = spaceIterator.next();
-      spaceCellListBuilder.add(
-          new InnerCell(
-              offset, column.shape(), origin, origin + space.length(),
-              composition, Adsorbent.empty(), column.shell()));
+      ColumnCell spaceCell = new InnerCell(
+          offset, column.shape(), origin, origin + space.length(),
+          composition, Adsorbent.empty(), column.shell());
+      spaceCellListBuilder.add(spaceCell);
+      spaceModelListBuilder.add(new ColumnSpaceModel(space, spaceCell));
       origin += space.length();
       offset += stride;
     }
 
     this.spaceCellList = spaceCellListBuilder.build();
+    this.spaceModelList = spaceModelListBuilder.build();
     this.zoneCellListListList = zoneCellListListListBuilder.build();
+    this.zoneModelListList = zoneModelListListBuilder.build();
 
     this.eastCell = new InnerCell(
         offset, column.shape(), origin, origin,
@@ -149,8 +167,12 @@ final class ColumnModel {
     }
 
     this.faceList = faceListBuilder.build();
+
   }
 
+  /// 指定された永続化オブジェクトへ情報を書き込む.
+  ///
+  /// @param entity 永続化オブジェクト.
   void write(ColumnModelEntity entity) {
     entity.setCellEntityList(
         this.cellList.stream()
@@ -162,6 +184,10 @@ final class ColumnModel {
             .collect(Collectors.toList()));
   }
 
+  /// 指定された永続化オブジェクトから情報を読み込む.
+  ///
+  /// @param entity 永続化オブジェクト.
+  /// @throws IllegalArgumentException `entity` が不完全な場合.
   void read(ColumnModelEntity entity) {
     Preconditions.checkArgument(entity.getCellEntityList().size() == this.cellList.size());
 
@@ -170,6 +196,20 @@ final class ColumnModel {
     for (ColumnCell cell : this.cellList) {
       cell.read(entityIterator.next());
     }
+  }
+
+  /// 履歴情報を初期化する.
+  void clearHistories() {
+    this.spaceModelList.forEach(ColumnSpaceModel::clearHistories);
+    this.zoneModelListList.forEach(
+        zoneModelList -> zoneModelList.forEach(ColumnZoneModel::clearHistories));
+  }
+
+  /// 履歴情報を追記する.
+  void addHistories() {
+    this.spaceModelList.forEach(ColumnSpaceModel::addHistories);
+    this.zoneModelListList.forEach(
+        zoneModelList -> zoneModelList.forEach(ColumnZoneModel::addHistories));
   }
 
   /// 吸着筒を返す.
@@ -219,6 +259,20 @@ final class ColumnModel {
   /// @return フェイスの不変リスト.
   List<ColumnFace> faceList() {
     return this.faceList;
+  }
+
+  /// 空間モデルの不変リストを返す.
+  ///
+  /// @return 空間モデルの不変リスト.
+  List<ColumnSpaceModel> spaceModelList() {
+    return this.spaceModelList;
+  }
+
+  /// 領域モデルの不変リストの不変リストを返す.
+  ///
+  /// @return 領域モデルの不変リストの不変リスト.
+  public List<List<ColumnZoneModel>> zoneModelListList() {
+    return this.zoneModelListList;
   }
 
   /// セルの内部実装.

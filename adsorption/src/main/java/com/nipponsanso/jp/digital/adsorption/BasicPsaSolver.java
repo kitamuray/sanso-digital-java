@@ -52,6 +52,11 @@ public final class BasicPsaSolver extends AdsorbentSolver<BasicPsaSolver> {
     return this;
   }
 
+  /// 指定されたファイルへ計算結果を書き込む.
+  ///
+  /// @param fileName ファイル名.
+  /// @return ソルバのインスタンス.
+  /// @throws NullPointerException `fileName` が `null` の場合.
   public BasicPsaSolver write(String fileName) {
     Preconditions.checkNotNull(fileName);
 
@@ -62,6 +67,11 @@ public final class BasicPsaSolver extends AdsorbentSolver<BasicPsaSolver> {
     return this;
   }
 
+  /// 指定されたファイルから計算結果を読み込む.
+  ///
+  /// @param fileName ファイル名.
+  /// @return ソルバのインスタンス.
+  /// @throws NullPointerException `fileName` が `null` の場合.
   public BasicPsaSolver read(String fileName) {
     Preconditions.checkNotNull(fileName);
 
@@ -69,6 +79,22 @@ public final class BasicPsaSolver extends AdsorbentSolver<BasicPsaSolver> {
         = OBJECT_MAPPER.readValue(new File(fileName), BasicPsaModelEntity.class);
     this.model.read(entity);
 
+    return this;
+  }
+
+  /// 履歴情報を初期化する.
+  ///
+  /// @return ソルバのインスタンス.
+  public BasicPsaSolver clearHistories() {
+    this.model.clearHistories();
+    return this;
+  }
+
+  /// 履歴情報を出力する.
+  ///
+  /// @return ソルバのインスタンス.
+  public BasicPsaSolver flushHistories() {
+    this.model.flushHistories();
     return this;
   }
 
