@@ -24,7 +24,7 @@ public abstract class Monitor {
   /// モニタのインスタンスを生成する.
   ///
   /// @param toString 文字列表現.
-  Monitor(String toString) {
+  private Monitor(String toString) {
     this.toString = toString;
   }
 

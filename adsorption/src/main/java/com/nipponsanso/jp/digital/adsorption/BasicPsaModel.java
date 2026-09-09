@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -392,7 +391,7 @@ public class BasicPsaModel {
                     (a, _) -> a,
                     () -> new EnumMap<>(ColumnKey.class)));
 
-        this.flushHistories(fileName, historyIteratorMap.values());
+        this.flushHistories(fileName, historyIteratorMap);
       } // 出力ファイル名のループ
     } // 空間のループ
   }
@@ -427,32 +426,44 @@ public class BasicPsaModel {
                       entry -> entry.getValue().next().historyListMap().get(fileName).iterator(),
                       (a, _) -> a,
                       () -> new EnumMap<>(ColumnKey.class)));
-          this.flushHistories(fileName, historyIteratorMap.values());
+          this.flushHistories(fileName, historyIteratorMap);
         } // 出力ファイル名のループ
       } // 領域のループ
     } // 領域リストのループ
   }
+
+  /// CSV の列ラベルで製品槽を意味する.
+  private enum ProductTankKey {PRODUCT_TANK}
 
   /// 製品槽の履歴情報を出力する.
   private void flushProductTankHistories() {
     this.productTankModel.historyListMap().forEach(
         (fileName, historyList) -> this.flushHistories(
             fileName,
-            Collections.singleton(historyList.iterator())));
+            Collections.singletonMap(ProductTankKey.PRODUCT_TANK, historyList.iterator())));
   }
 
   /// 履歴情報を出力する共通処理.
   ///
+  /// @param <K> マップのキーの型.
   /// @param fileName 出力ファイル名.
-  /// @param historyIterators 履歴情報イタレータのコレクション.
-  private void flushHistories(String fileName, Collection<Iterator<Double>> historyIterators) {
+  /// @param historyIteratorMap 履歴情報イタレータのマップ.
+  private <K extends Enum<K>> void flushHistories(
+      String fileName, Map<K, Iterator<Double>> historyIteratorMap) {
     List<String> stringList = new ArrayList<>();
     Path file = Paths.get(fileName);
 
     try (CsvWriter csv = CsvWriter.builder().build(file, StandardCharsets.UTF_8)) {
+      stringList.add("Time");
+      historyIteratorMap.keySet().stream()
+          .map(Enum::toString)
+          .forEach(stringList::add);
+      csv.writeRecord(stringList);
+      stringList.clear();
+
       for (Double historyTime : this.historyTimeList) {
         stringList.add(historyTime.toString());
-        for (Iterator<Double> historyIterator : historyIterators) {
+        for (Iterator<Double> historyIterator : historyIteratorMap.values()) {
           stringList.add(historyIterator.next().toString());
         }
 
@@ -486,6 +497,13 @@ public class BasicPsaModel {
     Path file = Paths.get(fileName);
 
     try (CsvWriter csv = CsvWriter.builder().build(file, StandardCharsets.UTF_8)) {
+      stringList.add("Coordinate");
+      cellIteratorMap.keySet().stream()
+          .map(ColumnKey::toString)
+          .forEach(stringList::add);
+      csv.writeRecord(stringList);
+      stringList.clear();
+
       for (ColumnCell axisCell : axisCellList) {
         stringList.add(Double.toString(axisCell.centroid()));
         cellIteratorMap.values().forEach(
