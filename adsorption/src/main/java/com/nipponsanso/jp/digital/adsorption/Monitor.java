@@ -446,4 +446,110 @@ public abstract class Monitor {
                 AdsorbentCell.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat));
   }
 
+  /// 流体フェイスのモニタ.
+  static final class FluidFaceMonitor extends Monitor {
+
+      /// 流体フェイスを引数に取り従属変数の値を返す関数.
+    private final ToDoubleFunction<FluidFace> function;
+
+    /// 流体フェイスのモニタのインスタンスを生成する.
+    ///
+    /// @param toString 文字列表現.
+    /// @param function 流体フェイスを引数に取り従属変数の値を返す関数.
+    private FluidFaceMonitor(String toString, ToDoubleFunction<FluidFace> function) {
+      super(toString);
+      this.function = function;
+    }
+
+    @Override
+    double applyAsDouble(Object object) {
+      Preconditions.checkNotNull(object);
+      if (!(object instanceof FluidFace)) {
+        throw new ClassCastException();
+      }
+
+      return this.function.applyAsDouble((FluidFace) object);
+    }
+
+    /// 流体の質量流量 (kg s<sup>-1</sup>) のモニタ.
+    private static final FluidFaceMonitor MASS_FLOW
+        = new FluidFaceMonitor("massFlow", FluidFace::getMassFlow);
+
+    /// 流体のエネルギ流量 (W) のモニタ.
+    private static final FluidFaceMonitor ENERGY_FLOW
+        = new FluidFaceMonitor("energyFlow", FluidFace::getEnergyFlow);
+
+  } // FluidFaceMonitor
+
+  /// 流体の質量流量のモニタのインスタンスを返す.
+  ///
+  /// @return 質量流量 (kg s<sup>-1</sup>) のモニタのインスタンス.
+  public Monitor massFlow() {
+    return FluidFaceMonitor.MASS_FLOW;
+  }
+
+  /// 流体のエネルギ流量のモニタのインスタンスを返す.
+  ///
+  /// @return 流体のエネルギ流量 (W) のモニタのインスタンス.
+  public Monitor energyFlow() {
+    return FluidFaceMonitor.ENERGY_FLOW;
+  }
+
+  /// 流体フェイス成分値のモニタ.
+  static final class FluidFaceComponentValueMonitor extends Monitor {
+
+    /// 成分のキー.
+    private final ComponentKey componentKey;
+
+    /// 流体フェイス成分値を引数に取り従属変数の値を返す関数.
+    private final ToDoubleFunction<FluidFace.ComponentValue> function;
+
+    /// 流体フェイス成分値のモニタのインスタンスを生成する.
+    ///
+    /// @param toString 文字列表現.
+    /// @param componentKey 成分のキー.
+    /// @param function 流体フェイス成分値を引数に取り従属変数の値を返す関数.
+    FluidFaceComponentValueMonitor(
+        String toString,
+        ComponentKey componentKey,
+        ToDoubleFunction<FluidFace.ComponentValue> function) {
+      super(toString + "[" + componentKey + "]");
+      this.componentKey = componentKey;
+      this.function = function;
+    }
+
+    @Override
+    double applyAsDouble(Object object) {
+      Preconditions.checkNotNull(object);
+      if (!(object instanceof FluidFace)) {
+        throw new ClassCastException();
+      }
+
+      return this.function.applyAsDouble(
+          ((FluidFace) object).componentMap().get(this.componentKey));
+    }
+
+    /// 流体成分の質量流量 (kg s<sup>-1</sup>) のモニタのマップ.
+    private static final Map<ComponentKey, FluidFaceComponentValueMonitor> SPECIES_MAP
+        = new ConcurrentHashMap<>();
+
+  } // FluidFaceComponentValueMonitor
+
+  /// 流体成分の質量流量のモニタを返す.
+  ///
+  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
+  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
+  ///
+  /// @param componentKey 成分のキー.
+  /// @return 流体成分の質量流量 (kg s<sup>-1</sup>) のモニタ.
+  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
+  public static Monitor speciesFlow(ComponentKey componentKey) {
+    Preconditions.checkNotNull(componentKey);
+
+    return FluidFaceComponentValueMonitor.SPECIES_MAP.computeIfAbsent(
+        componentKey,
+        key -> new FluidFaceComponentValueMonitor(
+            "speciesFlow", key, FluidFace.ComponentValue::getSpeciesFlow));
+  }
+
 }

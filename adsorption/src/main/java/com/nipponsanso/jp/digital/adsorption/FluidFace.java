@@ -13,44 +13,44 @@ import java.util.Map;
 /// @author KITAMURA Yuichiro
 abstract class FluidFace extends Face {
 
-  /// 質量流束の位置.
-  private static final int MASS_FLUX = Face.SIZE;
+  /// 質量流量の位置.
+  private static final int MASS_FLOW = Face.SIZE;
 
-  /// エネルギ流束の位置.
-  private static final int ENERGY_FLUX = MASS_FLUX + 1;
+  /// エネルギ流量の位置.
+  private static final int ENERGY_FLOW = MASS_FLOW + 1;
 
   /// 変数の数.
-  static final int SIZE = ENERGY_FLUX + 1;
+  static final int SIZE = ENERGY_FLOW + 1;
 
   /// 流体を含むフェイスのインスタンスを生成する.
   FluidFace() {}
 
-  /// 質量流束を返す.
+  /// 質量流量を返す.
   ///
-  /// @return 質量流束 (kg m<sup>-2</sup> s<sup>-1</sup>).
-  double getMassFlux() {
-    return this.doubleArray()[this.offset() + MASS_FLUX];
+  /// @return 質量流量 (kg ms<sup>-1</sup>).
+  double getMassFlow() {
+    return this.doubleArray()[this.offset() + MASS_FLOW];
   }
 
-  /// 質量流束を設定する.
+  /// 質量流量を設定する.
   ///
-  /// @param massFlux 新たな質量流束 (kg m<sup>-2</sup> s<sup>-1</sup>).
-  void setMassFlux(double massFlux) {
-    this.doubleArray()[this.offset() + MASS_FLUX] = massFlux;
+  /// @param massFlow 新たな質量流量 (kg s<sup>-1</sup>).
+  void setMassFlow(double massFlow) {
+    this.doubleArray()[this.offset() + MASS_FLOW] = massFlow;
   }
 
-  /// エネルギ流束を返す.
+  /// エネルギ流量を返す.
   ///
-  /// @return エネルギ流束 (W m<sup>-2</sup>).
-  double getEnergyFlux() {
-    return this.doubleArray()[this.offset() + ENERGY_FLUX];
+  /// @return エネルギ流量 (W).
+  double getEnergyFlow() {
+    return this.doubleArray()[this.offset() + ENERGY_FLOW];
   }
 
-  /// エネルギ流束を設定する.
+  /// エネルギ流量を設定する.
   ///
-  /// @param energyFlux 新たなエネルギ流束 (W m<sup>-2</sup>).
-  void setEnergyFlux(double energyFlux) {
-    this.doubleArray()[this.offset() + ENERGY_FLUX] = energyFlux;
+  /// @param energyFlow 新たなエネルギ流量 (W).
+  void setEnergyFlow(double energyFlow) {
+    this.doubleArray()[this.offset() + ENERGY_FLOW] = energyFlow;
   }
 
   /// {@inheritDoc}
@@ -62,27 +62,27 @@ abstract class FluidFace extends Face {
   /// 流体を含むフェイスの成分値.
   abstract static class ComponentValue extends Face.ComponentValue {
 
-    /// 化学種流束の位置.
-    private static final int SPECIES_FLUX = Face.ComponentValue.SIZE;
+    /// 化学種流量の位置.
+    private static final int SPECIES_FLOW = Face.ComponentValue.SIZE;
 
     /// 変数の数.
-    static final int SIZE = SPECIES_FLUX + 1;
+    static final int SIZE = SPECIES_FLOW + 1;
 
     /// 流体を含むフェイスの成分値のインスタンスを生成する.
     ComponentValue() {}
 
-    /// 化学種流束を返す.
+    /// 化学種流量を返す.
     ///
-    /// @return 化学種流束 (kg m<sup>-2</sup> s<sup>-1</sup>).
-    double getSpeciesFlux() {
-      return this.doubleArray()[this.offset() + SPECIES_FLUX];
+    /// @return 化学種流量 (kg s<sup>-1</sup>).
+    double getSpeciesFlow() {
+      return this.doubleArray()[this.offset() + SPECIES_FLOW];
     }
 
-    /// 化学種流束を設定する.
+    /// 化学種流量を設定する.
     ///
-    /// @param speciesFlux 新たな化学種流束 (kg m<sup>-2</sup> s<sup>-1</sup>).
-    void setSpeciesFlux(double speciesFlux) {
-      this.doubleArray()[this.offset() + SPECIES_FLUX] = speciesFlux;
+    /// @param speciesFlow 新たな化学種流量 (kg s<sup>-1</sup>).
+    void setSpeciesFlow(double speciesFlow) {
+      this.doubleArray()[this.offset() + SPECIES_FLOW] = speciesFlow;
     }
 
   } // ComponentValue
