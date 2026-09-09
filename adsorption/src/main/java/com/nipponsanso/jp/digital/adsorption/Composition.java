@@ -5,21 +5,23 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /// 組成.
 ///
-/// @param majorComponentKey 主成分のキー.
-/// @param minorComponentKeySet 副成分のキーの不変セット.
-/// @param componentKeySet 全成分のキーの不変セット.
-public record Composition(
-    ComponentKey majorComponentKey,
-    Set<ComponentKey> minorComponentKeySet,
-    Set<ComponentKey> componentKeySet) {
+/// @since 1.0
+/// @author KITAMURA Yuichiro
+public final class Composition {
+
+  private static final Logger LOGGER = LogManager.getLogger(Composition.class);
 
   /// 組成のビルダ.
   public static final class Builder {
@@ -76,18 +78,30 @@ public record Composition(
 
   } // Builder
 
+  /// 主成分のキー.
+  private final ComponentKey majorComponentKey;
+
+  /// 副成分のキーの不変セット.
+  private final Set<ComponentKey> minorComponentKeySet;
+
+  /// 全成分のキーの不変セット.
+  private final Set<ComponentKey> componentKeySet;
+
   /// 組成のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private Composition(Builder builder) {
-    this(
-        builder.majorComponentKey,
-        builder.minorComponentKeySet,
-        Stream.concat(
-            Stream.of(
-                builder.majorComponentKey),
-                builder.minorComponentKeySet.stream())
-            .collect(Sets.toImmutableEnumSet()));
+    this.majorComponentKey = builder.majorComponentKey;
+    this.minorComponentKeySet = Sets.immutableEnumSet(builder.minorComponentKeySet);
+
+    LOGGER.debug("majorComponentKey = {}", this.majorComponentKey);
+    LOGGER.debug("minorComponentKeySet = {}", this.minorComponentKeySet);
+
+    this.componentKeySet
+        = Stream.concat(
+            Stream.of(this.majorComponentKey),
+            this.minorComponentKeySet.stream())
+        .collect(Sets.toImmutableEnumSet());
   }
 
   /// ビルダのインスタンスを生成して返す.
@@ -95,6 +109,101 @@ public record Composition(
   /// @return ビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
+  }
+
+  /// 主成分のキーを返す.
+  ///
+  /// @return 主成分のキー.
+  public ComponentKey majorComponentKey() {
+    return majorComponentKey;
+  }
+
+  /// 副成分のキーの不変セットを返す.
+  ///
+  /// @return 副成分のキーの不変セット.
+  public Set<ComponentKey> minorComponentKeySet() {
+    return this.minorComponentKeySet;
+  }
+
+  /// 全成分のキーの不変セットを返す.
+  ///
+  /// @return 全成分のキーの不変セット.
+  Set<ComponentKey> componentKeySet() {
+    return this.componentKeySet;
+  }
+
+  /// 副成分の質量分率を元に, 主成分の質量分率を更新する.
+  ///
+  /// @param cell セル.
+  void updateMajorFraction(FluidCell cell) {
+    double sumMinorFractions = this.minorComponentKeySet.stream()
+        .map(cell.componentMap()::get)
+        .mapToDouble(FluidCell.ComponentValue::getFraction)
+        .sum();
+    cell.componentMap().get(this.majorComponentKey).setFraction(1. - sumMinorFractions);
+  }
+
+  /// 質量分率を元に, 平均分子量を更新する.
+  ///
+  /// 事前に [#updateMajorFraction(FluidCell)] を呼ぶ必要が有る.
+  ///
+  /// @param cell セル.
+  void updateMolecularWeight(FluidCell cell) {
+    double reciprocalMolecularWeight
+        = cell.componentMap().entrySet().stream()
+        .mapToDouble(entry -> {
+          double molecularWeight = entry.getKey().molecularWeight();
+          double fraction = entry.getValue().getFraction();
+
+          return fraction / molecularWeight;
+        })
+        .sum();
+
+    cell.setMolecularWeight(1. / reciprocalMolecularWeight);
+  }
+
+  /// 質量分率と平均分子量を元に, モル分率を更新する.
+  ///
+  /// 事前に [#updateMolecularWeight(FluidCell)] を呼ぶ必要が有る.
+  ///
+  /// @param cell セル.
+  void updateMolarFractions(FluidCell cell) {
+    final double molecularWeight = cell.getMolecularWeight();
+
+    cell.componentMap().forEach(
+        (componentKey, componentValue) -> componentValue.setMolarFraction(
+            molecularWeight / componentKey.molecularWeight() * componentValue.getFraction()));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o == null || o.getClass() != this.getClass()) {
+      return false;
+    }
+
+    Composition that = (Composition) o;
+
+    return that.majorComponentKey == this.majorComponentKey
+        && this.minorComponentKeySet.equals(that.minorComponentKeySet);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        this.getClass(),
+        this.majorComponentKey,
+        this.minorComponentKeySet);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("majorComponentKey", this.majorComponentKey)
+        .add("minorComponentKeySet", this.minorComponentKeySet)
+        .toString();
   }
 
 }
