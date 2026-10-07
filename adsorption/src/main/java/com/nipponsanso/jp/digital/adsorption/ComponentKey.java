@@ -5,6 +5,7 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.base.Preconditions;
 import com.nipponsanso.jp.digital.LennardJonesPotential;
 import com.nipponsanso.jp.digital.PropertiesGasesLiquids6th;
 import com.nipponsanso.jp.digital.ThermodynamicFunction;
@@ -73,7 +74,7 @@ public enum ComponentKey {
 
   /// 成分のキーのビルダ.
   ///
-  /// 多くの情報を指定するため, 可読性を高めるためにビルダを用いる.
+  /// 多くの情報を指定するため, 可読性を高める目的でビルダを用いる.
   private static final class Builder {
 
     /// 分子量.
@@ -85,6 +86,7 @@ public enum ComponentKey {
     /// レナード-ジョーンズ・ポテンシャル.
     private LennardJonesPotential lennardJonesPotential;
 
+    /// ビルダのインスタンスを生成する.
     private Builder() {}
 
     /// 分子量を設定する.
@@ -128,7 +130,12 @@ public enum ComponentKey {
   /// 成分のキーのインスタンスを生成する.
   ///
   /// @param builder ビルダ.
+  /// @throws IllegalStateException `builder` が不完全な場合.
   ComponentKey(Builder builder) {
+    Preconditions.checkState(builder.molecularWeight > 0.);
+    Preconditions.checkState(builder.thermodynamicFunction != null);
+    Preconditions.checkState(builder.lennardJonesPotential != null);
+
     this.molecularWeight = builder.molecularWeight;
     this.thermodynamicFunction = builder.thermodynamicFunction;
     this.lennardJonesPotential = builder.lennardJonesPotential;

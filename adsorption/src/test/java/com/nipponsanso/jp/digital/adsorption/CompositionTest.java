@@ -7,20 +7,29 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.testing.EqualsTester;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /// [Composition] のテスト.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
+@ExtendWith(MockitoExtension.class)
 class CompositionTest {
 
   /// [Composition.Builder] のテスト.
@@ -113,6 +122,127 @@ class CompositionTest {
                 ComponentKey.ARGON,
                 ComponentKey.NITROGEN,
                 ComponentKey.OXYGEN));
+  }
+
+  @Mock
+  private FluidCell cell;
+
+  @Mock
+  private FluidCell.ComponentValue argonValue;
+
+  @Mock
+  private FluidCell.ComponentValue oxygenValue;
+
+  @Mock
+  private FluidCell.ComponentValue nitrogenValue;
+
+  /// [Composition#updateMajorFraction(FluidCell)] のテスト.
+  @Test
+  void testUpdateMajorFractionFluidCell() {
+    final double argonFraction = 0.01288;
+    final double oxygenFraction = 0.23139;
+    final double nitrogenFraction = 1. - argonFraction - oxygenFraction;
+
+    doReturn(argonFraction).when(this.argonValue).getFraction();
+    doReturn(oxygenFraction).when(this.oxygenValue).getFraction();
+    doAnswer(
+        invocation -> assertThat(invocation.getArgument(0, Double.class))
+            .isCloseTo(nitrogenFraction, within(1e-9)))
+        .when(this.nitrogenValue).setFraction(anyDouble());
+    doReturn(
+        Map.of(
+            ComponentKey.ARGON, this.argonValue,
+            ComponentKey.OXYGEN, this.oxygenValue,
+            ComponentKey.NITROGEN, this.nitrogenValue))
+        .when(this.cell).componentMap();
+
+    Composition composition = Composition.builder()
+        .majorComponentKey(ComponentKey.NITROGEN)
+        .minorComponentKey(ComponentKey.ARGON)
+        .minorComponentKey(ComponentKey.OXYGEN)
+        .build();
+
+    composition.updateMajorFraction(this.cell);
+  }
+
+  /// [Composition#updateMolecularWeight(FluidCell)] のテスト.
+  @Test
+  void testUpdateMolecularWeightFluidCell() {
+    final double argonFraction = 0.01288;
+    final double oxygenFraction = 0.23139;
+    final double nitrogenFraction = 1. - argonFraction - oxygenFraction;
+    final double molecularWeight = 28.97;
+
+    doReturn(argonFraction).when(this.argonValue).getFraction();
+    doReturn(oxygenFraction).when(this.oxygenValue).getFraction();
+    doReturn(nitrogenFraction).when(this.nitrogenValue).getFraction();
+    doReturn(
+        Map.of(
+            ComponentKey.ARGON, this.argonValue,
+            ComponentKey.OXYGEN, this.oxygenValue,
+            ComponentKey.NITROGEN, this.nitrogenValue))
+        .when(this.cell).componentMap();
+
+    doAnswer(
+        invocation -> assertThat(invocation.getArgument(0, Double.class))
+            .isCloseTo(molecularWeight, within(0.1)))
+        .when(this.cell)
+        .setMolecularWeight(anyDouble());
+
+    Composition composition = Composition.builder()
+        .majorComponentKey(ComponentKey.NITROGEN)
+        .minorComponentKey(ComponentKey.ARGON)
+        .minorComponentKey(ComponentKey.OXYGEN)
+        .build();
+
+    composition.updateMolecularWeight(this.cell);
+  }
+
+  /// [Composition#updateMolarFractions(FluidCell)] のテスト.
+  @Test
+  void testUpdateMolarFractionsFluidCell() {
+    final double argonFraction = 0.01288;
+    final double oxygenFraction = 0.23139;
+    final double nitrogenFraction = 1. - argonFraction - oxygenFraction;
+    final double molecularWeight = 28.97;
+    final double argonMolarFraction = 0.0093;
+    final double oxygenMolarFraction = 0.2095;
+    final double nitrogenMolarFraction = 1. - argonMolarFraction - oxygenMolarFraction;
+
+    doReturn(argonFraction).when(this.argonValue).getFraction();
+    doReturn(oxygenFraction).when(this.oxygenValue).getFraction();
+    doReturn(nitrogenFraction).when(this.nitrogenValue).getFraction();
+    doReturn(molecularWeight).when(this.cell).getMolecularWeight();
+    doReturn(
+        Map.of(
+            ComponentKey.ARGON, this.argonValue,
+            ComponentKey.OXYGEN, this.oxygenValue,
+            ComponentKey.NITROGEN, this.nitrogenValue))
+        .when(this.cell).componentMap();
+
+    doAnswer(
+        invocation -> assertThat(invocation.getArgument(0, Double.class))
+            .isCloseTo(argonMolarFraction, within(1e-3)))
+        .when(this.argonValue)
+        .setMolarFraction(anyDouble());
+    doAnswer(
+        invocation -> assertThat(invocation.getArgument(0, Double.class))
+            .isCloseTo(oxygenMolarFraction, within(1e-3)))
+        .when(this.oxygenValue)
+        .setMolarFraction(anyDouble());
+    doAnswer(
+        invocation -> assertThat(invocation.getArgument(0, Double.class))
+            .isCloseTo(nitrogenMolarFraction, within(1e-3)))
+        .when(this.nitrogenValue)
+        .setMolarFraction(anyDouble());
+
+    Composition composition = Composition.builder()
+        .majorComponentKey(ComponentKey.NITROGEN)
+        .minorComponentKey(ComponentKey.ARGON)
+        .minorComponentKey(ComponentKey.OXYGEN)
+        .build();
+
+    composition.updateMolarFractions(this.cell);
   }
 
   /// [Composition#equals(Object)] と [Composition#hashCode()] のテスト.
