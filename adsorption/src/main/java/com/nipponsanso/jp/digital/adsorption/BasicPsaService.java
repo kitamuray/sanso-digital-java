@@ -14,4 +14,10 @@ abstract class BasicPsaService {
   /// 基本 PSA サービスのインスタンスを生成する.
   BasicPsaService() {}
 
+  /// 初期化を行う.
+  ///
+  /// @param process プロセス.
+  /// @param model モデル.
+  void initialize(BasicPsaProcess process, BasicPsaModel model) {}
+
 }

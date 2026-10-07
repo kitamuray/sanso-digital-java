@@ -41,12 +41,11 @@ public final class BasicPsaSolver extends AdsorbentSolver<BasicPsaSolver> {
   ///
   /// @param process プロセス.
   BasicPsaSolver(BasicPsaProcess process) {
-    this(process, null);
+    this(
+        process,
+        InitializeBasicPsaService.getInstance());
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   BasicPsaSolver self() {
     return this;

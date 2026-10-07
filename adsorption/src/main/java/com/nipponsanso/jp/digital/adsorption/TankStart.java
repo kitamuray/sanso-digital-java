@@ -9,6 +9,8 @@ import com.google.common.base.MoreObjects;
 
 /// 貯槽の開始条件.
 ///
+/// このクラスのインスタンスは不変(immutable)である.
+///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 public final class TankStart extends FluidStart {
@@ -19,9 +21,6 @@ public final class TankStart extends FluidStart {
     /// 貯槽の開始条件のビルダのインスタンスを生成する.
     private Builder() {}
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     Builder self() {
       return this;
@@ -49,6 +48,13 @@ public final class TankStart extends FluidStart {
   /// @return 貯槽の開始条件のビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
+  }
+
+  /// 指定された貯槽のセルへ開始条件を設定する.
+  ///
+  /// @param cell 貯槽のセル.
+  void start(TankCell cell) {
+    super.start(cell);
   }
 
   @Override

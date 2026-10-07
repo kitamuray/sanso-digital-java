@@ -13,27 +13,27 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/// 流体の開始条件.
+/// 流体が関わる開始条件のスケルトン実装.
+///
+/// このクラスは可変(mutable)フィールドを有しない.
+/// 継承した具象クラスは不変(immutable)でなければならない.
 ///
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class FluidStart {
+abstract class FluidStart extends Start {
 
   private static final Logger LOGGER = LogManager.getLogger(FluidStart.class);
 
-  /// 流体の開始条件のビルダ.
+  /// 流体の開始条件のビルダのスケルトン実装.
   ///
   /// @param <B> ビルダの型.
-  abstract static class Builder<B extends Builder<B>> {
+  abstract static class Builder<B extends Builder<B>> extends Start.Builder<B> {
 
     /// 流体の熱力学的温度 (K).
     private double temperature = 298.15;
 
     /// 流体の絶対圧力 (Pa).
     private double pressure = 101325.;
-
-    /// 成分のキー.
-    private ComponentKey componentKey;
 
     /// 流体成分の質量分率 (-) のマップ.
     private final Map<ComponentKey, Double> fractionMap = new EnumMap<>(ComponentKey.class);
@@ -65,52 +65,32 @@ abstract class FluidStart {
       return this.self();
     }
 
-    /// 流体成分の質量分率のマップを設定するビルダのインスタンスを生成して返す.
+    /// 流体成分の質量分率を設定する.
     ///
-    /// @param componentKey 成分のキー.
-    /// @throws NullPointerException `componentKey` が `null` の場合.
-    public final FractionMapBuilder componentKey(ComponentKey componentKey) {
-      return new FractionMapBuilder(componentKey);
+    /// @param fraction 流体成分の質量分率 (-).
+    /// @return ビルダのインスタンス.
+    /// @throws IllegalStateException 成分のキーが未設定の場合.
+    /// @throws IllegalArgumentException `fraction` が 0 未満か,
+    ///     `fraction` を含む設定値総計が 1 を超える場合.
+    public final B fraction(double fraction) {
+      Preconditions.checkState(this.currentComponentKey().isPresent());
+      ComponentKey componentKey = this.currentComponentKey().get();
+
+      Preconditions.checkArgument(fraction >= 0.);
+      Preconditions.checkArgument(
+          this.fractionMap.entrySet().stream()
+              .filter(entry -> entry.getKey() != componentKey)
+              .mapToDouble(Map.Entry::getValue)
+              .sum() + fraction <= 1.);
+
+      this.fractionMap.put(componentKey, fraction);
+      return this.self();
     }
 
-    /// ビルダのインスタンスを返す.
+    /// 流体が関わる開始条件のインスタンスを生成して返す.
     ///
-    /// @return ビルダのインスタンス.
-    abstract B self();
-
-    /// 流体の開始条件のインスタンスを生成して返す.
-    ///
-    /// @return 流体の開始条件のインスタンス.
+    /// @return 流体が関わる開始条件のインスタンス.
     public abstract FluidStart build();
-
-    /// 流体成分の質量分率のマップを設定するビルダ.
-    public final class FractionMapBuilder extends AbstractFractionMapBuilder<B> {
-
-      /// 流体成分の質量分率のマップを設定するビルダのインスタンスを生成する.
-      ///
-      /// @param componentKey 成分のキー.
-      /// @throws NullPointerException `componentKey` が `null` の場合.
-      private FractionMapBuilder(ComponentKey componentKey) {
-        super(componentKey);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<ComponentKey, Double> fractionMap() {
-        return Builder.this.fractionMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      B self() {
-        return Builder.this.self();
-      }
-
-    } // FractionMapBuilder
 
   } // Builder
 
@@ -127,6 +107,8 @@ abstract class FluidStart {
   ///
   /// @param builder ビルダ.
   FluidStart(Builder<?> builder) {
+    super(builder);
+
     this.temperature = builder.temperature;
     this.pressure = builder.pressure;
     this.fractionMap = Maps.immutableEnumMap(builder.fractionMap);
@@ -157,10 +139,12 @@ abstract class FluidStart {
     return this.fractionMap;
   }
 
-  /// 指定されたセルへ初期条件を設定する.
+  /// 指定された流体を含むセルへ初期条件を設定する.
   ///
-  /// @param cell セル.
+  /// @param cell 流体を含むセル.
   void start(FluidCell cell) {
+    super.start(cell);
+
     cell.setTemperature(this.temperature);
     cell.setPressure(this.pressure);
     cell.componentMap().forEach(

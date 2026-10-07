@@ -9,6 +9,8 @@ import com.google.common.base.MoreObjects;
 
 /// 吸着筒の開始条件.
 ///
+/// このクラスのインスタンスは不変(immutable)である.
+///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 public class ColumnStart extends AdsorbentStart {
@@ -19,9 +21,6 @@ public class ColumnStart extends AdsorbentStart {
     /// 吸着筒の開始条件のビルダのインスタンスを生成する.
     private Builder() {}
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     Builder self() {
       return this;
@@ -51,6 +50,13 @@ public class ColumnStart extends AdsorbentStart {
     return new Builder();
   }
 
+  /// 指定された吸着筒のセルへ開始条件を設定する.
+  ///
+  /// @param cell 吸着筒のセル.
+  void start(ColumnCell cell) {
+    super.start(cell);
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
@@ -58,7 +64,6 @@ public class ColumnStart extends AdsorbentStart {
         .add("pressure", this.pressure())
         .add("fractionMap", this.fractionMap())
         .add("shellTemperature", this.shellTemperature())
-        .add("fractionMap", this.fractionMap())
         .toString();
   }
 

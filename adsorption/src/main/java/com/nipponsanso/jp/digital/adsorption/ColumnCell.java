@@ -119,6 +119,13 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
   /// {@inheritDoc}
   ///
   /// @return {@inheritDoc}
+  public double shellVolume() {
+    return this.doubleArray()[this.offset() + SHELL_VOLUME];
+  }
+
+  /// {@inheritDoc}
+  ///
+  /// @return {@inheritDoc}
   public double insideArea() {
     return this.doubleArray()[this.offset() + INSIDE_AREA];
   }

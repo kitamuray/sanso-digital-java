@@ -10,15 +10,22 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/// 容器の開始条件.
+/// 容器が関わる開始条件のスケルトン実装.
 ///
-/// @since 1.0
+/// このクラスは可変(mutable)フィールドを有しない.
+/// 継承した具象クラスは不変(immutable)でなければならない.
+///
+/// 容器が関わる場合は必ず流体も関わる.
+///
+/// @since 1.1
 /// @author KITAMURA Yuichiro
 abstract class ShellStart extends FluidStart {
 
   private static final Logger LOGGER = LogManager.getLogger(ShellStart.class);
 
-  /// 容器の開始条件のビルダ.
+  /// 容器が関わる開始条件のビルダのスケルトン実装.
+  ///
+  /// @param <B> ビルダの型.
   static abstract class Builder<B extends Builder<B>> extends FluidStart.Builder<B> {
 
     /// 容器の熱力学的温度 (K).
@@ -37,18 +44,13 @@ abstract class ShellStart extends FluidStart {
       Preconditions.checkArgument(shellTemperature > 0.);
 
       this.shellTemperature = shellTemperature;
+
       return this.self();
     }
 
-    /// {@inheritDoc}
+    /// 容器が関わる開始条件のインスタンスを生成して返す.
     ///
-    /// @return {@inheritDoc}
-    @Override
-    abstract B self();
-
-    /// 容器の開始条件のインスタンスを生成して返す.
-    ///
-    /// @return 容器の開始条件のインスタンス.
+    /// @return 容器が関わる開始条件のインスタンス.
     @Override
     public abstract ShellStart build();
 
@@ -57,7 +59,7 @@ abstract class ShellStart extends FluidStart {
   /// 容器の熱力学的温度 (K).
   private final double shellTemperature;
 
-  /// 容器の開始条件のインスタンスを生成する.
+  /// 容器が関わる開始条件のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   ShellStart(Builder<?> builder) {
@@ -75,7 +77,7 @@ abstract class ShellStart extends FluidStart {
     return this.shellTemperature;
   }
 
-  /// 指定されたセルへ開始条件を設定する.
+  /// 指定された容器を含むセルへ開始条件を設定する.
   ///
   /// @param cell セル.
   void start(ShellCell cell) {
