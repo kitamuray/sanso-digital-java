@@ -289,34 +289,4 @@ class MonitorTest {
         .isEqualTo(value);
   }
 
-  /// [Monitor#molarSpecificConstantVolumeSpecificHeat(ComponentKey)] のテスト.
-  @Test
-  void testMolarSpecificConstantVolumeSpecificHeatComponentKey() {
-    assertThatThrownBy(() -> Monitor.molarSpecificConstantVolumeSpecificHeat(null))
-        .isInstanceOf(NullPointerException.class);
-    assertThatThrownBy(
-        () -> Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN)
-            .applyAsDouble(null))
-        .isInstanceOf(NullPointerException.class);
-    assertThatThrownBy(
-        () -> Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN)
-            .applyAsDouble(1))
-        .isInstanceOf(ClassCastException.class);
-
-    assertThat(Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN))
-        .hasToString(
-            "molarSpecificConstantVolumeSpecificHeat[" + ComponentKey.NITROGEN + "]");
-
-    final double value = 12.;
-    doReturn(value).when(this.adsorbentValue).getMolarSpecificConstantVolumeSpecificHeat();
-    doReturn(Map.of(ComponentKey.NITROGEN, this.adsorbentValue))
-        .when(this.adsorbentCell)
-        .componentMap();
-
-    assertThat(
-        Monitor.molarSpecificConstantVolumeSpecificHeat(ComponentKey.NITROGEN)
-            .applyAsDouble(this.adsorbentCell))
-        .isEqualTo(value);
-  }
-
 }

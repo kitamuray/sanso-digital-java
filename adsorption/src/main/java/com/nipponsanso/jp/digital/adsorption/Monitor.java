@@ -18,6 +18,9 @@ import java.util.function.ToDoubleFunction;
 /// @author KITAMURA Yuichiro
 public abstract class Monitor {
 
+  // Initialization-on-demand holder idiom を採用
+  // セル・フェイスの選択が不適切な場合, compile 時ではなく runtime error とする
+
   /// 文字列表現.
   private final String toString;
 
@@ -32,7 +35,7 @@ public abstract class Monitor {
   ///
   /// @param object オブジェクト.
   /// @return 指定されたオブジェクトの有する従属変数の値.
-  /// @throws NullPointerException `object` が `null` の場合.
+  /// @throws NullPointerException `object` またはその構成要素が `null` の場合.
   /// @throws ClassCastException `object` が対象とするデータ型ではない場合.
   abstract double applyAsDouble(Object object);
 
@@ -96,7 +99,33 @@ public abstract class Monitor {
     private static final FluidCellMonitor THERMAL_CONDUCTIVITY
         = new FluidCellMonitor("thermalConductivity", FluidCell::getThermalConductivity);
 
+    /// 流体成分の質量分率 (-) のモニタ.
+    private static final Map<ComponentKey, FluidCellMonitor> FRACTION_MAP
+        = new ConcurrentHashMap<>();
+
+    /// 流体成分の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>) のモニタ.
+    private static final Map<ComponentKey, FluidCellMonitor> DIFFUSIVITY_MAP
+        = new ConcurrentHashMap<>();
+
   } // FluidCellMonitor
+
+  /// 流体成分のラッパ.
+  ///
+  /// @param componentKey 成分のキー.
+  /// @param function セルの成分値を引数に取り値を返す関数.
+  private record FluidCellComponent(
+      ComponentKey componentKey,
+      ToDoubleFunction<FluidCell.ComponentValue> function) implements ToDoubleFunction<FluidCell> {
+
+    @Override
+    public double applyAsDouble(FluidCell cell) {
+      // Preconditions.checkNotNull(cell); -> 事前に実行済
+      FluidCell.ComponentValue value = cell.componentMap().get(this.componentKey);
+      Preconditions.checkNotNull(value);
+      return this.function.applyAsDouble(value);
+    }
+
+  } // FluidCellComponent
 
   /// 流体の熱力学的温度のモニタを返す.
   ///
@@ -168,82 +197,36 @@ public abstract class Monitor {
     return FluidCellMonitor.THERMAL_CONDUCTIVITY;
   }
 
-  /// 流体セル成分値のモニタ.
-  static final class FluidCellComponentValueMonitor extends Monitor {
-
-    /// 成分のキー.
-    private final ComponentKey componentKey;
-
-    /// 流体セル成分値を引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<FluidCell.ComponentValue> function;
-
-    /// 流体セル成分値のモニタのインスタンスを生成する.
-    ///
-    /// @param toString 文字列表現.
-    /// @param componentKey 成分のキー.
-    /// @param function 流体セル成分値を引数に取り従属変数の値を返す関数.
-    private FluidCellComponentValueMonitor(
-        String toString,
-        ComponentKey componentKey,
-        ToDoubleFunction<FluidCell.ComponentValue> function) {
-      super(toString + "[" + componentKey + "]");
-      this.componentKey = componentKey;
-      this.function = function;
-    }
-
-    @Override
-    double applyAsDouble(Object object) {
-      Preconditions.checkNotNull(object);
-      if (!(object instanceof FluidCell)) {
-        throw new ClassCastException();
-      }
-
-      return this.function.applyAsDouble(
-          ((FluidCell) object).componentMap().get(this.componentKey));
-    }
-
-    /// 流体成分の質量分率 (-) のモニタのマップ.
-    private static final Map<ComponentKey, FluidCellComponentValueMonitor> FRACTION_MAP
-        = new ConcurrentHashMap<>();
-
-    /// 流体成分の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, FluidCellComponentValueMonitor> DIFFUSIVITY_MAP
-        = new ConcurrentHashMap<>();
-
-  } // FluidCellComponentValueMonitor
-
   /// 流体成分の質量分率のモニタを返す.
   ///
-  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは同じ `componentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 流体成分の質量分率 (-) のモニタ.
-  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
+  /// @throws NullPointerException `componentKey` が `null` の場合.
   public static Monitor fraction(ComponentKey componentKey) {
-    Preconditions.checkNotNull(componentKey);
-
-    return FluidCellComponentValueMonitor.FRACTION_MAP.computeIfAbsent(
-        componentKey,
-        key -> new FluidCellComponentValueMonitor(
-            "fraction", key, FluidCell.ComponentValue::getFraction));
+    return FluidCellMonitor.FRACTION_MAP.computeIfAbsent(
+        componentKey, // null -> NullPointerException
+        key -> new FluidCellMonitor(
+            "fraction[" + key.name() + "]",
+            new FluidCellComponent(key, FluidCell.ComponentValue::getFraction)));
   }
 
-  /// 流体成分の質量分率のモニタを返す.
+  /// 流体成分の物質拡散係数のモニタを返す.
   ///
-  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは同じ `componentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
-  /// @return 流体成分の質量分率 (-) のモニタ.
-  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
+  /// @return 流体成分の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>) のモニタ.
+  /// @throws NullPointerException `componentKey` が `null` の場合.
   public static Monitor diffusivity(ComponentKey componentKey) {
-    Preconditions.checkNotNull(componentKey);
-
-    return FluidCellComponentValueMonitor.DIFFUSIVITY_MAP.computeIfAbsent(
-        componentKey,
-        key -> new FluidCellComponentValueMonitor(
-            "diffusivity", key, FluidCell.ComponentValue::getDiffusivity));
+    return FluidCellMonitor.DIFFUSIVITY_MAP.computeIfAbsent(
+        componentKey, // null -> NullPointerException
+        key -> new FluidCellMonitor(
+            "diffusivity[" + key.name() + "]",
+            new FluidCellComponent(key, FluidCell.ComponentValue::getDiffusivity)));
   }
 
   /// 容器セルのモニタ.
@@ -352,7 +335,30 @@ public abstract class Monitor {
         "adsorbentSpecificHeat",
         AdsorbentCell::getAdsorbentSpecificHeat);
 
+    /// 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタのマップ.
+    private static final Map<ComponentKey, AdsorbentCellMonitor> MOLAR_QUANTITY_MAP
+        = new ConcurrentHashMap<>();
+
   } // AdsorbentCellMonitor
+
+  /// 吸着剤成分のラッパ.
+  ///
+  /// @param componentKey 成分のキー.
+  /// @param function セルの成分値を引数に取り値を返す関数.
+  private record AdsorbentCellComponent(
+      ComponentKey componentKey,
+      ToDoubleFunction<AdsorbentCell.ComponentValue> function)
+      implements ToDoubleFunction<AdsorbentCell> {
+
+    @Override
+    public double applyAsDouble(AdsorbentCell cell) {
+      // Preconditions.checkNotNull(cell); -> 事前に実行済
+      AdsorbentCell.ComponentValue value = cell.componentMap().get(this.componentKey);
+      Preconditions.checkNotNull(value);
+      return this.function.applyAsDouble(value);
+    }
+
+  } // AdsorbentCellComponent
 
   /// 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタを返す.
   ///
@@ -364,51 +370,6 @@ public abstract class Monitor {
     return AdsorbentCellMonitor.ADSORBENT_SPECIFIC_HEAT;
   }
 
-  /// 吸着剤セル成分値のモニタ.
-  static final class AdsorbentCellComponentValueMonitor extends Monitor {
-
-    /// 成分のキー.
-    private final ComponentKey componentKey;
-
-    /// 吸着剤セル成分値を引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<AdsorbentCell.ComponentValue> function;
-
-    /// 吸着剤セル成分値のモニタのインスタンスを生成する.
-    ///
-    /// @param toString 文字列表現.
-    /// @param componentKey 成分のキー.
-    /// @param function 吸着剤セル成分値を引数に取り従属変数の値を返す関数.
-    private AdsorbentCellComponentValueMonitor(
-        String toString,
-        ComponentKey componentKey,
-        ToDoubleFunction<AdsorbentCell.ComponentValue> function) {
-      super(toString + "[" + componentKey + "]");
-      this.componentKey = componentKey;
-      this.function = function;
-    }
-
-    @Override
-    double applyAsDouble(Object object) {
-      Preconditions.checkNotNull(object);
-      if (!(object instanceof AdsorbentCell)) {
-        throw new ClassCastException();
-      }
-
-      return this.function.applyAsDouble(
-          ((AdsorbentCell) object).componentMap().get(this.componentKey));
-    }
-
-    /// 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, AdsorbentCellComponentValueMonitor> MOLAR_QUANTITY_MAP
-        = new ConcurrentHashMap<>();
-
-    /// 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, AdsorbentCellComponentValueMonitor>
-        MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
-          = new ConcurrentHashMap<>();
-
-  } // AdsorbentCellComponentValueMonitor
-
   /// 吸着質成分のモル吸着量のモニタを返す.
   ///
   /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
@@ -418,32 +379,11 @@ public abstract class Monitor {
   /// @return 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタ.
   /// @throws NullPointerException `majorComponentKey` が `null` の場合.
   public static Monitor molarQuantity(ComponentKey componentKey) {
-    Preconditions.checkNotNull(componentKey);
-
-    return AdsorbentCellComponentValueMonitor.MOLAR_QUANTITY_MAP.computeIfAbsent(
+    return AdsorbentCellMonitor.MOLAR_QUANTITY_MAP.computeIfAbsent(
         componentKey,
-        key -> new AdsorbentCellComponentValueMonitor(
-            "molarQuantity", key, AdsorbentCell.ComponentValue::getMolarQuantity));
-  }
-
-  /// 吸着質成分のモル定積比熱のモニタを返す.
-  ///
-  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
-  /// 無条件のスレッド安全（Unconditionally thread-safe）である.
-  ///
-  /// @param componentKey 成分のキー.
-  /// @return 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>) のモニタ.
-  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
-  public static Monitor molarSpecificConstantVolumeSpecificHeat(ComponentKey componentKey) {
-    Preconditions.checkNotNull(componentKey);
-
-    return AdsorbentCellComponentValueMonitor.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT_MAP
-        .computeIfAbsent(
-            componentKey,
-            key -> new AdsorbentCellComponentValueMonitor(
-                "molarSpecificConstantVolumeSpecificHeat",
-                key,
-                AdsorbentCell.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat));
+        key -> new AdsorbentCellMonitor(
+            "molarQuantity[" + key.name() + "]",
+            new AdsorbentCellComponent(key, AdsorbentCell.ComponentValue::getMolarQuantity)));
   }
 
   /// 流体フェイスのモニタ.
@@ -479,7 +419,29 @@ public abstract class Monitor {
     private static final FluidFaceMonitor ENERGY_FLOW
         = new FluidFaceMonitor("energyFlow", FluidFace::getEnergyFlow);
 
+    /// 流体成分の化学種流量 (kg s<sup>-1</sup>) のモニタのマップ.
+    private static final Map<ComponentKey, FluidFaceMonitor> SPECIES_FLOW_MAP
+        = new ConcurrentHashMap<>();
+
   } // FluidFaceMonitor
+
+  /// 流体成分のラッパ.
+  ///
+  /// @param componentKey 成分のキー.
+  /// @param function フェイスの成分値を引数に取り値を返す関数.
+  private record FluidFaceComponent(
+      ComponentKey componentKey,
+      ToDoubleFunction<FluidFace.ComponentValue> function) implements ToDoubleFunction<FluidFace> {
+
+    @Override
+    public double applyAsDouble(FluidFace cell) {
+      // Preconditions.checkNotNull(cell); -> 事前に実行済
+      FluidFace.ComponentValue value = cell.componentMap().get(this.componentKey);
+      Preconditions.checkNotNull(value);
+      return this.function.applyAsDouble(value);
+    }
+
+  } // FluidCellComponent
 
   /// 流体の質量流量のモニタのインスタンスを返す.
   ///
@@ -495,61 +457,20 @@ public abstract class Monitor {
     return FluidFaceMonitor.ENERGY_FLOW;
   }
 
-  /// 流体フェイス成分値のモニタ.
-  static final class FluidFaceComponentValueMonitor extends Monitor {
-
-    /// 成分のキー.
-    private final ComponentKey componentKey;
-
-    /// 流体フェイス成分値を引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<FluidFace.ComponentValue> function;
-
-    /// 流体フェイス成分値のモニタのインスタンスを生成する.
-    ///
-    /// @param toString 文字列表現.
-    /// @param componentKey 成分のキー.
-    /// @param function 流体フェイス成分値を引数に取り従属変数の値を返す関数.
-    FluidFaceComponentValueMonitor(
-        String toString,
-        ComponentKey componentKey,
-        ToDoubleFunction<FluidFace.ComponentValue> function) {
-      super(toString + "[" + componentKey + "]");
-      this.componentKey = componentKey;
-      this.function = function;
-    }
-
-    @Override
-    double applyAsDouble(Object object) {
-      Preconditions.checkNotNull(object);
-      if (!(object instanceof FluidFace)) {
-        throw new ClassCastException();
-      }
-
-      return this.function.applyAsDouble(
-          ((FluidFace) object).componentMap().get(this.componentKey));
-    }
-
-    /// 流体成分の質量流量 (kg s<sup>-1</sup>) のモニタのマップ.
-    private static final Map<ComponentKey, FluidFaceComponentValueMonitor> SPECIES_MAP
-        = new ConcurrentHashMap<>();
-
-  } // FluidFaceComponentValueMonitor
-
   /// 流体成分の質量流量のモニタを返す.
   ///
-  /// このメソッドは指定された `majorComponentKey` に対し常に同じインスタンスを返し,
+  /// このメソッドは指定された `componentKey` に対し常に同じインスタンスを返し,
   /// 無条件のスレッド安全（Unconditionally thread-safe）である.
   ///
   /// @param componentKey 成分のキー.
   /// @return 流体成分の質量流量 (kg s<sup>-1</sup>) のモニタ.
-  /// @throws NullPointerException `majorComponentKey` が `null` の場合.
+  /// @throws NullPointerException `componentKey` が `null` の場合.
   public static Monitor speciesFlow(ComponentKey componentKey) {
-    Preconditions.checkNotNull(componentKey);
-
-    return FluidFaceComponentValueMonitor.SPECIES_MAP.computeIfAbsent(
-        componentKey,
-        key -> new FluidFaceComponentValueMonitor(
-            "speciesFlow", key, FluidFace.ComponentValue::getSpeciesFlow));
+    return FluidFaceMonitor.SPECIES_FLOW_MAP.computeIfAbsent(
+        componentKey, // null -> NullPointerException
+        key -> new FluidFaceMonitor(
+            "speciesFlow[" + key.name() + "]",
+            new FluidFaceComponent(key, FluidFace.ComponentValue::getSpeciesFlow)));
   }
 
 }
