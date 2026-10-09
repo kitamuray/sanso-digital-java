@@ -36,6 +36,7 @@ public final class ColumnZone {
     /// 区間を指定する.
     ///
     /// @param section 区間.
+    /// @return ビルダのインスタンス.
     /// @throws NullPointerException `section` が `null` の場合.
     /// @throws IllegalStateException `section` の分割数が小さい場合.
     public Builder section(Section section) {
@@ -54,6 +55,7 @@ public final class ColumnZone {
     /// 吸着剤を設定する.
     ///
     /// @param adsorbent 吸着剤.
+    /// @return ビルダのインスタンス.
     /// @throws NullPointerException `adsorbent` が `null` の場合.
     public Builder adsorbent(Adsorbent adsorbent) {
       this.adsorbent = Preconditions.checkNotNull(adsorbent);

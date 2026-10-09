@@ -59,7 +59,7 @@ class ColumnSpaceTest {
         assertThatThrownBy(
             () -> ColumnSpace.builder()
                 .fileName("foo")
-                .monitor(Monitor.adsorbentSpecificHeat()))
+                .monitor(Monitor.massFlow()))
             .isInstanceOf(IllegalArgumentException.class);
       }
 

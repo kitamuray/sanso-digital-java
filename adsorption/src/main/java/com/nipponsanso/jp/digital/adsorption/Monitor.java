@@ -446,14 +446,14 @@ public abstract class Monitor {
   /// 流体の質量流量のモニタのインスタンスを返す.
   ///
   /// @return 質量流量 (kg s<sup>-1</sup>) のモニタのインスタンス.
-  public Monitor massFlow() {
+  public static Monitor massFlow() {
     return FluidFaceMonitor.MASS_FLOW;
   }
 
   /// 流体のエネルギ流量のモニタのインスタンスを返す.
   ///
   /// @return 流体のエネルギ流量 (W) のモニタのインスタンス.
-  public Monitor energyFlow() {
+  public static Monitor energyFlow() {
     return FluidFaceMonitor.ENERGY_FLOW;
   }
 
