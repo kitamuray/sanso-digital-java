@@ -301,7 +301,7 @@ public final class BasicPsaProcess {
     /// @return On-Off 弁と調節弁の組み合わせのマップのビルダのインスタンス.
     /// @throws NullPointerException `lineKey` が `null` の場合.
     public OnOffAndRestrictValveMapBuilder<Builder> blow(LineKey lineKey) {
-      return new OnOffAndRestrictValveMapBuilder<Builder>(lineKey) {
+      return new OnOffAndRestrictValveMapBuilder<>(lineKey) {
         @Override
         Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
           return Builder.this.blowValveMap;
@@ -320,7 +320,7 @@ public final class BasicPsaProcess {
     /// @return On-Off 弁と調節弁の組み合わせのマップのビルダのインスタンス.
     /// @throws NullPointerException `lineKey` が `null` の場合.
     public OnOffAndRestrictValveMapBuilder<Builder> upperEqualization(LineKey lineKey) {
-      return new OnOffAndRestrictValveMapBuilder<Builder>(lineKey) {
+      return new OnOffAndRestrictValveMapBuilder<>(lineKey) {
         @Override
         Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
           return Builder.this.upperEqualizationValveMap;
@@ -339,7 +339,7 @@ public final class BasicPsaProcess {
     /// @return 下部均圧弁のビルダのインスタンス.
     /// @throws NullPointerException `lineKey` が `null` の場合.
     public OnOffAndRestrictValveMapBuilder<Builder> lowerEqualization(LineKey lineKey) {
-      return new OnOffAndRestrictValveMapBuilder<Builder>(lineKey) {
+      return new OnOffAndRestrictValveMapBuilder<>(lineKey) {
         @Override
         Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
           return Builder.this.lowerEqualizationValveMap;
