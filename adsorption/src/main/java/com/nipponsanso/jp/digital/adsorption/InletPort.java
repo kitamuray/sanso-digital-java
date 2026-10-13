@@ -71,8 +71,18 @@ public final class InletPort extends Port {
     /// @param componentKey 流体成分のキー.
     /// @return ビルダのインスタンス.
     /// @throws NullPointerException `componentKey` が `null` の場合.
-    public FractionMapBuilder componentKey(ComponentKey componentKey) {
-      return new FractionMapBuilder(componentKey);
+    public FractionMapBuilder<Builder> componentKey(ComponentKey componentKey) {
+      return new FractionMapBuilder<Builder>(componentKey) {
+        @Override
+        Map<ComponentKey, Double> fractionMap() {
+          return Builder.this.fractionMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// モニタ出力先のファイル名を設定する.
@@ -100,35 +110,6 @@ public final class InletPort extends Port {
     public InletPort build() {
       return new InletPort(this);
     }
-
-    /// 質量分率のマップのビルダ.
-    public final class FractionMapBuilder extends AbstractFractionMapBuilder<Builder> {
-
-      /// 質量分率のマップのビルダを生成する.
-      ///
-      /// @param componentKey 成分のキー.
-      /// @throws NullPointerException `componentKey` が `null` の場合.
-      private FractionMapBuilder(ComponentKey componentKey) {
-        super(componentKey);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<ComponentKey, Double> fractionMap() {
-        return Builder.this.fractionMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Builder self() {
-        return Builder.this;
-      }
-
-    } // FractionMapBuilder
 
   } // Builder
 

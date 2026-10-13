@@ -13,7 +13,7 @@ import java.util.Map;
 /// @param <B> ビルダの型.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-abstract class AbstractFractionMapBuilder<B> {
+public abstract class FractionMapBuilder<B> {
 
   /// 成分のキー.
   private final ComponentKey componentKey;
@@ -22,7 +22,7 @@ abstract class AbstractFractionMapBuilder<B> {
   ///
   /// @param componentKey 成分のキー.
   /// @throws NullPointerException `componentKey` が `null` の場合.
-  AbstractFractionMapBuilder(ComponentKey componentKey) {
+  FractionMapBuilder(ComponentKey componentKey) {
     this.componentKey = Preconditions.checkNotNull(componentKey);
   }
 
