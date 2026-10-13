@@ -288,19 +288,39 @@ public final class BasicPsaProcess {
     /// 脱圧弁のビルダのインスタンスを生成して返す.
     ///
     /// @param lineKey 脱圧系統のキー.
-    /// @return 脱圧弁のビルダのインスタンス.
+    /// @return On-Off 弁と調節弁の組み合わせのマップのビルダのインスタンス.
     /// @throws NullPointerException `lineKey` が `null` の場合.
-    public BlowValveBuilder blow(LineKey lineKey) {
-      return new BlowValveBuilder(lineKey);
+    public OnOffAndRestrictValveMapBuilder<Builder> blow(LineKey lineKey) {
+      return new OnOffAndRestrictValveMapBuilder<Builder>(lineKey) {
+        @Override
+        Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
+          return Builder.this.blowValveMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 上部均圧弁のビルダのインスタンスを生成して返す.
     ///
     /// @param lineKey 上部均圧系統のキー.
-    /// @return 上部均圧弁のビルダのインスタンス.
+    /// @return On-Off 弁と調節弁の組み合わせのマップのビルダのインスタンス.
     /// @throws NullPointerException `lineKey` が `null` の場合.
-    public UpperEqualizationValveBuilder upperEqualization(LineKey lineKey) {
-      return new UpperEqualizationValveBuilder(lineKey);
+    public OnOffAndRestrictValveMapBuilder<Builder> upperEqualization(LineKey lineKey) {
+      return new OnOffAndRestrictValveMapBuilder<Builder>(lineKey) {
+        @Override
+        Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
+          return Builder.this.upperEqualizationValveMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 下部均圧弁のビルダのインスタンスを生成して返す.
@@ -308,8 +328,18 @@ public final class BasicPsaProcess {
     /// @param lineKey 下部均圧系統のキー.
     /// @return 下部均圧弁のビルダのインスタンス.
     /// @throws NullPointerException `lineKey` が `null` の場合.
-    public LowerEqualizationValveBuilder lowerEqualization(LineKey lineKey) {
-      return new LowerEqualizationValveBuilder(lineKey);
+    public OnOffAndRestrictValveMapBuilder<Builder> lowerEqualization(LineKey lineKey) {
+      return new OnOffAndRestrictValveMapBuilder<Builder>(lineKey) {
+        @Override
+        Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
+          return Builder.this.lowerEqualizationValveMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 基本 PSA のプロセスのインスタンスを生成して返す.
@@ -376,96 +406,6 @@ public final class BasicPsaProcess {
       }
 
     } // ColumnEntryMapBuilder
-
-    /// 脱圧弁のビルダ.
-    public final class BlowValveBuilder
-        extends AbstractOnOffAndRestrictValveMapBuilder<Builder> {
-
-      /// 脱圧弁のビルダのインスタンスを生成する.
-      ///
-      /// @param lineKey 系統のキー.
-      /// @throws NullPointerException `lineKey` が `null` の場合.
-      private BlowValveBuilder(LineKey lineKey) {
-        super(lineKey);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
-        return Builder.this.blowValveMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Builder self() {
-        return Builder.this;
-      }
-
-    } // BlowValveBuilder
-
-    /// 上部均圧弁のビルダ.
-    public final class UpperEqualizationValveBuilder
-        extends AbstractOnOffAndRestrictValveMapBuilder<Builder> {
-
-      /// 上部均圧弁のビルダのインスタンスを生成する.
-      ///
-      /// @param lineKey 系統のキー.
-      /// @throws NullPointerException `lineKey` が `null` の場合.
-      private UpperEqualizationValveBuilder(LineKey lineKey) {
-        super(lineKey);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
-        return Builder.this.upperEqualizationValveMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Builder self() {
-        return Builder.this;
-      }
-
-    } // UpperEqualizationValveBuilder
-
-    /// 下部均圧弁のビルダ.
-    public final class LowerEqualizationValveBuilder
-        extends AbstractOnOffAndRestrictValveMapBuilder<Builder> {
-
-      /// 下部均圧弁のビルダのインスタンスを生成する.
-      ///
-      /// @param linekey 系統のキー.
-      /// @throws NullPointerException `lineKey` が `null` の場合.
-      private LowerEqualizationValveBuilder(LineKey linekey) {
-        super(linekey);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<LineKey, OnOffAndRestrictValve> onOffAndRestrictValveMap() {
-        return Builder.this.lowerEqualizationValveMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Builder self() {
-        return Builder.this;
-      }
-
-    } // LowerEqualizationValveBuilder
 
   } // Builder
 
