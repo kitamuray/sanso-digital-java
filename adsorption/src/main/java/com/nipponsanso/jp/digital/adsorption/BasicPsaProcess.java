@@ -132,8 +132,18 @@ public final class BasicPsaProcess {
     /// @param columnKey 吸着筒のキー.
     /// @return 吸着筒のエントリのビルダのインスタンス.
     /// @throws NullPointerException `columnKey` が `null` の場合.
-    public ColumnEntryMapBuilder column(ColumnKey columnKey) {
-      return new ColumnEntryMapBuilder(columnKey);
+    public ColumnEntryMapBuilder<Builder> column(ColumnKey columnKey) {
+      return new ColumnEntryMapBuilder<>(columnKey) {
+        @Override
+        Map<ColumnKey, ColumnEntry> columnEntryMap() {
+          return Builder.this.columnEntryMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 製品槽を設定する.
@@ -377,35 +387,6 @@ public final class BasicPsaProcess {
 
       return new BasicPsaProcess(this);
     }
-
-    /// 吸着筒のエントリのマップのビルダ.
-    public final class ColumnEntryMapBuilder extends AbstractColumnEntryMapBuilder<Builder> {
-
-      /// 吸着筒のエントリのマップのビルダのインスタンスを生成する.
-      ///
-      /// @param columnKey 吸着筒のキー.
-      /// @throws NullPointerException `columnKey` が `null` の場合.
-      private ColumnEntryMapBuilder(ColumnKey columnKey) {
-        super(columnKey);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<ColumnKey, ColumnEntry> columnEntryMap() {
-        return Builder.this.columnEntryMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Builder self() {
-        return Builder.this;
-      }
-
-    } // ColumnEntryMapBuilder
 
   } // Builder
 
