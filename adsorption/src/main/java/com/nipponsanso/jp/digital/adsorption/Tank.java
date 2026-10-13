@@ -50,8 +50,18 @@ public final class Tank {
     /// @param fileName 出力ファイル名.
     /// @return モニタのマップのビルダのインスタンス.
     /// @throws NullPointerException `fileName` が `null` の場合.
-    public MonitorMapBuilder fileName(String fileName) {
-      return new MonitorMapBuilder(fileName);
+    public MonitorMapBuilder<Builder> fileName(String fileName) {
+      return new MonitorMapBuilder<>(fileName) {
+        @Override
+        Map<String, Monitor> monitorMap() {
+          return Builder.this.monitorMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 貯槽のインスタンスを生成して返す.
@@ -62,32 +72,6 @@ public final class Tank {
       Preconditions.checkState(this.volume > 0.);
       return new Tank(this);
     }
-
-    /// モニタのマップのビルダ.
-    public final class MonitorMapBuilder {
-
-      /// 出力ファイル名.
-      private final String fileName;
-
-      /// モニタのマップのビルダのインスタンスを生成する.
-      ///
-      /// @param fileName 出力ファイル名.
-      /// @throws NullPointerException `fileName` が `null` の場合.
-      private MonitorMapBuilder(String fileName) {
-        this.fileName = Preconditions.checkNotNull(fileName);
-      }
-
-      /// モニタを設定する.
-      ///
-      /// @param monitor モニタ.
-      /// @return ビルダのインスタンス.
-      /// @throws NullPointerException `monitor` が `null` の場合.
-      public Builder monitor(Monitor monitor) {
-        Builder.this.monitorMap.put(this.fileName, Preconditions.checkNotNull(monitor));
-        return Builder.this;
-      }
-
-    } // MonitorMapBuilder
 
   } // Builder
 

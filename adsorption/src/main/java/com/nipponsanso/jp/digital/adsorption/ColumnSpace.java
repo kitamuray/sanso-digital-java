@@ -49,8 +49,18 @@ public final class ColumnSpace {
     /// @param fileName ファイル名.
     /// @return モニタを設定するビルダのインスタンス.
     /// @throws NullPointerException `fileName` が `null` の場合.
-    public MonitorBuilder fileName(String fileName) {
-      return new MonitorBuilder(fileName);
+    public MonitorMapBuilder<Builder> fileName(String fileName) {
+      return new MonitorMapBuilder<>(fileName) {
+        @Override
+        Map<String, Monitor> monitorMap() {
+          return Builder.this.monitorMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 吸着筒の空筒空間のインスタンスを生成して返す.
