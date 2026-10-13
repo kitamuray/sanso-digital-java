@@ -76,8 +76,23 @@ public final class BasicPsaSchedule {
     /// @param fileName 出力ファイル名.
     /// @return 位置番号とモニタのマップのビルダのインスタンス.
     /// @throws NullPointerException `fileName` が `null` の場合.
-    public IndexMonitorMapBuilder fileName(String fileName) {
-      return new IndexMonitorMapBuilder(fileName);
+    public IndexMonitorMapBuilder<Builder> fileName(String fileName) {
+      return new IndexMonitorMapBuilder<Builder>(fileName) {
+        @Override
+        Map<String, IndexMonitor> indexMonitorMap() {
+          return Builder.this.indexMonitorMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+
+        @Override
+        int size() {
+          return Builder.this.section == null ? Integer.MAX_VALUE : Builder.this.section.number();
+        }
+      };
     }
 
     /// 工程のインスタンスを生成して返す.
@@ -117,43 +132,6 @@ public final class BasicPsaSchedule {
       }
 
     } // StateMapBuilder
-
-    /// 位置番号とモニタのマップのビルダ.
-    public final class IndexMonitorMapBuilder extends AbstractIndexMonitorMapBuilder<Builder> {
-
-      /// 位置番号とモニタのマップのビルダのインスタンスを生成する.
-      ///
-      /// @param fileName 出力ファイル名.
-      /// @throws NullPointerException `fileName` が `null` の場合.
-      private IndexMonitorMapBuilder(String fileName) {
-        super(fileName);
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      int size() {
-        return Builder.this.section == null ? Integer.MAX_VALUE : Builder.this.section.number();
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Map<String, IndexMonitor> indexMonitorMap() {
-        return Builder.this.indexMonitorMap;
-      }
-
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
-      @Override
-      Builder self() {
-        return Builder.this;
-      }
-
-    } // IndexMonitorMapBuilder
 
   } // Builder
 
