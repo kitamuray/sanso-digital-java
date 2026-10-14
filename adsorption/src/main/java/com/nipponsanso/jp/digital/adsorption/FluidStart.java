@@ -65,26 +65,23 @@ abstract class FluidStart extends Start {
       return this.self();
     }
 
-    /// 流体成分の質量分率を設定する.
+    /// 質量分率を設定するために成分のキーを設定する.
     ///
-    /// @param fraction 流体成分の質量分率 (-).
-    /// @return ビルダのインスタンス.
-    /// @throws IllegalStateException 成分のキーが未設定の場合.
-    /// @throws IllegalArgumentException `fraction` が 0 未満か,
-    ///     `fraction` を含む設定値総計が 1 を超える場合.
-    public final B fraction(double fraction) {
-      Preconditions.checkState(this.currentComponentKey().isPresent());
-      ComponentKey componentKey = this.currentComponentKey().get();
+    /// @param componentKey 成分のキー.
+    /// @return 成分のキーが設定されたビルダのインスタンス.
+    /// @throws NullPointerException `componentKey` が `null` の場合.
+    public final FractionMapBuilder<B> componentKey(ComponentKey componentKey) {
+      return new FractionMapBuilder<>(componentKey) {
+        @Override
+        Map<ComponentKey, Double> fractionMap() {
+          return Builder.this.fractionMap;
+        }
 
-      Preconditions.checkArgument(fraction >= 0.);
-      Preconditions.checkArgument(
-          this.fractionMap.entrySet().stream()
-              .filter(entry -> entry.getKey() != componentKey)
-              .mapToDouble(Map.Entry::getValue)
-              .sum() + fraction <= 1.);
-
-      this.fractionMap.put(componentKey, fraction);
-      return this.self();
+        @Override
+        B self() {
+          return Builder.this.self();
+        }
+      };
     }
 
     /// 流体が関わる開始条件のインスタンスを生成して返す.

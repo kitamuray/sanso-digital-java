@@ -72,7 +72,7 @@ public final class InletPort extends Port {
     /// @return ビルダのインスタンス.
     /// @throws NullPointerException `componentKey` が `null` の場合.
     public FractionMapBuilder<Builder> componentKey(ComponentKey componentKey) {
-      return new FractionMapBuilder<Builder>(componentKey) {
+      return new FractionMapBuilder<>(componentKey) {
         @Override
         Map<ComponentKey, Double> fractionMap() {
           return Builder.this.fractionMap;
