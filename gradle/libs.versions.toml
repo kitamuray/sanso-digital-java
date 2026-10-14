@@ -12,6 +12,7 @@ jackson-bom = "3.2.1"
 jspecify = "1.0.0"
 junit-bom = "6.1.2"
 log4j-bom = "2.26.1"
+mathjax = "4.1.1"
 mockito-bom = "5.23.0"
 rhino = "1.9.1"
 shadow = "9.6.1"
@@ -33,6 +34,7 @@ junit-platform-launcher = {group = "org.junit.platform", name = "junit-platform-
 log4j-bom = {group = "org.apache.logging.log4j", name = "log4j-bom", version.ref = "log4j-bom"}
 log4j-api = {group = "org.apache.logging.log4j", name = "log4j-api"}
 log4j-core = {group = "org.apache.logging.log4j", name = "log4j-core"}
+mathjax = {group = "org.mvnpm", name = "mathjax", version.ref = "mathjax"}
 mockito-bom = {group = "org.mockito", name = "mockito-bom", version.ref = "mockito-bom"}
 mockito-core = {group = "org.mockito", name = "mockito-core"}
 mockito-junit-jupiter = {group = "org.mockito", name = "mockito-junit-jupiter"}
