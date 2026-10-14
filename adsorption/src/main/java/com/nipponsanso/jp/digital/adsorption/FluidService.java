@@ -5,11 +5,11 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
-/// 流体モデル.
+/// 流体サービス.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-abstract class FluidModel {
+abstract class FluidService {
 
   /// 組成.
   private final Composition composition;
@@ -17,7 +17,7 @@ abstract class FluidModel {
   /// 流体モデルのインスタンスを生成する.
   ///
   /// @param composition 組成.
-  FluidModel(Composition composition) {
+  FluidService(Composition composition) {
     this.composition = composition;
   }
 

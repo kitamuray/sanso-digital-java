@@ -31,7 +31,7 @@ public class BasicPsaModel {
   private final BasicPsaProcess process;
 
   /// 流体モデル.
-  private final FluidModel fluidModel;
+  private final FluidService fluidService;
 
   /// 吸着筒周辺モデルの可変マップ.
   private final Map<ColumnKey, ColumnGroup> columnGroupMap;
@@ -105,14 +105,14 @@ public class BasicPsaModel {
   BasicPsaModel(BasicPsaProcess process) {
     this.process = process;
 
-    this.fluidModel = process.fluid().model(process.composition());
+    this.fluidService = process.fluid().newService(process.composition());
     this.columnGroupMap = process.columnEntryMap().entrySet().stream()
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> new ColumnGroup(
                     process.column(),
-                    this.fluidModel.composition(),
+                    this.fluidService.composition(),
                     entry.getValue().start(),
                     process.blowValveMap().keySet(),
                     process.upperEqualizationValveMap().keySet(),
@@ -121,7 +121,7 @@ public class BasicPsaModel {
                 () -> new EnumMap<>(ColumnKey.class)));
     this.productTankModel = new TankModel(
         process.productTank(),
-        this.fluidModel.composition()
+        this.fluidService.composition()
     );
 
     this.feedPortCell = new PortCell(process.composition());
@@ -165,8 +165,8 @@ public class BasicPsaModel {
   /// 流体モデルを返す.
   ///
   /// @return 流体モデル.
-  FluidModel fluidModel() {
-    return this.fluidModel;
+  FluidService fluidModel() {
+    return this.fluidService;
   }
 
   /// 吸着筒周辺モデルのマップを返す.

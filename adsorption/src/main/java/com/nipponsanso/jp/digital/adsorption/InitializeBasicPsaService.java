@@ -38,7 +38,7 @@ final class InitializeBasicPsaService extends BasicPsaService {
   ///
   /// @param model 流体モデル.
   /// @param cell 流体セル.
-  private void initialize(FluidModel model, FluidCell cell) {
+  private void initialize(FluidService model, FluidCell cell) {
     // 熱力学的温度, 絶対圧力, 副成分の質量分率が設定されている
 
     model.update(cell);

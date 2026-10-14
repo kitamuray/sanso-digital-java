@@ -19,8 +19,8 @@ public final class LowPressureIdealGasFluid extends Fluid {
   /// @param composition {@inheritDoc}
   /// @return {@inheritDoc}
   @Override
-  LowPressureIdealGasFluidModel model(Composition composition) {
-    return new LowPressureIdealGasFluidModel(composition);
+  LowPressureIdealGasFluidService newService(Composition composition) {
+    return new LowPressureIdealGasFluidService(composition);
   }
 
   /// 唯一のインスタンス.

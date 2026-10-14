@@ -17,12 +17,12 @@ import com.nipponsanso.jp.digital.WilkeViscosity;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-final class LowPressureIdealGasFluidModel extends FluidModel {
+final class LowPressureIdealGasFluidService extends FluidService {
 
   /// 低圧下理想気体の流体モデルのインスタンスを生成する.
   ///
   /// @param composition 組成.
-  LowPressureIdealGasFluidModel(Composition composition){
+  LowPressureIdealGasFluidService(Composition composition){
     super(composition);
   }
 

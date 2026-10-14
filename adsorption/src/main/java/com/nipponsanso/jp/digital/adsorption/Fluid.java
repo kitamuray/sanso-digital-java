@@ -14,10 +14,10 @@ public abstract class Fluid {
   /// 流体のインスタンスを生成する.
   Fluid() {}
 
-  /// 流体モデルのインスタンスを生成して返す.
+  /// 流体サービスのインスタンスを生成して返す.
   ///
   /// @param composition 組成.
-  /// @return 流体モデルのインスタンス.
-  abstract FluidModel model(Composition composition);
+  /// @return 流体サービスのインスタンス.
+  abstract FluidService newService(Composition composition);
 
 }
