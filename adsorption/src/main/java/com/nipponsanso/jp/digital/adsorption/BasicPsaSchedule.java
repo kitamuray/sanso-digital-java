@@ -67,8 +67,18 @@ public final class BasicPsaSchedule {
     /// @param columnKey 吸着筒のキー.
     /// @return 状態のマップのビルダのインスタンス.
     /// @throws NullPointerException `columnKey` が `null` の場合.
-    public StateMapBuilder column(ColumnKey columnKey) {
-      return new StateMapBuilder(columnKey);
+    public StateMapBuilder<Builder, BasicPsaState> column(ColumnKey columnKey) {
+      return new StateMapBuilder<>(columnKey) {
+        @Override
+        Map<ColumnKey, BasicPsaState> stateMap() {
+          return Builder.this.stateMap;
+        }
+
+        @Override
+        Builder self() {
+          return Builder.this;
+        }
+      };
     }
 
     /// 出力ファイル名を設定する.
@@ -104,34 +114,6 @@ public final class BasicPsaSchedule {
 
       return new BasicPsaSchedule(this);
     }
-
-    /// 状態のマップのビルダ.
-    public final class StateMapBuilder {
-
-      /// 吸着筒のキー.
-      private final ColumnKey columnKey;
-
-      /// 状態のマップのビルダのインスタンスを生成する.
-      ///
-      /// @param columnKey 吸着筒のキー.
-      /// @throws NullPointerException `columnKey` が `null` の場合.
-      private StateMapBuilder(ColumnKey columnKey) {
-        this.columnKey = Preconditions.checkNotNull(columnKey);
-      }
-
-      /// 状態を設定する.
-      ///
-      /// @param state 状態.
-      /// @return ビルダのインスタンス.
-      /// @throws NullPointerException `state` が `null` の場合.
-      public Builder state(BasicPsaState state) {
-        Builder.this.stateMap.put(
-            this.columnKey,
-            Preconditions.checkNotNull(state));
-        return Builder.this;
-      }
-
-    } // StateMapBuilder
 
   } // Builder
 
