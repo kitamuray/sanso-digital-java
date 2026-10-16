@@ -87,7 +87,7 @@ public final class BasicPsaSchedule {
     /// @return 位置番号とモニタのマップのビルダのインスタンス.
     /// @throws NullPointerException `fileName` が `null` の場合.
     public IndexMonitorMapBuilder<Builder> fileName(String fileName) {
-      return new IndexMonitorMapBuilder<Builder>(fileName) {
+      return new IndexMonitorMapBuilder<>(fileName) {
         @Override
         Map<String, IndexMonitor> indexMonitorMap() {
           return Builder.this.indexMonitorMap;

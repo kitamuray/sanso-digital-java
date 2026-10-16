@@ -17,12 +17,19 @@ import java.util.Map;
 /// @author KITAMURA Yuichiro
 final class ColumnZoneModel {
 
+  /// 領域.
   private final ColumnZone zone;
 
+  /// セルの不変リスト.
   private final List<ColumnCell> cellList;
 
+  /// 履歴情報の不変マップ.
   private final Map<String, List<Double>> historyListMap;
 
+  /// 吸着筒領域モデルのインスタンスを生成する.
+  ///
+  /// @param zone 領域.
+  /// @param cellList セルのリスト.
   ColumnZoneModel(ColumnZone zone, List<ColumnCell> cellList) {
     this.zone = zone;
     this.cellList = ImmutableList.copyOf(cellList);
@@ -34,18 +41,26 @@ final class ColumnZoneModel {
                 _ -> new ArrayList<>()));
   }
 
+  /// セルの不変リストを返す.
+  ///
+  /// @return セルの不変リスト.
   List<ColumnCell> cellList() {
     return this.cellList;
   }
 
+  /// 履歴情報の不変マップを返す.
+  ///
+  /// @return 履歴情報の不変マップ.
   Map<String, List<Double>> historyListMap() {
     return this.historyListMap;
   }
 
+  /// 履歴情報を初期化する.
   void clearHistories() {
     this.historyListMap.values().forEach(List::clear);
   }
 
+  /// 履歴情報へ追記する.
   void addHistories() {
     this.zone.indexMonitorMap().forEach((fileName, indexMonitor) -> {
       List<Double> monitorList = this.historyListMap.get(fileName);
@@ -55,4 +70,5 @@ final class ColumnZoneModel {
       monitorList.add(monitor.applyAsDouble(this.cellList.get(index)));
     });
   }
+
 }
