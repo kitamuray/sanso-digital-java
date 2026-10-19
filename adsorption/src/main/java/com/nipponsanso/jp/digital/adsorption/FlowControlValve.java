@@ -124,9 +124,6 @@ public final class FlowControlValve extends Valve {
     return this.flowRate;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   public double cvValue() {
     return this.cvValue;
@@ -137,7 +134,7 @@ public final class FlowControlValve extends Valve {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || o.getClass() != this.getClass()) {
       return false;
     }
 

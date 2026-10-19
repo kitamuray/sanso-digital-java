@@ -55,7 +55,7 @@ final class ColumnModel {
   ColumnModel(Column column, Composition composition) {
     this.column = column;
 
-    int size
+    int number
         = column.spaceList().size()
         + column.zoneListList().stream()
           .mapToInt(
@@ -65,14 +65,15 @@ final class ColumnModel {
           .sum()
         + 2;
 
-    final int cellSize = ColumnCell.size(composition);
-    final int faceSize = ColumnFace.size(composition);
-    this.doubleArray = new double[size * cellSize + (size - 1) * faceSize];
+    final int cellSize = ColumnCell.size(composition); // セルあたりの double 値の数
+    final int faceSize = ColumnFace.size(composition); // フェイスあたりの double 値の数
+    this.doubleArray = new double[number * cellSize + (number - 1) * faceSize];
 
     double origin = column.origin();
     int offset = 0;
-    final int stride = cellSize + faceSize;
+    final int stride = cellSize + faceSize; // （セル + フェイス）あたりの double 値の数
 
+    // 西側境界セル
     this.westCell = new InnerCell(
         offset, column.shape(), origin, origin, composition, Adsorbent.empty(), column.shell());
     offset += stride;
@@ -87,7 +88,7 @@ final class ColumnModel {
 
     Iterator<ColumnSpace> spaceIterator = column.spaceList().iterator();
 
-    for (List<ColumnZone> zoneList : column.zoneListList()) {
+    for (List<ColumnZone> zoneList : column.zoneListList()) { // Space + List<Zone> の loop
       ColumnSpace space = spaceIterator.next();
       ColumnCell spaceCell = new InnerCell(
           offset, column.shape(), origin, origin + space.length(),
@@ -117,7 +118,7 @@ final class ColumnModel {
       zoneModelListListBuilder.add(zoneModelListBuilder.build());
     }
 
-    {
+    { // 最後の Space
       ColumnSpace space = spaceIterator.next();
       ColumnCell spaceCell = new InnerCell(
           offset, column.shape(), origin, origin + space.length(),
@@ -133,6 +134,7 @@ final class ColumnModel {
     this.zoneCellListListList = zoneCellListListListBuilder.build();
     this.zoneModelListList = zoneModelListListBuilder.build();
 
+    // 東側境界セル
     this.eastCell = new InnerCell(
         offset, column.shape(), origin, origin,
         composition, Adsorbent.empty(), column.shell());
@@ -294,9 +296,6 @@ final class ColumnModel {
       super(offset, shape, fromX, toX, composition, adsorbent, shell);
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return ColumnModel.this.doubleArray;
@@ -320,9 +319,6 @@ final class ColumnModel {
       super(offset, shape, coordinate, composition);
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return ColumnModel.this.doubleArray;
