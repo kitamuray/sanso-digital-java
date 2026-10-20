@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class VacuumPump extends Port {
+public final class VacuumPump {
 
   private static final Logger LOGGER = LogManager.getLogger(VacuumPump.class);
 
@@ -137,7 +137,7 @@ public final class VacuumPump extends Port {
     return this.monitorMap;
   }
 
-  void set(VacuumPumpCell cell) {
+  void set(PortCell cell) {
     cell.setPressure(this.minPressure);
   }
 

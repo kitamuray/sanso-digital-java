@@ -7,10 +7,8 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -25,19 +23,13 @@ public final class InletPort extends Port {
   private static final Logger LOGGER = LogManager.getLogger(InletPort.class);
 
   /// 流入境界条件のビルダ.
-  public static final class Builder {
+  public static final class Builder extends Port.Builder<Builder> {
 
     /// 流体の熱力学的温度 (K).
     private double temperature = 298.15;
 
-    /// 流体の絶対圧力 (Pa).
-    private double pressure = 101325.;
-
     /// 流体成分の質量分率 (-) のマップ.
     private final Map<ComponentKey, Double> fractionMap = new EnumMap<>(ComponentKey.class);
-
-    /// モニタのマップ.
-    private final Map<String, Monitor> monitorMap = new HashMap<>();
 
     /// 流入境界条件のビルダのインスタンスを生成する.
     private Builder() {}
@@ -51,18 +43,6 @@ public final class InletPort extends Port {
       Preconditions.checkArgument(temperature > 0.);
 
       this.temperature = temperature;
-      return this;
-    }
-
-    /// 流体の絶対圧力を設定する.
-    ///
-    /// @param pressure 流体の絶対圧力 (Pa).
-    /// @return ビルダのインスタンス.
-    /// @throws IllegalArgumentException `pressure` が 0 以下の場合
-    public Builder pressure(double pressure) {
-      Preconditions.checkArgument(pressure > 0.);
-
-      this.pressure = pressure;
       return this;
     }
 
@@ -85,28 +65,15 @@ public final class InletPort extends Port {
       };
     }
 
-    /// モニタ出力先のファイル名を設定する.
-    ///
-    /// @param fileName モニタ出力先のファイル名.
-    /// @return モニタのマップのビルダのインスタンス.
-    /// @throws NullPointerException `fileName` が `null` の場合.
-    public MonitorMapBuilder<Builder> fileName(String fileName) {
-      return new MonitorMapBuilder<>(fileName) {
-        @Override
-        Map<String, Monitor> monitorMap() {
-          return Builder.this.monitorMap;
-        }
-
-        @Override
-        Builder self() {
-          return Builder.this;
-        }
-      };
+    @Override
+    Builder self() {
+      return this;
     }
 
     /// 流入境界条件のインスタンスを生成して返す.
     ///
     /// @return 流入境界条件のインスタンス.
+    @Override
     public InletPort build() {
       return new InletPort(this);
     }
@@ -116,28 +83,20 @@ public final class InletPort extends Port {
   /// 流体の熱力学的温度 (K).
   private final double temperature;
 
-  /// 流体の絶対圧力 (Pa).
-  private final double pressure;
-
   /// 流体成分の質量分率 (-) の不変マップ.
   private final Map<ComponentKey, Double> fractionMap;
-
-  /// モニタの不変マップ.
-  private final Map<String, Monitor> monitorMap;
 
   /// 流入境界条件のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private InletPort(Builder builder) {
+    super(builder);
+
     this.temperature = builder.temperature;
-    this.pressure = builder.pressure;
     this.fractionMap = Maps.immutableEnumMap(builder.fractionMap);
-    this.monitorMap = ImmutableMap.copyOf(builder.monitorMap);
 
     LOGGER.debug("temperature = {}", this.temperature);
-    LOGGER.debug("pressure = {}", this.pressure);
     LOGGER.debug("fractionMap = {}", this.fractionMap);
-    LOGGER.debug("monitorMap = {}", this.monitorMap);
   }
 
   /// 流体の熱力学的温度を返す.
@@ -147,13 +106,6 @@ public final class InletPort extends Port {
     return this.temperature;
   }
 
-  /// 流体の絶対圧力を返す.
-  ///
-  /// @return 流体の絶対圧力 (Pa).
-  public double pressure() {
-    return this.pressure;
-  }
-
   /// 流体成分の質量分率の不変マップを返す.
   ///
   /// @return 流体成分の質量分率 (-) の不変マップ.
@@ -161,16 +113,10 @@ public final class InletPort extends Port {
     return this.fractionMap;
   }
 
-  /// モニタの不変マップを返す.
-  ///
-  /// @return モニタの不変マップ.
-  public Map<String, Monitor> monitorMap() {
-    return this.monitorMap;
-  }
-
+  @Override
   void set(PortCell cell) {
     cell.setTemperature(this.temperature);
-    cell.setPressure(this.pressure);
+    cell.setPressure(this.pressure());
     cell.componentMap().forEach(
         (componentKey, componentValue) -> componentValue.setFraction(
             this.fractionMap.getOrDefault(componentKey, 0.)));
@@ -181,35 +127,34 @@ public final class InletPort extends Port {
     if (o == this) {
       return true;
     }
-    if (o == null || o.getClass() != this.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
       return false;
     }
 
     InletPort that = (InletPort) o;
 
     return Double.compare(this.temperature, that.temperature) == 0
-        && Double.compare(this.pressure, that.pressure) == 0
-        && this.fractionMap.equals(that.fractionMap)
-        && this.monitorMap.equals(that.monitorMap);
+        && this.fractionMap.equals(that.fractionMap);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        this.getClass(),
+        super.hashCode(),
         this.temperature,
-        this.pressure,
-        this.fractionMap,
-        this.monitorMap);
+        this.fractionMap);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("temperature", this.temperature)
-        .add("pressure", this.pressure)
+        .add("pressure", this.pressure())
         .add("fractionMap", this.fractionMap)
-        .add("monitorMap", this.monitorMap)
+        .add("monitorMap", this.monitorMap())
         .toString();
   }
 

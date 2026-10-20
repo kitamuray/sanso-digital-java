@@ -39,17 +39,17 @@ public class BasicPsaModel {
   /// 製品槽モデル.
   private final TankModel productTankModel;
 
-  /// 原料供給境界セル.
-  private final PortCell feedPortCell;
+  /// 原料供給境界モデル.
+  private final PortModel feedPortModel;
 
-  /// 製品払出境界セル.
-  private final PortCell productPortCell;
+  /// 製品払出境界モデル.
+  private final PortModel productPortModel;
 
-  /// 大気放出境界セル.
-  private final PortCell exhaustPortCell;
+  /// 大気放出境界モデル.
+  private final PortModel exhaustPortModel;
 
-  /// 真空ポンプ境界セル.
-  private final VacuumPumpCell vacuumPumpCell;
+  /// 真空ポンプモデル.
+  private final VacuumPumpModel vacuumPumpModel;
 
   /// 原料供給系統セル.
   private final LineCell feedLineCell;
@@ -68,18 +68,6 @@ public class BasicPsaModel {
 
   /// 下部均圧系統の不変マップ.
   private final Map<LineKey, LineCell> lowerEqualizationLineCell;
-
-  /// 原料供給境界フェイス.
-  private final PortFace feedPortFace;
-
-  /// 製品払出境界フェイス.
-  private final PortFace productPortFace;
-
-  /// 大気放出境界フェイス.
-  private final PortFace exhaustPortFace;
-
-  /// 真空ポンプ・フェイス.
-  private final PortFace vacuumPumpFace;
 
   /// 原料供給主弁フェイス.
   private final ValveFace mainFeedValveFace;
@@ -123,18 +111,11 @@ public class BasicPsaModel {
         process.productTank(),
         this.fluidService.composition()
     );
-
-    this.feedPortCell = new PortCell(process.composition());
-    process.feedPort().set(this.feedPortCell);
-
-    this.productPortCell = new PortCell(process.composition());
-    process.productPort().set(this.productPortCell);
-
-    this.exhaustPortCell = new PortCell(process.composition());
-    process.exhaustPort().set(this.exhaustPortCell);
-
-    this.vacuumPumpCell = new VacuumPumpCell(process.composition());
-    process.vacuumPump().set(this.vacuumPumpCell);
+    this.feedPortModel = new PortModel(process.feedPort(), this.fluidService.composition());
+    this.productPortModel = new PortModel(process.productPort(), this.fluidService.composition());
+    this.exhaustPortModel = new PortModel(process.exhaustPort(), this.fluidService.composition());
+    this.vacuumPumpModel
+        = new VacuumPumpModel(process.vacuumPump(), this.fluidService.composition());
 
     this.feedLineCell = new LineCell(process.composition());
     this.pressurizationLineCell = new LineCell(process.composition());
@@ -150,11 +131,6 @@ public class BasicPsaModel {
             Maps.toImmutableEnumMap(
                 lineKey -> lineKey,
                 _ -> new LineCell(process.composition())));
-
-    this.feedPortFace = new PortFace(process.composition());
-    this.productPortFace = new PortFace(process.composition());
-    this.exhaustPortFace = new PortFace(process.composition());
-    this.vacuumPumpFace = new PortFace(process.composition());
 
     this.mainFeedValveFace = new ValveFace(process.composition());
     this.mainProductValveFace = new ValveFace(process.composition());
@@ -183,32 +159,32 @@ public class BasicPsaModel {
     return this.productTankModel;
   }
 
-  /// 原料供給境界セルを返す.
+  /// 原料供給境界モデルを返す.
   ///
-  /// @return 原料供給境界セル.
-  PortCell feedPortCell() {
-    return this.feedPortCell;
+  /// @return 原料供給境界モデル.
+  PortModel feedPortModel() {
+    return this.feedPortModel;
   }
 
-  /// 製品払出境界セルを返す.
+  /// 製品払出境界モデルを返す.
   ///
-  /// @return 製品払出境界セル.
-  PortCell productPortCell() {
-    return this.productPortCell;
+  /// @return 製品払出境界モデル.
+  PortModel productPortModel() {
+    return this.productPortModel;
   }
 
-  /// 大気放出境界セルを返す.
+  /// 大気放出境界モデルを返す.
   ///
-  /// @return 大気放出境界セル.
-  PortCell exhaustPortCell() {
-    return this.exhaustPortCell;
+  /// @return 大気放出境界モデル.
+  PortModel exhaustPortModel() {
+    return this.exhaustPortModel;
   }
 
-  /// 真空ポンプ・セルを返す.
+  /// 真空ポンプモデルを返す.
   ///
-  /// @return 真空ポンプ・セル.
-  VacuumPumpCell vacuumPumpCell() {
-    return this.vacuumPumpCell;
+  /// @return 真空ポンプモデル.
+  VacuumPumpModel vacuumPumpModel() {
+    return this.vacuumPumpModel;
   }
 
   /// 原料供給系統セルを返す.
@@ -251,34 +227,6 @@ public class BasicPsaModel {
   /// @return 下部均圧系統セルの不変マップ.
   Map<LineKey, LineCell> lowerEqualizationLineCell() {
     return this.lowerEqualizationLineCell;
-  }
-
-  /// 原料供給境界フェイスを返す.
-  ///
-  /// @return 原料供給境界フェイス.
-  PortFace feedPortFace() {
-    return this.feedPortFace;
-  }
-
-  /// 製品払出境界フェイスを返す.
-  ///
-  /// @return 製品払出境界フェイス.
-  PortFace productPortFace() {
-    return this.productPortFace;
-  }
-
-  /// 大気放出境界フェイスを返す.
-  ///
-  /// @return 大気放出境界フェイス.
-  PortFace exhaustPortFace() {
-    return this.exhaustPortFace;
-  }
-
-  /// 真空ポンプ・フェイスを返す.
-  ///
-  /// @return 真空ポンプ・フェイス.
-  PortFace vacuumPumpFace() {
-    return this.vacuumPumpFace;
   }
 
   /// 原料供給主弁フェイスを返す.
@@ -351,6 +299,10 @@ public class BasicPsaModel {
         .map(ColumnGroup::columnModel)
         .forEach(ColumnModel::addHistories);
     this.productTankModel.addHistories();
+    this.feedPortModel.addHistories();
+    this.productPortModel.addHistories();
+    this.exhaustPortModel.addHistories();
+    this.vacuumPumpModel.addHistories();
   }
 
   /// 履歴情報を初期化する.
@@ -361,13 +313,18 @@ public class BasicPsaModel {
         .map(ColumnGroup::columnModel)
         .forEach(ColumnModel::clearHistories);
     this.productTankModel.clearHistories();
+    this.feedPortModel.clearHistories();
+    this.productPortModel.clearHistories();
+    this.exhaustPortModel.clearHistories();
+    this.vacuumPumpModel.clearHistories();
   }
 
   /// 履歴情報を出力する.
   void flushHistories() {
     this.flushColumnSpaceHistories();
-    this.flushColumnSpaceHistories();
+    this.flushColumnZoneHistories();
     this.flushProductTankHistories();
+    this.flushPortHistories();
   }
 
   /// 吸着筒空間の履歴情報を出力する.
@@ -432,15 +389,35 @@ public class BasicPsaModel {
     } // 領域リストのループ
   }
 
-  /// CSV の列ラベルで製品槽を意味する.
-  private enum ProductTankKey {PRODUCT_TANK}
-
   /// 製品槽の履歴情報を出力する.
   private void flushProductTankHistories() {
+    enum ProductTankKey {PRODUCT_TANK}
+
     this.productTankModel.historyListMap().forEach(
         (fileName, historyList) -> this.flushHistories(
             fileName,
             Collections.singletonMap(ProductTankKey.PRODUCT_TANK, historyList.iterator())));
+  }
+
+  private void flushPortHistories() {
+    enum PortKey {FEED_PORT, PRODUCT_PORT, EXHAUST_PORT, VACUUM_PUMP}
+
+    this.feedPortModel.historyListMap().forEach(
+        (fileName, historyList) -> this.flushHistories(
+            fileName,
+            Collections.singletonMap(PortKey.FEED_PORT, historyList.iterator())));
+    this.productPortModel.historyListMap().forEach(
+        (fileName, historyList) -> this.flushHistories(
+            fileName,
+            Collections.singletonMap(PortKey.PRODUCT_PORT, historyList.iterator())));
+    this.exhaustPortModel.historyListMap().forEach(
+        (fileName, historyList) -> this.flushHistories(
+            fileName,
+            Collections.singletonMap(PortKey.EXHAUST_PORT, historyList.iterator())));
+    this.vacuumPumpModel.historyListMap().forEach(
+        (fileName, historyList) -> this.flushHistories(
+            fileName,
+            Collections.singletonMap(PortKey.VACUUM_PUMP, historyList.iterator())));
   }
 
   /// 履歴情報を出力する共通処理.
