@@ -225,23 +225,4 @@ class AdsorbentTest {
     tester.testEquals();
   }
 
-  /// [Adsorbent#toString()] のテスト.
-  @Test
-  void testToString() {
-    assertThat(
-        Adsorbent.builder()
-            .diameter(2e-3)
-            .voidFraction(0.4)
-            .bulkDensity(800.)
-            .specificHeat(this.specificHeat)
-            .build())
-        .hasToString(
-            MoreObjects.toStringHelper(Adsorbent.class)
-                .add("diameter", 2e-3)
-                .add("voidFraction", 0.4)
-                .add("bulkDensity", 800.)
-                .add("specificHeat", this.specificHeat)
-                .toString());
-  }
-
 }

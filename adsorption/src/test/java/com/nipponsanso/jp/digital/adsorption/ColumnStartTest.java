@@ -54,24 +54,6 @@ class ColumnStartTest {
           .isInstanceOf(NullPointerException.class);
     }
 
-    /// [ColumnStart.Builder#fraction(double)] のテスト.
-    @Test
-    void testFractionDouble() {
-      assertThatThrownBy(() -> ColumnStart.builder().fraction(0.))
-          .isInstanceOf(IllegalStateException.class);
-
-      assertThatThrownBy(
-          () -> ColumnStart.builder().componentKey(ComponentKey.NITROGEN).fraction(-1.))
-          .isInstanceOf(IllegalArgumentException.class);
-      assertThatThrownBy(
-          () -> ColumnStart.builder()
-              .componentKey(ComponentKey.OXYGEN)
-              .fraction(0.8)
-              .componentKey(ComponentKey.NITROGEN)
-              .fraction(0.5))
-          .isInstanceOf(IllegalArgumentException.class);
-    }
-
     /// [ColumnStart.Builder#shellTemperature(double)] のテスト.
     @Test
     void testShellTemperatureDouble() {

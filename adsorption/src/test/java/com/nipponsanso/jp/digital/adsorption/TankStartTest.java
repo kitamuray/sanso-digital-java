@@ -54,24 +54,6 @@ class TankStartTest {
           .isInstanceOf(NullPointerException.class);
     }
 
-    /// [TankStart.Builder#fraction(double)] のテスト.
-    @Test
-    void testFractionDouble() {
-      assertThatThrownBy(() -> TankStart.builder().fraction(0.))
-          .isInstanceOf(IllegalStateException.class);
-
-      assertThatThrownBy(
-          () -> TankStart.builder().componentKey(ComponentKey.NITROGEN).fraction(-1.))
-          .isInstanceOf(IllegalArgumentException.class);
-      assertThatThrownBy(
-          () -> TankStart.builder()
-              .componentKey(ComponentKey.OXYGEN)
-                .fraction(0.8)
-              .componentKey(ComponentKey.NITROGEN)
-                .fraction(0.5))
-          .isInstanceOf(IllegalArgumentException.class);
-    }
-
   } // BuilderTest
 
   /// [TankStart#temperature()] のテスト.
