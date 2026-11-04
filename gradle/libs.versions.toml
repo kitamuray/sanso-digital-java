@@ -14,6 +14,7 @@ junit-bom = "6.1.3"
 log4j-bom = "2.26.1"
 mathjax = "4.1.3"
 mockito-bom = "5.24.0"
+numbers-bom = "1.3"
 rhino = "1.9.2"
 shadow = "9.6.1"
 
@@ -38,6 +39,9 @@ mathjax = {group = "org.mvnpm", name = "mathjax", version.ref = "mathjax"}
 mockito-bom = {group = "org.mockito", name = "mockito-bom", version.ref = "mockito-bom"}
 mockito-core = {group = "org.mockito", name = "mockito-core"}
 mockito-junit-jupiter = {group = "org.mockito", name = "mockito-junit-jupiter"}
+numbers-bom = {group = "org.apache.commons", name = "commons-numbers-bom", version.ref = "numbers-bom"}
+numbers-core = {group = "org.apache.commons", name = "commons-numbers-core"}
+numbers-rootfinder = {group = "org.apache.commons", name = "commons-numbers-rootfinder"}
 rhino = {group = "org.mozilla", name = "rhino", version.ref = "rhino"}
 
 [plugins]

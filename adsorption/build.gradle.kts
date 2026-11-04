@@ -34,6 +34,8 @@ dependencies {
     testImplementation(platform(libs.mockito.bom))
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.junit.jupiter)
+    implementation(platform(libs.numbers.bom))
+    implementation(libs.numbers.rootfinder)
     implementation(libs.rhino)
 
     mockitoAgent(libs.bytebuddy) { isTransitive = false }
