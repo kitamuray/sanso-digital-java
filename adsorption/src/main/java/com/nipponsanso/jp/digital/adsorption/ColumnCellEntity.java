@@ -7,7 +7,7 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.MoreObjects;
 
-/// 吸着筒セルの永続化クラス.
+/// 吸着筒セルの永続化クラスのコンクリート実装.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
@@ -42,7 +42,7 @@ public final class ColumnCellEntity extends AdsorbentCellEntity<
         .toString();
   }
 
-  /// 吸着筒セルの前ステップ値の永続化クラス.
+  /// 吸着筒セルの前ステップ値の永続化クラスのコンクリート実装.
   public static final class Previous extends AdsorbentCellEntity.Previous {
 
     /// 吸着筒セルの前ステップ値の永続化クラスのインスタンスを生成する.
@@ -65,7 +65,7 @@ public final class ColumnCellEntity extends AdsorbentCellEntity<
 
   } // Previous
 
-  /// 吸着筒セルの成分値の永続化クラス.
+  /// 吸着筒セルの成分値の永続化クラスのコンクリート実装.
   public static final class ComponentValue
       extends AdsorbentCellEntity.ComponentValue<ComponentValue.Previous> {
 
@@ -87,7 +87,7 @@ public final class ColumnCellEntity extends AdsorbentCellEntity<
           .toString();
     }
 
-    /// 吸着筒セルの成分値の前ステップ値の永続化クラス.
+    /// 吸着筒セルの成分値の前ステップ値の永続化クラスのコンクリート実装.
     public static final class Previous extends AdsorbentCellEntity.ComponentValue.Previous {
 
       /// 吸着筒セルの成分値の前ステップ値の永続化クラスのインスタンスを生成する.

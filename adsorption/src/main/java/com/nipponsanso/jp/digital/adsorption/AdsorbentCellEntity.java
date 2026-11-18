@@ -8,7 +8,10 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Objects;
 
-/// 吸着剤セルの永続化クラスのスケルトン実装.
+/// 吸着剤を含むセルの永続化クラスの抽象実装.
+///
+/// - 流体・容器に関する従属変数は親クラス, 吸着質・吸着剤に関する従属変数は本クラスが対象
+/// - 前ステップ値や成分値を受ける setter が存在するため, 総称型とした
 ///
 /// @param <P> 前ステップ値の永続化クラスの型.
 /// @param <C> 成分値の永続化クラスの型.
@@ -66,7 +69,7 @@ abstract class AdsorbentCellEntity<
         this.adsorbentSpecificHeat);
   }
 
-  /// 吸着剤セルの前ステップ値の永続化クラス.
+  /// 吸着剤を含むセルの前ステップ値の永続化クラスの抽象実装.
   abstract static class Previous extends ShellCellEntity.Previous {
 
     /// 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
@@ -113,7 +116,7 @@ abstract class AdsorbentCellEntity<
 
   } // Previous
 
-  /// 吸着剤セルの成分値.
+  /// 吸着剤を含むセルの成分値の抽象実装.
   ///
   /// @param <Q> 前ステップ値の永続化クラスの型.
   abstract static class ComponentValue<Q extends ComponentValue.Previous>
@@ -190,7 +193,7 @@ abstract class AdsorbentCellEntity<
           this.molarSpecificConstantVolumeSpecificHeat);
     }
 
-    /// 吸着剤セルの成分値の前ステップ値の永続化クラス.
+    /// 吸着剤を含むセルの成分値の前ステップ値の永続化クラスの抽象実装.
     abstract static class Previous extends ShellCellEntity.ComponentValue.Previous {
 
       /// モル吸着量 (mol kg<sup>-1</sup>).

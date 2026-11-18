@@ -11,7 +11,10 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-/// セルの永続化クラス.
+/// セルの永続化クラスの抽象実装.
+///
+/// - セルの永続化クラスの基本骨格を定義
+/// - 前ステップ値や成分値を受ける setter が存在するため, 総称型とした
 ///
 /// @param <P> 前ステップ値の永続化クラスの型.
 /// @param <C> 成分値の永続化クラスの型.
@@ -99,7 +102,7 @@ abstract class CellEntity<
         this.componentEntityMap);
   }
 
-  /// セルの前ステップ値の永続化クラス.
+  /// セルの前ステップ値の永続化クラスの抽象実装.
   abstract static class Previous {
 
     /// セルの前ステップ値の永続化クラスのインスタンスを生成する.
@@ -120,7 +123,7 @@ abstract class CellEntity<
 
   } // Previous
 
-  /// セルの成分値の永続化クラス.
+  /// セルの成分値の永続化クラスの抽象実装.
   ///
   /// @param <Q> 前ステップ値の型.
   abstract static class ComponentValue<Q extends ComponentValue.Previous> {
@@ -173,7 +176,7 @@ abstract class CellEntity<
           this.getPreviousEntity());
     }
 
-    /// セルの成分値の前ステップ値の永続化クラス.
+    /// セルの成分値の前ステップ値の永続化クラスの抽象実装.
     abstract static class Previous {
 
       /// セルの成分値の前ステップ値の永続化クラスのインスタンスを生成する.

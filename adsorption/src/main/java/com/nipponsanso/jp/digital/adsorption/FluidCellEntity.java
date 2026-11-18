@@ -8,7 +8,10 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Objects;
 
-/// 流体セルの永続化クラス.
+/// 流体を含むセルの永続化クラスの抽象実装.
+///
+/// - 流体に関する従属変数が対象
+/// - 前ステップ値や成分値を受ける setter が存在するため, 総称型とした
 ///
 /// @param <P> 前ステップ値の永続化クラスの型.
 /// @param <C> 成分値の永続化クラスの型.
@@ -200,7 +203,7 @@ abstract class FluidCellEntity<
         this.thermalConductivity);
   }
 
-  /// 流体セルの前ステップ値の永続化クラス.
+  /// 流体を含むセルの前ステップ値の永続化クラスの抽象実装.
   abstract static class Previous extends CellEntity.Previous {
 
     /// 流体の熱力学的温度 (K).
@@ -314,7 +317,7 @@ abstract class FluidCellEntity<
 
   } // Previous
 
-  /// 流体セルの成分値の永続化クラス.
+  /// 流体を含むセルの成分値の永続化クラスの抽象実装.
   ///
   /// @param <Q> 前ステップ値の永続化クラスの型.
   abstract static class ComponentValue<Q extends ComponentValue.Previous>
@@ -389,7 +392,7 @@ abstract class FluidCellEntity<
           this.diffusivity);
     }
 
-    /// 流体セルの成分値の前ステップ値の永続化クラス.
+    /// 流体を含むセルの成分値の前ステップ値の永続化クラスの抽象実装.
     abstract static class Previous extends CellEntity.ComponentValue.Previous {
 
       /// 流体成分の質量分率 (-).

@@ -7,7 +7,7 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.MoreObjects;
 
-/// 貯槽セルの永続化クラス.
+/// 貯槽セルの永続化クラスのコンクリート実装.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
@@ -38,7 +38,7 @@ public final class TankCellEntity extends FluidCellEntity<
         .toString();
   }
 
-  /// 貯槽セルの前ステップ値の永続化クラス.
+  /// 貯槽セルの前ステップ値の永続化クラスのコンクリート実装.
   public static final class Previous extends FluidCellEntity.Previous {
 
     /// 貯槽セルの前ステップ値の永続化クラスのインスタンスを生成する.
@@ -58,7 +58,7 @@ public final class TankCellEntity extends FluidCellEntity<
 
   } // Previous
 
-  /// 貯槽セルの成分値の永続化クラス.
+  /// 貯槽セルの成分値の永続化クラスのコンクリート実装.
   public static final class ComponentValue
       extends FluidCellEntity.ComponentValue<ComponentValue.Previous> {
 
@@ -76,7 +76,7 @@ public final class TankCellEntity extends FluidCellEntity<
           .toString();
     }
 
-    /// 貯槽セルの成分値の前ステップ値の永続化クラス.
+    /// 貯槽セルの成分値の前ステップ値の永続化クラスのコンクリート実装.
     public static final class Previous extends FluidCellEntity.ComponentValue.Previous {
 
       /// 貯槽セルの成分値の前ステップ値の永続化クラスのインスタンスを生成する.

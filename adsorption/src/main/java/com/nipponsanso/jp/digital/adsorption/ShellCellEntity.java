@@ -8,7 +8,10 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Objects;
 
-/// 容器セルの永続化クラス.
+/// 容器を含むセルの永続化クラスの抽象実装.
+///
+/// - 流体に関する従属変数は親クラス, 容器に関する従属変数は本クラスが対象
+/// - 前ステップ値や成分値を受ける setter が存在するため, 総称型とした
 ///
 /// @param <P> 前ステップ値の永続化クラスの型.
 /// @param <C> 成分値の永続化クラスの型.
@@ -111,7 +114,7 @@ abstract class ShellCellEntity<
         this.shellThermalConductivity);
   }
 
-  /// 容器セルの前ステップ値の永続化クラス.
+  /// 容器を含むセルの前ステップ値の永続化クラスの抽象実装.
   abstract static class Previous extends FluidCellEntity.Previous {
 
     /// 容器の熱力学的温度 (K).
@@ -181,20 +184,20 @@ abstract class ShellCellEntity<
 
   } // Previous
 
-  /// 容器セルの成分値の永続化クラス.
+  /// 容器を含むセルの成分値の永続化クラスの抽象実装.
   ///
   /// @param <Q> 前ステップ値の永続化クラスの型.
   abstract static class ComponentValue<Q extends ComponentValue.Previous>
       extends FluidCellEntity.ComponentValue<Q> {
 
-    /// 容器セルの成分値の永続化クラスのインスタンスを生成する.
+    /// 容器を含むセルの成分値の永続化クラスのインスタンスを生成する.
     ///
     /// @param previous 前ステップ値の永続化オブジェクト.
     ComponentValue(Q previous) {
       super(previous);
     }
 
-    /// 容器セルの成分値の前ステップ値の永続化クラス.
+    /// 容器セルの成分値の前ステップ値の永続化クラスの抽象実装.
     abstract static class Previous extends FluidCellEntity.ComponentValue.Previous {
 
       /// 容器セルの成分値の前ステップ値の永続化クラスのインスタンスを生成する.
