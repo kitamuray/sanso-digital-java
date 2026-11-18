@@ -62,6 +62,8 @@ public final class GetterSetterTester<T> {
   }
 
   /// 参照型を対象とするテスタ.
+  ///
+  /// @param <E> 要素の型.
   public final class ObjectTester<E> {
 
     /// Getter メソッド.

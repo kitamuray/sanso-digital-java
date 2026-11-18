@@ -158,51 +158,55 @@ class FluidCellTest {
 
   @Mock
   private FluidCellEntity<?, ?, ?> entity;
+  
+  static void initMock(FluidCellEntity<?, ?, ?> entity) {
+    final double temperature = 298.15;
+    doReturn(temperature).when(entity).getTemperature();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(temperature))
+        .when(entity)
+        .setTemperature(anyDouble());
+
+    final double pressure = 101325.;
+    doReturn(pressure).when(entity).getPressure();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(pressure))
+        .when(entity)
+        .setPressure(anyDouble());
+
+    final double density = 1.2;
+    doReturn(density).when(entity).getDensity();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(density))
+        .when(entity)
+        .setDensity(anyDouble());
+
+    final double specificHeat = 1.2;
+    doReturn(specificHeat).when(entity).getSpecificConstantPressureSpecificHeat();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificHeat))
+        .when(entity)
+        .setSpecificConstantPressureSpecificHeat(anyDouble());
+
+    final double specificEnthalpy = 10000.;
+    doReturn(specificEnthalpy).when(entity).getSpecificEnthalpy();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificEnthalpy))
+        .when(entity)
+        .setSpecificEnthalpy(anyDouble());
+
+    final double viscosity = 18e-6;
+    doReturn(viscosity).when(entity).getViscosity();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(viscosity))
+        .when(entity)
+        .setViscosity(anyDouble());
+
+    final double thermalConductivity = 0.02;
+    doReturn(thermalConductivity).when(entity).getThermalConductivity();
+    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(thermalConductivity))
+        .when(entity)
+        .setThermalConductivity(anyDouble());
+  }
 
   /// [FluidCell#read(FluidCellEntity)] と [FluidCell#write(FluidCellEntity)] のテスト.
   @Test
   void testEntity() {
-    final double temperature = 298.15;
-    doReturn(temperature).when(this.entity).getTemperature();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(temperature))
-        .when(this.entity)
-        .setTemperature(anyDouble());
-
-    final double pressure = 101325.;
-    doReturn(pressure).when(this.entity).getPressure();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(pressure))
-        .when(this.entity)
-        .setPressure(anyDouble());
-
-    final double density = 1.2;
-    doReturn(density).when(this.entity).getDensity();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(density))
-        .when(this.entity)
-        .setDensity(anyDouble());
-
-    final double specificHeat = 1.2;
-    doReturn(specificHeat).when(this.entity).getSpecificConstantPressureSpecificHeat();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificHeat))
-        .when(this.entity)
-        .setSpecificConstantPressureSpecificHeat(anyDouble());
-
-    final double specificEnthalpy = 10000.;
-    doReturn(specificEnthalpy).when(this.entity).getSpecificEnthalpy();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificEnthalpy))
-        .when(this.entity)
-        .setSpecificEnthalpy(anyDouble());
-
-    final double viscosity = 18e-6;
-    doReturn(viscosity).when(this.entity).getViscosity();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(viscosity))
-        .when(this.entity)
-        .setViscosity(anyDouble());
-
-    final double thermalConductivity = 0.02;
-    doReturn(thermalConductivity).when(this.entity).getThermalConductivity();
-    doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(thermalConductivity))
-        .when(this.entity)
-        .setThermalConductivity(anyDouble());
+    initMock(this.entity);
 
     LocalCell cell = new LocalCell();
     cell.read(this.entity);
@@ -242,6 +246,32 @@ class FluidCellTest {
           .test();
     }
 
+    static void initMock(FluidCellEntity.Previous entity) {
+      final double temperature = 298.15;
+      doReturn(temperature).when(entity).getTemperature();
+      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(temperature))
+          .when(entity)
+          .setTemperature(anyDouble());
+
+      final double density = 1.2;
+      doReturn(density).when(entity).getDensity();
+      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(density))
+          .when(entity)
+          .setDensity(anyDouble());
+
+      final double specificHeat = 1.2;
+      doReturn(specificHeat).when(entity).getSpecificConstantPressureSpecificHeat();
+      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificHeat))
+          .when(entity)
+          .setSpecificConstantPressureSpecificHeat(anyDouble());
+
+      final double specificEnthalpy = 10000.;
+      doReturn(specificEnthalpy).when(entity).getSpecificEnthalpy();
+      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificEnthalpy))
+          .when(entity)
+          .setSpecificEnthalpy(anyDouble());
+    }
+
     @Mock
     private FluidCellEntity.Previous entity;
 
@@ -249,29 +279,7 @@ class FluidCellTest {
     /// [FluidCell.Previous#write(FluidCellEntity.Previous)] のテスト.
     @Test
     void testEntity() {
-      final double temperature = 298.15;
-      doReturn(temperature).when(this.entity).getTemperature();
-      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(temperature))
-          .when(this.entity)
-          .setTemperature(anyDouble());
-
-      final double density = 1.2;
-      doReturn(density).when(this.entity).getDensity();
-      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(density))
-          .when(this.entity)
-          .setDensity(anyDouble());
-
-      final double specificHeat = 1.2;
-      doReturn(specificHeat).when(this.entity).getSpecificConstantPressureSpecificHeat();
-      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificHeat))
-          .when(this.entity)
-          .setSpecificConstantPressureSpecificHeat(anyDouble());
-
-      final double specificEnthalpy = 10000.;
-      doReturn(specificEnthalpy).when(this.entity).getSpecificEnthalpy();
-      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(specificEnthalpy))
-          .when(this.entity)
-          .setSpecificEnthalpy(anyDouble());
+      initMock(this.entity);
 
       LocalCell.Previous previous = new LocalCell.Previous();
       previous.read(this.entity);
@@ -315,6 +323,20 @@ class FluidCellTest {
           .test();
     }
 
+    static void initMock(FluidCellEntity.ComponentValue<?> entity) {
+      final double fraction = 0.123;
+      doReturn(fraction).when(entity).getFraction();
+      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(fraction))
+          .when(entity)
+          .setFraction(anyDouble());
+
+      final double diffusivity = 5e-4;
+      doReturn(diffusivity).when(entity).getDiffusivity();
+      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(diffusivity))
+          .when(entity)
+          .setDiffusivity(anyDouble());
+    }
+
     @Mock
     private FluidCellEntity.ComponentValue<?> entity;
 
@@ -322,17 +344,7 @@ class FluidCellTest {
     /// [FluidCell.ComponentValue#write(FluidCellEntity.ComponentValue)] のテスト.
     @Test
     void testEntity() {
-      final double fraction = 0.123;
-      doReturn(fraction).when(this.entity).getFraction();
-      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(fraction))
-          .when(this.entity)
-          .setFraction(anyDouble());
-
-      final double diffusivity = 5e-4;
-      doReturn(diffusivity).when(this.entity).getDiffusivity();
-      doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(diffusivity))
-          .when(this.entity)
-          .setDiffusivity(anyDouble());
+      initMock(this.entity);
 
       LocalCell.ComponentValue componentValue = new LocalCell.ComponentValue();
       componentValue.read(this.entity);
@@ -355,6 +367,14 @@ class FluidCellTest {
             .test();
       }
 
+      static void initMock(FluidCellEntity.ComponentValue.Previous entity) {
+        final double fraction = 0.123;
+        doReturn(fraction).when(entity).getFraction();
+        doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(fraction))
+            .when(entity)
+            .setFraction(anyDouble());
+      }
+
       @Mock
       private FluidCellEntity.ComponentValue.Previous entity;
 
@@ -362,11 +382,7 @@ class FluidCellTest {
       /// [FluidCell.ComponentValue.Previous#write(FluidCellEntity.ComponentValue.Previous)] のテスト.
       @Test
       void testEntity() {
-        final double fraction = 0.123;
-        doReturn(fraction).when(this.entity).getFraction();
-        doAnswer(invocation -> assertThat(invocation.getArgument(0, Double.class)).isEqualTo(fraction))
-            .when(this.entity)
-            .setFraction(anyDouble());
+        initMock(this.entity);
 
         LocalCell.ComponentValue.Previous previous = new LocalCell.ComponentValue.Previous();
         previous.read(this.entity);
