@@ -220,6 +220,7 @@ abstract class FluidCell extends Cell {
     this.setSpecificConstantPressureSpecificHeat(
         entity.getSpecificConstantPressureSpecificHeat());
     this.setViscosity(entity.getViscosity());
+    this.setThermalConductivity(entity.getThermalConductivity());
   }
 
   @Override
