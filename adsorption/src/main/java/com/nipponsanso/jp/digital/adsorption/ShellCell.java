@@ -8,7 +8,14 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// 容器を含むセル.
+/// 容器を含むセルのスケルトン実装.
+///
+/// - 解析対象毎に継承された具象クラスの実装を想定
+/// - 流体・容器を含むセルの従属変数をユーザ管轄外で管理
+/// - 流体については親クラス, 容器は本クラスが担当
+/// - 不変情報は record 式, 可変情報は bean 式でアクセス
+/// - 永続化オブジェクトへの読み書きを用意
+/// - 内部実装では参照の空間的局所性を意識. 具体的には従属変数をメモリ上で連続的に配置
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
@@ -118,19 +125,13 @@ public abstract class ShellCell extends FluidCell {
     this.setShellThermalConductivity(entity.getShellThermalConductivity());
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Previous previous();
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
 
-  /// 容器を含むセルの前ステップ値.
+  /// 容器を含むセルの前ステップ値のスケルトン実装.
   abstract static class Previous extends FluidCell.Previous {
 
     /// 容器の熱力学的温度の位置.
@@ -203,7 +204,7 @@ public abstract class ShellCell extends FluidCell {
 
   } // Previous
 
-  /// 容器を含むセルの成分値.
+  /// 容器を含むセルの成分値のスケルトン実装.
   abstract static class ComponentValue extends FluidCell.ComponentValue {
 
     /// 変数の数.
@@ -226,13 +227,10 @@ public abstract class ShellCell extends FluidCell {
       super.read(entity);
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     abstract Previous previous();
 
-    /// 容器を含むセルの成分値の前ステップ値.
+    /// 容器を含むセルの成分値の前ステップ値のスケルトン実装.
     abstract static class Previous extends FluidCell.ComponentValue.Previous {
 
       /// 変数の数.

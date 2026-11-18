@@ -11,6 +11,9 @@ import java.util.Map;
 
 /// 系統セル.
 ///
+/// - 系統内の流体を対象としたセルのコンクリート実装
+/// - 永続化の対象ではない
+///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 final class LineCell extends FluidCell {
@@ -45,36 +48,34 @@ final class LineCell extends FluidCell {
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   int offset() {
     return 0;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   double[] doubleArray() {
     return this.doubleArray;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Previous previous() {
     return this.previous;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Map<ComponentKey, ? extends ComponentValue> componentMap() {
     return this.componentMap;
+  }
+
+  @Override
+  void write(FluidCellEntity<?, ?, ?> entity) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  void read(FluidCellEntity<?, ?, ?> entity) {
+    throw new UnsupportedOperationException();
   }
 
   /// 系統セルの前ステップ値.
@@ -83,20 +84,24 @@ final class LineCell extends FluidCell {
     /// 系統セルの前ステップ値のインスタンスを生成する.
     private Previous() {}
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return FluidCell.SIZE;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return LineCell.this.doubleArray;
+    }
+
+    @Override
+    void write(FluidCellEntity.Previous entity) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    void read(FluidCellEntity.Previous entity) {
+      throw new UnsupportedOperationException();
     }
 
   } // Previous
@@ -118,28 +123,29 @@ final class LineCell extends FluidCell {
       this.previous = new Previous();
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     Previous previous() {
       return this.previous;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return this.offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return LineCell.this.doubleArray;
+    }
+
+    @Override
+    void write(FluidCellEntity.ComponentValue<?> entity) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    void read(FluidCellEntity.ComponentValue<?> entity) {
+      throw new UnsupportedOperationException();
     }
 
     /// 系統セルの成分値の前ステップ値.
@@ -148,20 +154,24 @@ final class LineCell extends FluidCell {
       /// 系統セルの成分値の前ステップ値のインスタンスを生成する.
       private Previous() {}
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       int offset() {
         return ComponentValue.this.offset + FluidCell.ComponentValue.SIZE;
       }
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       double[] doubleArray() {
         return LineCell.this.doubleArray;
+      }
+
+      @Override
+      void write(FluidCellEntity.ComponentValue.Previous entity) {
+        throw new UnsupportedOperationException();
+      }
+
+      @Override
+      void read(FluidCellEntity.ComponentValue.Previous entity) {
+        throw new UnsupportedOperationException();
       }
 
     } // Previous

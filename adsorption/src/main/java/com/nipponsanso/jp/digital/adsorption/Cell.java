@@ -7,7 +7,9 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import java.util.Map;
 
-/// セル
+/// セルのスケルトン実装.
+///
+/// - セルの基本骨格を定義
 ///
 /// @since 1.1
 /// @author KITAMURA Yuichiro

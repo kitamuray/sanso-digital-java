@@ -8,7 +8,13 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// 流体を含むセル.
+/// 流体を含むセルのスケルトン実装.
+///
+/// - 解析対象毎に継承された具象クラスの実装を想定
+/// - 流体を含むセルの従属変数をユーザ管轄外で管理
+/// - 不変情報は record 式, 可変情報は bean 式でアクセス
+/// - 永続化オブジェクトへの読み書きを用意
+/// - 内部実装では参照の空間的局所性を意識. 具体的には従属変数をメモリ上で連続的に配置
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
@@ -216,19 +222,13 @@ abstract class FluidCell extends Cell {
     this.setViscosity(entity.getViscosity());
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Previous previous();
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
 
-  /// 流体を含むセルの前ステップ値.
+  /// 流体を含むセルの前ステップ値のスケルトン実装.
   abstract static class Previous extends Cell.Previous {
 
     /// 流体の熱力学的温度の位置.
@@ -346,7 +346,7 @@ abstract class FluidCell extends Cell {
 
   } // Previous
 
-  /// 流体を含むセルの成分値.
+  /// 流体を含むセルの成分値のスケルトン実装.
   abstract static class ComponentValue extends Cell.ComponentValue {
 
     /// 流体成分の質量分率の位置.
@@ -465,13 +465,10 @@ abstract class FluidCell extends Cell {
       this.setDiffusivity(entity.getDiffusivity());
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     abstract Previous previous();
 
-    /// 流体を含むセルの成分値の前ステップ値.
+    /// 流体を含むセルの成分値の前ステップ値のスケルトン実装.
     abstract static class Previous extends Cell.ComponentValue.Previous {
 
       /// 流体成分の質量分率の位置.

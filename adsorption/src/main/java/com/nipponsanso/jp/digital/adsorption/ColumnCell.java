@@ -9,11 +9,22 @@ import com.google.common.collect.Maps;
 import java.util.EnumMap;
 import java.util.Map;
 
-/// 吸着筒のセル.
+/// 吸着筒のセルのスケルトン実装.
+///
+/// - 前ステップ値・成分マップのメソッドを実装, 吸着筒毎に具象クラスの実装を想定
+/// - 幾何情報・離散化係数・流体・容器・吸着質・吸着剤を含むセルの従属変数をユーザ管轄外で管理
+/// - 幾何情報・離散化係数については親クラス, 流体・容器・吸着質・吸着剤は本クラスが担当
+/// - 不変情報は record 式, 可変情報は bean 式でアクセス
+/// - 永続化オブジェクトへの読み書きを用意
+/// - 内部実装では参照の空間的局所性を意識. 具体的には従属変数をメモリ上で連続的に配置
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell {
+
+  // 実装上の留意事項：
+  //   幾何情報は不変情報だが, セル毎に異なる情報であるため,
+  //   他の従属変数と同様に参照の空間的局所性を意識した.
 
   /// 重心座標 (m) の位置.
   private static final int CENTROID = AdsorbentCell.SIZE;
@@ -95,114 +106,82 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double centroid() {
     return this.doubleArray()[this.offset() + CENTROID];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double length() {
     return this.doubleArray()[this.offset() + LENGTH];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double fluidVolume() {
     return this.doubleArray()[this.offset() + FLUID_VOLUME];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double shellVolume() {
     return this.doubleArray()[this.offset() + SHELL_VOLUME];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double insideArea() {
     return this.doubleArray()[this.offset() + INSIDE_AREA];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double outsideArea() {
     return this.doubleArray()[this.offset() + OUTSIDE_AREA];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double getAp() {
     return this.doubleArray()[this.offset() + AP];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @param ap {@inheritDoc}
+  @Override
   public void setAp(double ap) {
     this.doubleArray()[this.offset() + AP] = ap;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double getAw() {
     return this.doubleArray()[this.offset() + AW];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @param aw {@inheritDoc}
+  @Override
   public void setAw(double aw) {
     this.doubleArray()[this.offset() + AW] = aw;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double getAe() {
     return this.doubleArray()[this.offset() + AE];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @param ae {@inheritDoc}
+  @Override
   public void setAe(double ae) {
     this.doubleArray()[this.offset() + AE] = ae;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double getSp() {
     return this.doubleArray()[this.offset() + SP];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @param sp {@inheritDoc}
+  @Override
   public void setSp(double sp) {
     this.doubleArray()[this.offset() + SP] = sp;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double getSc() {
     return this.doubleArray()[this.offset() + SC];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @param sc {@inheritDoc}
+  @Override
   public void setSc(double sc) {
     this.doubleArray()[this.offset() + SC] = sc;
   }
@@ -232,25 +211,16 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
             entity.getComponentEntityMap().get(key)));
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Previous previous() {
     return this.previous;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Map<ComponentKey, ComponentValue> componentMap() {
     return this.componentMap;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   int offset() {
     return this.offset;
@@ -270,7 +240,7 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
     return size() + composition.componentKeySet().size() * ComponentValue.size();
   }
 
-  /// 吸着筒セルの前ステップ値.
+  /// 吸着筒セルの前ステップ値のスケルトン実装.
   final class Previous extends AdsorbentCell.Previous {
 
     /// 変数の数.
@@ -293,17 +263,11 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
       super.read(entity);
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return ColumnCell.this.offset() + ColumnCell.SIZE;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return ColumnCell.this.doubleArray();
@@ -311,7 +275,7 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
 
   } // Previous
 
-  /// 吸着筒セルの成分値.
+  /// 吸着筒セルの成分値のスケルトン実装.
   final class ComponentValue extends AdsorbentCell.ComponentValue {
 
     /// 変数の数.
@@ -349,25 +313,16 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
       this.previous.read(entity.getPreviousEntity());
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     Previous previous() {
       return this.previous;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return this.offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return ColumnCell.this.doubleArray();
@@ -380,7 +335,7 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
       return SIZE + Previous.SIZE;
     }
 
-    /// 吸着筒セルの成分値の前ステップ値.
+    /// 吸着筒セルの成分値の前ステップ値のスケルトン実装.
     final class Previous extends AdsorbentCell.ComponentValue.Previous {
 
       /// 変数の数.
@@ -403,17 +358,11 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
         super.read(entity);
       }
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       int offset() {
         return ComponentValue.this.offset() + ComponentValue.SIZE;
       }
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       double[] doubleArray() {
         return ColumnCell.this.doubleArray();

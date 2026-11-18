@@ -26,6 +26,11 @@ interface GridCell {
   /// @return 流体領域の体積 (m<sup>3</sup>).
   double fluidVolume();
 
+  /// 容器領域の体積を返す.
+  ///
+  /// @return 容器領域の体積 (m<sup>3</sup>).
+  double shellVolume();
+
   /// 容器内面の面積を返す.
   ///
   /// @return 容器内面の面積 (m<sup>2</sup>).

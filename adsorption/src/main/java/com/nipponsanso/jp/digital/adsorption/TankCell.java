@@ -11,6 +11,9 @@ import java.util.Map;
 
 /// 貯槽のセル.
 ///
+/// - 貯槽を対象としたセルのコンクリート実装
+/// - 永続化の対象である
+///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 final class TankCell extends FluidCell {
@@ -70,33 +73,21 @@ final class TankCell extends FluidCell {
             entity.getComponentEntityMap().get(key)));
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Previous previous() {
     return this.previous;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Map<ComponentKey, ComponentValue> componentMap() {
     return this.componentMap;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   int offset() {
     return 0;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   double[] doubleArray() {
     return this.doubleArray;
@@ -139,17 +130,11 @@ final class TankCell extends FluidCell {
       super.read(entity);
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return TankCell.this.offset() + TankCell.SIZE;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return TankCell.this.doubleArray();
@@ -195,32 +180,20 @@ final class TankCell extends FluidCell {
       this.previous.read(entity.getPreviousEntity());
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return this.offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return TankCell.this.doubleArray();
     }
 
-    /// 成分値全体における変数の数を返す.
-    ///
-    /// @return 成分値全体における変数の数.
     private static int size() {
       return SIZE + Previous.SIZE;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     Previous previous() {
       return this.previous;
@@ -249,17 +222,11 @@ final class TankCell extends FluidCell {
         super.read(entity);
       }
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       int offset() {
         return ComponentValue.this.offset() + ComponentValue.SIZE;
       }
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       double[] doubleArray() {
         return TankCell.this.doubleArray();

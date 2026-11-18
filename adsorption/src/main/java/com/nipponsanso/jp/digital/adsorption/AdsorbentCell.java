@@ -8,7 +8,14 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
-/// 吸着剤を含むセル.
+/// 吸着剤を含むセルのスケルトン実装.
+///
+/// - 解析対象毎に継承された具象クラスの実装を想定
+/// - 流体・容器・吸着質・吸着剤を含むセルの従属変数をユーザ管轄外で管理
+/// - 流体・容器については親クラス, 吸着質・吸着剤は本クラスが担当
+/// - 不変情報は record 式, 可変情報は bean 式でアクセス
+/// - 永続化オブジェクトへの読み書きを用意
+/// - 内部実装では参照の空間的局所性を意識. 具体的には従属変数をメモリ上で連続的に配置
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
@@ -88,19 +95,13 @@ abstract class AdsorbentCell extends ShellCell {
     this.setAdsorbentSpecificHeat(entity.getAdsorbentSpecificHeat());
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Previous previous();
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
 
-  /// 吸着剤を含むセルの前ステップ値.
+  /// 吸着剤を含むセルの前ステップ値のスケルトン実装.
   abstract static class Previous extends ShellCell.Previous {
 
     /// 吸着剤の比熱の位置.
@@ -149,7 +150,7 @@ abstract class AdsorbentCell extends ShellCell {
 
   } // Previous
 
-  /// 吸着剤を含むセルの成分値.
+  /// 吸着剤を含むセルの成分値のスケルトン実装.
   abstract static class ComponentValue extends ShellCell.ComponentValue {
 
     /// 吸着質成分のモル吸着量の位置.
@@ -224,13 +225,10 @@ abstract class AdsorbentCell extends ShellCell {
           entity.getMolarSpecificConstantVolumeSpecificHeat());
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     abstract Previous previous();
 
-    /// 吸着剤を含むセルの成分値の前ステップ値.
+    /// 吸着剤を含むセルの成分値の前ステップ値のスケルトン実装.
     abstract static class Previous extends ShellCell.ComponentValue.Previous {
 
       /// 吸着質成分のモル吸着量の位置.

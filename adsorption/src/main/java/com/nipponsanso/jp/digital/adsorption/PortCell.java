@@ -11,6 +11,9 @@ import java.util.Map;
 
 /// 境界セル.
 ///
+/// - 流出入境界を対象としたセルのコンクリート実装
+/// - 永続化の対象ではない
+///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 final class PortCell extends FluidCell {
@@ -29,52 +32,50 @@ final class PortCell extends FluidCell {
   /// @param composition 組成.
   PortCell(Composition composition) {
     this.doubleArray = new double[
-        SIZE + Previous.SIZE
+        FluidCell.SIZE + FluidCell.Previous.SIZE
             + composition.componentKeySet().size()
-            * (ComponentValue.SIZE + ComponentValue.Previous.SIZE)];
+            * (FluidCell.ComponentValue.SIZE + FluidCell.ComponentValue.Previous.SIZE)];
 
     this.previous = new Previous();
 
-    int offset = SIZE + Previous.SIZE;
+    int offset = FluidCell.SIZE + FluidCell.Previous.SIZE;
     Map<ComponentKey, ComponentValue> componentMap = new EnumMap<>(ComponentKey.class);
     for (ComponentKey componentKey : composition.componentKeySet()) {
       componentMap.put(componentKey, new ComponentValue(offset));
-      offset += ComponentValue.SIZE + ComponentValue.Previous.SIZE;
+      offset += FluidCell.ComponentValue.SIZE + FluidCell.ComponentValue.Previous.SIZE;
     }
 
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   int offset() {
     return 0;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   double[] doubleArray() {
     return this.doubleArray;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Previous previous() {
     return this.previous;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Map<ComponentKey, ? extends ComponentValue> componentMap() {
     return this.componentMap;
+  }
+
+  @Override
+  void write(FluidCellEntity<?, ?, ?> entity) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  void read(FluidCellEntity<?, ?, ?> entity) {
+    throw new UnsupportedOperationException();
   }
 
   /// 境界セルの前ステップ値.
@@ -83,20 +84,24 @@ final class PortCell extends FluidCell {
     /// 境界セルの前ステップ値のインスタンスを生成する.
     private Previous() {}
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return FluidCell.SIZE;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return PortCell.this.doubleArray;
+    }
+
+    @Override
+    void write(FluidCellEntity.Previous entity) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    void read(FluidCellEntity.Previous entity) {
+      throw new UnsupportedOperationException();
     }
 
   } // Previous
@@ -118,28 +123,29 @@ final class PortCell extends FluidCell {
       this.previous = new Previous();
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     Previous previous() {
       return this.previous;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return this.offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return PortCell.this.doubleArray;
+    }
+
+    @Override
+    void write(FluidCellEntity.ComponentValue<?> entity) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    void read(FluidCellEntity.ComponentValue<?> entity) {
+      throw new UnsupportedOperationException();
     }
 
     /// 境界セルの成分値の前ステップ値.
@@ -148,20 +154,24 @@ final class PortCell extends FluidCell {
       /// 境界セルの成分値の前ステップ値のインスタンスを生成する.
       private Previous() {}
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       int offset() {
         return ComponentValue.this.offset + ComponentValue.SIZE;
       }
 
-      /// {@inheritDoc}
-      ///
-      /// @return {@inheritDoc}
       @Override
       double[] doubleArray() {
         return PortCell.this.doubleArray;
+      }
+
+      @Override
+      void write(FluidCellEntity.ComponentValue.Previous entity) {
+        throw new UnsupportedOperationException();
+      }
+
+      @Override
+      void read(FluidCellEntity.ComponentValue.Previous entity) {
+        throw new UnsupportedOperationException();
       }
 
     } // Previous
