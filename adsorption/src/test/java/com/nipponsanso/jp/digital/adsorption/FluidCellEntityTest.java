@@ -293,7 +293,8 @@ class FluidCellEntityTest {
             .setter(LocalCellEntity.ComponentValue.Previous::setFraction)
             .valid(0.1)
             .thrown(IllegalArgumentException.class).value(-1.)
-            .thrown(IllegalArgumentException.class).value(2.);
+            .thrown(IllegalArgumentException.class).value(2.)
+            .test();
       }
 
       /// [FluidCellEntity.ComponentValue.Previous#equals(Object)] と
@@ -302,7 +303,7 @@ class FluidCellEntityTest {
       void testEquals() {
         EqualsTester tester = new EqualsTester();
 
-        Stream.<Consumer<FluidCellEntity.ComponentValue.Previous>>of(
+        Stream.<Consumer<LocalCellEntity.ComponentValue.Previous>>of(
                 _ -> {},
                 entity -> entity.setFraction(0.2))
             .map(
