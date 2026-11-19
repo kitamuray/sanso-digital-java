@@ -145,7 +145,7 @@ class MonitorTest {
   }
 
   @Mock
-  private FluidCell.ComponentValue fluidValue;
+  private FluidCell.ComponentValue fluidCellValue;
 
   /// [Monitor#fraction(ComponentKey)] のテスト.
   @Test
@@ -161,8 +161,8 @@ class MonitorTest {
         .hasToString("fraction[" + ComponentKey.NITROGEN + "]");
 
     final double value = 0.12;
-    doReturn(value).when(this.fluidValue).getFraction();
-    doReturn(Map.of(ComponentKey.NITROGEN, this.fluidValue)).when(this.fluidCell).componentMap();
+    doReturn(value).when(this.fluidCellValue).getFraction();
+    doReturn(Map.of(ComponentKey.NITROGEN, this.fluidCellValue)).when(this.fluidCell).componentMap();
 
     assertThat(Monitor.fraction(ComponentKey.NITROGEN).applyAsDouble(this.fluidCell))
         .isEqualTo(value);
@@ -182,8 +182,8 @@ class MonitorTest {
         .hasToString("diffusivity[" + ComponentKey.NITROGEN + "]");
 
     final double value = 5e-4;
-    doReturn(value).when(this.fluidValue).getDiffusivity();
-    doReturn(Map.of(ComponentKey.NITROGEN, this.fluidValue)).when(this.fluidCell).componentMap();
+    doReturn(value).when(this.fluidCellValue).getDiffusivity();
+    doReturn(Map.of(ComponentKey.NITROGEN, this.fluidCellValue)).when(this.fluidCell).componentMap();
 
     assertThat(Monitor.diffusivity(ComponentKey.NITROGEN).applyAsDouble(this.fluidCell))
         .isEqualTo(value);
@@ -264,7 +264,7 @@ class MonitorTest {
   }
   
   @Mock
-  private AdsorbentCell.ComponentValue adsorbentValue;
+  private AdsorbentCell.ComponentValue adsorbentCellValue;
 
   /// [Monitor#molarQuantity(ComponentKey)] のテスト.
   @Test
@@ -280,12 +280,68 @@ class MonitorTest {
         .hasToString("molarQuantity[" + ComponentKey.NITROGEN + "]");
 
     final double value = 10.;
-    doReturn(value).when(this.adsorbentValue).getMolarQuantity();
-    doReturn(Map.of(ComponentKey.NITROGEN, this.adsorbentValue))
+    doReturn(value).when(this.adsorbentCellValue).getMolarQuantity();
+    doReturn(Map.of(ComponentKey.NITROGEN, this.adsorbentCellValue))
         .when(this.adsorbentCell)
         .componentMap();
 
     assertThat(Monitor.molarQuantity(ComponentKey.NITROGEN).applyAsDouble(this.adsorbentCell))
+        .isEqualTo(value);
+  }
+
+  @Mock
+  private FluidFace fluidFace;
+
+  /// [Monitor#massFlow()] のテスト.
+  @Test
+  void testMassFlow() {
+    assertThatThrownBy(() -> Monitor.massFlow().applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.massFlow().applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.massFlow()).hasToString("massFlow");
+
+    final double value = 1.2;
+    doReturn(value).when(this.fluidFace).getMassFlow();
+    assertThat(Monitor.massFlow().applyAsDouble(this.fluidFace)).isEqualTo(value);
+  }
+
+  /// [Monitor#energyFlow()] のテスト.
+  @Test
+  void testEnergyFlow() {
+    assertThatThrownBy(() -> Monitor.energyFlow().applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.energyFlow().applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.energyFlow()).hasToString("energyFlow");
+
+    final double value = 2.3;
+    doReturn(value).when(this.fluidFace).getEnergyFlow();
+    assertThat(Monitor.energyFlow().applyAsDouble(this.fluidFace)).isEqualTo(value);
+  }
+
+  @Mock
+  private FluidFace.ComponentValue fluidFaceValue;
+
+  /// [Monitor#speciesFlow(ComponentKey)] のテスト.
+  @Test
+  void testSpeciesFlowComponentKey() {
+    assertThatThrownBy(() -> Monitor.speciesFlow(null)).isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.speciesFlow(ComponentKey.OXYGEN).applyAsDouble(null))
+        .isInstanceOf(NullPointerException.class);
+    assertThatThrownBy(() -> Monitor.speciesFlow(ComponentKey.OXYGEN).applyAsDouble(1))
+        .isInstanceOf(ClassCastException.class);
+
+    assertThat(Monitor.speciesFlow(ComponentKey.OXYGEN))
+        .hasToString("speciesFlow[" + ComponentKey.OXYGEN + "]");
+
+    final double value = 1.23;
+    doReturn(value).when(this.fluidFaceValue).getSpeciesFlow();
+    doReturn(Map.of(ComponentKey.OXYGEN, this.fluidFaceValue)).when(this.fluidFace).componentMap();
+
+    assertThat(Monitor.speciesFlow(ComponentKey.OXYGEN).applyAsDouble(this.fluidFace))
         .isEqualTo(value);
   }
 
