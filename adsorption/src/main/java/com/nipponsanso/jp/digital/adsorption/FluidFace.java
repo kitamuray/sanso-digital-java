@@ -53,9 +53,6 @@ abstract class FluidFace extends Face {
     this.doubleArray()[this.offset() + ENERGY_FLOW] = energyFlow;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   abstract Map<ComponentKey, ? extends ComponentValue> componentMap();
 
