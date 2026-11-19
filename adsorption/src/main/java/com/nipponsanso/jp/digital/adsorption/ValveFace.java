@@ -40,25 +40,16 @@ final class ValveFace extends FluidFace {
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   int offset() {
     return 0;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   double[] doubleArray() {
     return this.doubleArray;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Map<ComponentKey, ? extends ComponentValue> componentMap() {
     return this.componentMap;
@@ -77,17 +68,11 @@ final class ValveFace extends FluidFace {
       this.offset = offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return this.offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return ValveFace.this.doubleArray;
