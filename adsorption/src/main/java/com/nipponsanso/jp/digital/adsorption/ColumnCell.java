@@ -59,8 +59,14 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
   /// 生成項定数係数の位置.
   private static final int SC = SP + 1;
 
+  /// 作業変数 <i>P</i> の位置.
+  private static final int P = SC + 1;
+
+  /// 作業変数 <i>Q</i> の位置.
+  private static final int Q = P + 1;
+
   /// 変数の数.
-  static final int SIZE = SC + 1;
+  static final int SIZE = Q + 1;
 
   /// オフセット値.
   private final int offset;
@@ -184,6 +190,26 @@ abstract class ColumnCell extends AdsorbentCell implements GridCell, SolverCell 
   @Override
   public void setSc(double sc) {
     this.doubleArray()[this.offset() + SC] = sc;
+  }
+
+  @Override
+  public double getP() {
+    return this.doubleArray()[this.offset + P];
+  }
+
+  @Override
+  public void setP(double p) {
+    this.doubleArray()[this.offset + P] = p;
+  }
+
+  @Override
+  public double getQ() {
+    return this.doubleArray()[this.offset + Q];
+  }
+
+  @Override
+  public void setQ(double q) {
+    this.doubleArray()[this.offset + Q] = q;
   }
 
   /// 永続化オブジェクトへ情報を再帰的に書き込む.

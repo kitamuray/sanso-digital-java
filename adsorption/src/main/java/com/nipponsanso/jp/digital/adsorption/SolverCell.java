@@ -61,4 +61,24 @@ interface SolverCell {
   /// @param sc 新たな生成項定数係数 <i>S</i><sub><i>c</i></sub>.
   void setSc(double sc);
 
+  /// 作業変数 <i>P</i> を返す.
+  ///
+  /// @return 作業変数 <i>P</i>.
+  double getP();
+
+  /// 作業変数 <i>P</i> を設定する.
+  ///
+  /// @param p 新たな作業変数 <i>P</i>.
+  void setP(double p);
+
+  /// 作業変数 <i>Q</i> を返す.
+  ///
+  /// @return 作業変数 <i>Q</i>.
+  double getQ();
+
+  /// 作業変数 <i>Q</i> を設定する.
+  ///
+  /// @param q 新たな作業変数 <i>Q</i>.
+  void setQ(double q);
+
 }
