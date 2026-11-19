@@ -8,7 +8,6 @@ package com.nipponsanso.jp.digital.adsorption;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.nipponsanso.jp.digital.adsorption.Monitor.AdsorbentCellMonitor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -72,40 +71,6 @@ public final class ColumnSpace {
 
       return new ColumnSpace(this);
     }
-
-    /// モニタを設定するビルダ.
-    public final class MonitorBuilder {
-
-      /// ファイル名.
-      private final String fileName;
-
-      /// モニタを設定するビルダのインスタンスを生成する.
-      ///
-      /// @param fileName ファイル名.
-      /// @throws NullPointerException`fileName` が `null` の場合.
-      private MonitorBuilder(String fileName) {
-        this.fileName = Preconditions.checkNotNull(fileName);
-      }
-
-      /// モニタを設定する.
-      ///
-      /// @param monitor モニタ.
-      /// @return ビルダのインスタンス.
-      /// @throws NullPointerException`monitor` が `null` の場合.
-      /// @throws IllegalArgumentException `monitor` が適切なモニタではない場合.
-      public Builder monitor(Monitor monitor) {
-        Preconditions.checkNotNull(monitor);
-        Preconditions.checkArgument(
-            monitor instanceof Monitor.FluidCellMonitor
-                || monitor instanceof Monitor.ShellCellMonitor
-                || monitor instanceof AdsorbentCellMonitor);
-
-        Builder.this.monitorMap.put(this.fileName, monitor);
-
-        return Builder.this;
-      }
-
-    } // MonitorBuilder
 
   } // Builder
 
