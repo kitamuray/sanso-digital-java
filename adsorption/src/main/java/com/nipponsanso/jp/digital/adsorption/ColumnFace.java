@@ -56,23 +56,17 @@ abstract class ColumnFace extends FluidFace implements GridFace {
     this.componentMap = Maps.immutableEnumMap(componentMap);
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double coordinate() {
     return this.doubleArray()[this.offset() + COORDINATE];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double fluidArea() {
     return this.doubleArray()[this.offset() + FLUID_AREA];
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
+  @Override
   public double shellArea() {
     return this.doubleArray()[this.offset() + SHELL_AREA];
   }
@@ -85,9 +79,6 @@ abstract class ColumnFace extends FluidFace implements GridFace {
     return this.offset;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   Map<ComponentKey, ? extends ComponentValue> componentMap() {
     return this.componentMap;
@@ -123,17 +114,11 @@ abstract class ColumnFace extends FluidFace implements GridFace {
       this.offset = offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     int offset() {
       return this.offset;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @return {@inheritDoc}
     @Override
     double[] doubleArray() {
       return ColumnFace.this.doubleArray();
