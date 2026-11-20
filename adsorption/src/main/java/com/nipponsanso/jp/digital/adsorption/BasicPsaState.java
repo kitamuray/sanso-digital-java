@@ -177,6 +177,13 @@ public final class BasicPsaState {
     LOGGER.debug("lowerEqualizationValveSet = {}", this.lowerEqualizationValveSet);
   }
 
+  /// ビルダのインスタンスを生成して返す.
+  ///
+  /// @return ビルダのインスタンス.
+  public static Builder builder() {
+    return new Builder();
+  }
+
   /// 原料供給弁が開であれば `true` を返す.
   ///
   /// @return 原料供給弁が開であれば `true`.
