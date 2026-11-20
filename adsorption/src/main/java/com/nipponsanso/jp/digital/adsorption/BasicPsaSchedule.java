@@ -219,6 +219,13 @@ public final class BasicPsaSchedule {
                 entry -> Sets.immutableEnumSet(entry.getValue())));
   }
 
+  /// ビルダのインスタンスを生成して返す.
+  ///
+  /// @return ビルダのインスタンス.
+  public static Builder builder() {
+    return new Builder();
+  }
+
   /// 区間を返す.
   ///
   /// @return 区間.

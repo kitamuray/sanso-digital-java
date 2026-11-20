@@ -79,6 +79,11 @@ class ColumnZoneTest {
       assertThatThrownBy(
           () -> ColumnZone.builder()
               .section(this.section)
+              .fileName("test").index(-1))
+          .isInstanceOf(IndexOutOfBoundsException.class);
+      assertThatThrownBy(
+          () -> ColumnZone.builder()
+              .section(this.section)
               .fileName("test").index(size + 1))
           .isInstanceOf(IndexOutOfBoundsException.class);
     }
