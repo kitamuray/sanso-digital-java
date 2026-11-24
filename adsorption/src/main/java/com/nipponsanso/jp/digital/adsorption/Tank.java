@@ -92,6 +92,13 @@ public final class Tank {
     LOGGER.debug("monitorMap = {}", this.monitorMap);
   }
 
+  /// ビルダのインスタンスを生成して返す.
+  ///
+  /// @return ビルダのインスタンス.
+  public static Builder builder() {
+    return new Builder();
+  }
+
   /// 容積を返す.
   ///
   /// @return 容積 (m<sup>3</sup>).
