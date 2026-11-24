@@ -13,6 +13,7 @@ import com.nipponsanso.jp.digital.PhysicalConstants;
 /// @author KITAMURA Yuichiro
 final class AdsorbentModel {
 
+  /// 吸着剤.
   private final Adsorbent adsorbent;
 
   /// 吸着剤モデルのインスタンスを生成する.
