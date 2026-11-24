@@ -58,10 +58,12 @@ final class TankModel {
     this.cell.read(entity.getCellEntity());
   }
 
+  /// 履歴リストを初期化する.
   void clearHistories() {
     this.historyListMap.values().forEach(List::clear);
   }
 
+  /// 履歴リストへ追記する.
   void addHistories() {
     this.tank.monitorMap().forEach((fileName, monitor) -> {
       List<Double> monitorList = this.historyListMap.get(fileName);
@@ -69,6 +71,9 @@ final class TankModel {
     });
   }
 
+  /// 履歴リストのマップを返す.
+  ///
+  /// @return 履歴リストのマップ.
   Map<String, List<Double>> historyListMap() {
     return this.historyListMap;
   }
