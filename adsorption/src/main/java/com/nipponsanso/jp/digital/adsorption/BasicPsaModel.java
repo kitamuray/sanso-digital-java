@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public class BasicPsaModel {
+final class BasicPsaModel {
 
   /// プロセス.
   private final BasicPsaProcess process;

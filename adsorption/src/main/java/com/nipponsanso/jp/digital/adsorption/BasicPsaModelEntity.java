@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// 基本 PSA モデルの永続化クラス.
 ///
@@ -22,7 +23,10 @@ public final class BasicPsaModelEntity {
       = new EnumMap<>(ColumnKey.class);
 
   /// 製品槽モデルの永続化オブジェクト.
-  private TankModelEntity productTankModelEntity;
+  private TankModelEntity productTankModelEntity = new TankModelEntity();
+
+  /// 基本 PSA モデルの永続化クラスのインスタンスを生成する.
+  public BasicPsaModelEntity() {}
 
   /// 吸着筒モデルの永続化オブジェクトの不変マップを返す.
   ///
@@ -62,6 +66,29 @@ public final class BasicPsaModelEntity {
   @JsonProperty("productTank")
   public void setProductTankModelEntity(TankModelEntity productTankModelEntity) {
     this.productTankModelEntity = Preconditions.checkNotNull(productTankModelEntity);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    BasicPsaModelEntity that = (BasicPsaModelEntity) o;
+
+    return this.columnModelEntityMap.equals(that.columnModelEntityMap)
+        && this.productTankModelEntity.equals(that.productTankModelEntity);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        this.getClass(),
+        this.columnModelEntityMap,
+        this.productTankModelEntity);
   }
 
 }
