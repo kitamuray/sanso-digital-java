@@ -7,11 +7,15 @@ package com.nipponsanso.jp.digital.adsorption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.testing.EqualsTester;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -281,6 +285,155 @@ class BasicPsaScheduleTest {
             .state(BasicPsaState.builder().vacuumValve().build())
             .build().vacuumValveSet())
         .isEqualTo(Set.of(ColumnKey.SECOND, ColumnKey.FOURTH));
+  }
+
+  /// [BasicPsaSchedule#blowValveSetMap()] のテスト.
+  @Test
+  void testBlowValveSetMap() {
+    doReturn(5).when(this.section).number();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .build().blowValveSetMap())
+        .isEmpty();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .column(ColumnKey.SECOND)
+            .state(
+                BasicPsaState.builder()
+                    .blowValve(LineKey.FIRST)
+                    .blowValve(LineKey.THIRD)
+                    .build())
+            .column(ColumnKey.FOURTH)
+            .state(
+                BasicPsaState.builder()
+                    .blowValve(LineKey.THIRD)
+                    .build())
+            .build().blowValveSetMap())
+        .isEqualTo(
+            Map.of(
+                LineKey.FIRST, Set.of(ColumnKey.SECOND),
+                LineKey.THIRD, Set.of(ColumnKey.SECOND, ColumnKey.FOURTH)));
+  }
+
+  /// [BasicPsaSchedule#upperEqualizationValveSetMap()] のテスト.
+  @Test
+  void testUpperEqualizationValveSetMap() {
+    doReturn(5).when(this.section).number();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .build().upperEqualizationValveSetMap())
+        .isEmpty();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .column(ColumnKey.SECOND)
+            .state(
+                BasicPsaState.builder()
+                    .upperEqualizationValve(LineKey.FIRST)
+                    .upperEqualizationValve(LineKey.THIRD)
+                    .build())
+            .column(ColumnKey.FOURTH)
+            .state(
+                BasicPsaState.builder()
+                    .upperEqualizationValve(LineKey.THIRD)
+                    .build())
+            .build().upperEqualizationValveSetMap())
+        .isEqualTo(
+            Map.of(
+                LineKey.FIRST, Set.of(ColumnKey.SECOND),
+                LineKey.THIRD, Set.of(ColumnKey.SECOND, ColumnKey.FOURTH)));
+  }
+
+  /// [BasicPsaSchedule#lowerEqualizationValveSetMap()] のテスト.
+  @Test
+  void testLowerEqualizationValveSetMap() {
+    doReturn(5).when(this.section).number();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .build().lowerEqualizationValveSetMap())
+        .isEmpty();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .column(ColumnKey.SECOND)
+            .state(
+                BasicPsaState.builder()
+                    .lowerEqualizationValve(LineKey.FIRST)
+                    .lowerEqualizationValve(LineKey.THIRD)
+                    .build())
+            .column(ColumnKey.FOURTH)
+            .state(
+                BasicPsaState.builder()
+                    .lowerEqualizationValve(LineKey.THIRD)
+                    .build())
+            .build().lowerEqualizationValveSetMap())
+        .isEqualTo(
+            Map.of(
+                LineKey.FIRST, Set.of(ColumnKey.SECOND),
+                LineKey.THIRD, Set.of(ColumnKey.SECOND, ColumnKey.FOURTH)));
+  }
+
+  @Mock
+  private Section section2;
+
+  /// [BasicPsaSchedule#equals(Object)] と [BasicPsaSchedule#hashCode()] のテスト.
+  @Test
+  void testEquals() {
+    doReturn(5).when(this.section).number();
+    doReturn(4).when(this.section2).number();
+
+    EqualsTester tester = new EqualsTester();
+
+    Stream.<Supplier<BasicPsaSchedule>>of(
+            () -> BasicPsaSchedule.builder()
+                .section(this.section)
+                .build(),
+            () -> BasicPsaSchedule.builder()
+                .section(this.section2)
+                .build(),
+            () -> BasicPsaSchedule.builder()
+                .section(this.section)
+                .column(ColumnKey.FIRST)
+                .state(BasicPsaState.builder().feedValve().build())
+                .build(),
+            () -> BasicPsaSchedule.builder()
+                .section(this.section)
+                .fileName("test")
+                .index(3)
+                .monitor(Monitor.temperature())
+                .build())
+        .map(supplier -> Stream.generate(supplier).limit(3).toArray())
+        .forEach(tester::addEqualityGroup);
+
+    tester.testEquals();
+  }
+
+  /// [BasicPsaSchedule#toString()] のテスト.
+  @Test
+  void testToString() {
+    doReturn(5).when(this.section).number();
+
+    assertThat(
+        BasicPsaSchedule.builder()
+            .section(this.section)
+            .build())
+        .hasToString(
+            MoreObjects.toStringHelper(BasicPsaSchedule.class)
+                .add("section", this.section)
+                .add("stateMap", Collections.emptyMap())
+                .add("indexMap", Collections.emptyMap())
+                .add("monitorMap", Collections.emptyMap())
+                .toString());
   }
 
 }
