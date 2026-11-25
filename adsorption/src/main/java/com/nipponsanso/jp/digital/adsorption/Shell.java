@@ -6,21 +6,13 @@
 package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.Preconditions;
-import org.apache.logging.log4j.LogManager;
+import java.util.Objects;
 
 /// 容器.
 ///
-/// @param density 密度 (kg m<sup>-3</sup>).
-/// @param specificHeat 比熱.
-/// @param thermalConductivity 熱伝導率.
-public record Shell(
-    double density,
-    SpecificHeat specificHeat,
-    ThermalConductivity thermalConductivity) {
-
-  static {
-    LogManager.getLogger(Shell.class);
-  }
+/// @since 1.0
+/// @author KITAMURA Yuichiro
+public final class Shell {
 
   /// ビルダ.
   public static final class Builder {
@@ -86,11 +78,22 @@ public record Shell(
 
   } // Builder
 
+  /// 密度 (kg m<sup>-3</sup>).
+  private final double density;
+
+  /// 比熱.
+  private final SpecificHeat specificHeat;
+
+  /// 熱伝導率.
+  private final ThermalConductivity thermalConductivity;
+
   /// 容器のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
   private Shell(Builder builder) {
-    this(builder.density, builder.specificHeat, builder.thermalConductivity);
+    this.density = builder.density;
+    this.specificHeat = builder.specificHeat;
+    this.thermalConductivity = builder.thermalConductivity;
   }
 
   /// ビルダのインスタンスを生成して返す.
@@ -98,6 +101,51 @@ public record Shell(
   /// @return ビルダのインスタンス.
   public static Builder builder() {
     return new Builder();
+  }
+
+  /// 密度を返す.
+  ///
+  /// @return 密度 (kg m<sup>-3</sup>).
+  public double density() {
+    return this.density;
+  }
+
+  /// 比熱を返す.
+  ///
+  /// @return 比熱.
+  public SpecificHeat specificHeat() {
+    return this.specificHeat;
+  }
+
+  /// 熱伝導率を返す.
+  ///
+  /// @return 熱伝導率.
+  public ThermalConductivity thermalConductivity() {
+    return this.thermalConductivity;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o == null || o.getClass() != this.getClass()) {
+      return false;
+    }
+
+    Shell that = (Shell) o;
+    return Double.compare(this.density, that.density) == 0
+        && this.specificHeat.equals(that.specificHeat)
+        && this.thermalConductivity.equals(that.thermalConductivity);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        this.getClass(),
+        this.density,
+        this.specificHeat,
+        this.thermalConductivity);
   }
 
 }
