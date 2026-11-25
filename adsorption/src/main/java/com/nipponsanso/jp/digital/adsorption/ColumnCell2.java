@@ -139,7 +139,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     this.shell = shell;
     this.adsorbent = adsorbent;
 
-    // 要注意 : コンストラクタからインスタンスメソッドを利用
+    // 要注意 : コンストラクタ内からインスタンスメソッドを利用
     this.setValue(Position.CENTROID, .5 * (fromX + toX));
     this.setValue(Position.LENGTH, toX - fromX);
     this.setValue(Position.FLUID_VOLUME, shape.fluidVolume(fromX, toX));
