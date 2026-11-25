@@ -13,30 +13,42 @@ interface GridCell {
 
   /// 重心座標を返す.
   ///
+  /// 永続化の対象ではない.
+  ///
   /// @return 重心座標 (m).
   double centroid();
 
   /// 長さを返す.
+  ///
+  /// 永続化の対象ではない.
   ///
   /// @return 長さ (m).
   double length();
 
   /// 流体領域の体積を返す.
   ///
+  /// 永続化の対象ではない.
+  ///
   /// @return 流体領域の体積 (m<sup>3</sup>).
   double fluidVolume();
 
   /// 容器領域の体積を返す.
+  ///
+  /// 永続化の対象ではない.
   ///
   /// @return 容器領域の体積 (m<sup>3</sup>).
   double shellVolume();
 
   /// 容器内面の面積を返す.
   ///
+  /// 永続化の対象ではない.
+  ///
   /// @return 容器内面の面積 (m<sup>2</sup>).
   double insideArea();
 
   /// 容器外面の面積を返す.
+  ///
+  /// 永続化の対象ではない.
   ///
   /// @return 容器外面の面積 (m<sup>2</sup>).
   double outsideArea();
