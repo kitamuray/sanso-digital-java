@@ -146,6 +146,16 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     this.setValue(Position.SHELL_VOLUME, shape.shellVolume(fromX, toX));
     this.setValue(Position.INSIDE_AREA, shape.insideArea(fromX, toX));
     this.setValue(Position.OUTSIDE_AREA, shape.outsideArea(fromX, toX));
+    this.setValue(Position.TEMPERATURE, Double.MIN_VALUE);
+    this.setValue(Position.PRESSURE, Double.MIN_VALUE);
+    this.setValue(Position.DENSITY, Double.MIN_VALUE);
+    this.setValue(Position.SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT, Double.MIN_VALUE);
+    this.setValue(Position.VISCOSITY, Double.MIN_VALUE);
+    this.setValue(Position.THERMAL_CONDUCTIVITY, Double.MIN_VALUE);
+    this.setValue(Position.SHELL_TEMPERATURE, Double.MIN_VALUE);
+    this.setValue(Position.SHELL_SPECIFIC_HEAT, Double.MIN_VALUE);
+    this.setValue(Position.SHELL_THERMAL_CONDUCTIVITY, Double.MIN_VALUE);
+    this.setValue(Position.ADSORBENT_SPECIFIC_HEAT, Double.MIN_VALUE);
   }
 
   /// 数値を記憶する配列を返す.
@@ -486,7 +496,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     this.setThermalConductivity(entity.thermalConductivity());
     this.setShellTemperature(entity.shellTemperature());
     this.setShellSpecificHeat(entity.shellSpecificHeat());
-    this.setShellThermalConductivity(entity.thermalConductivity());
+    this.setShellThermalConductivity(entity.shellThermalConductivity());
     this.setAdsorbentSpecificHeat(entity.adsorbentSpecificHeat());
     this.previous.accept(entity.previous());
     this.componentMap.forEach((key, value) -> value.accept(entity.componentMap().get(key)));
@@ -529,6 +539,14 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// @param offset 数値の位置のオフセット量.
     private Previous(int offset) {
       this.offset = offset;
+
+      // 要注意 : コンストラクタ内からインスタンスメソッドを利用
+      this.setValue(Position.TEMPERATURE, Double.MIN_VALUE);
+      this.setValue(Position.DENSITY, Double.MIN_VALUE);
+      this.setValue(Position.SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT, Double.MIN_VALUE);
+      this.setValue(Position.SHELL_TEMPERATURE, Double.MIN_VALUE);
+      this.setValue(Position.SHELL_SPECIFIC_HEAT, Double.MIN_VALUE);
+      this.setValue(Position.ADSORBENT_SPECIFIC_HEAT, Double.MIN_VALUE);
     }
 
     /// 吸着筒のセルの前ステップ値における数値の数を返す.
@@ -699,6 +717,11 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     private ComponentValue(int offset) {
       this.offset = offset;
       this.previous = new Previous(this.offset + Previous.number());
+
+      // 要注意 : コンストラクタ内からインスタンスメソッドを利用
+      this.setValue(Position.DIFFUSIVITY, Double.MIN_VALUE);
+      this.setValue(Position.MOLAR_QUANTITY, Double.MIN_VALUE);
+      this.setValue(Position.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT, Double.MIN_VALUE);
     }
 
     /// 吸着筒のセルの成分値における数値の数を返す.
@@ -785,6 +808,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     @Override
     public void setMolarSpecificConstantVolumeSpecificHeat(
         double molarSpecificConstantVolumeSpecificHeat) {
+      Preconditions.checkArgument(molarSpecificConstantVolumeSpecificHeat > 0.);
         this.setValue(
             Position.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT,
             molarSpecificConstantVolumeSpecificHeat);
@@ -846,6 +870,10 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       /// @param offset 数値の位置のオフセット量.
       private Previous(int offset) {
         this.offset = offset;
+
+        // 要注意 : コンストラクタ内からインスタンスメソッドを利用
+        this.setValue(Position.MOLAR_QUANTITY, Double.MIN_VALUE);
+        this.setValue(Position.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT, Double.MIN_VALUE);
       }
 
       /// 吸着筒のセルの成分値の前ステップ値における数値の数を返す.
@@ -901,6 +929,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       @Override
       public void setMolarSpecificConstantVolumeSpecificHeat(
           double molarSpecificConstantVolumeSpecificHeat) {
+        Preconditions.checkArgument(molarSpecificConstantVolumeSpecificHeat > 0.);
         this.setValue(
             Position.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT,
             molarSpecificConstantVolumeSpecificHeat);
