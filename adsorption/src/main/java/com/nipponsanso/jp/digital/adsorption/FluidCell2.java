@@ -5,6 +5,7 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
 
 /// 流体を含むセル.
@@ -118,6 +119,35 @@ interface FluidCell2 extends Cell2 {
   @Override
   Map<ComponentKey, ? extends ComponentValue> componentMap();
 
+  /// 流体を含むセルのインスタンスを生成して返す.
+  ///
+  /// @param composition 組成.
+  /// @return 流体を含むセルのインスタンス.
+  static FluidCell2 newInstance(Composition composition) {
+    return new AbstractFluidCell() {
+
+      private final FluidCell2.Previous previous = FluidCell2.Previous.newInstance();
+
+      private final Map<ComponentKey, ? extends FluidCell2.ComponentValue> componentMap
+          = composition.componentKeySet().stream()
+          .collect(
+              Maps.toImmutableEnumMap(
+                  componentKey -> componentKey,
+                  _ -> FluidCell2.ComponentValue.newInstance()));
+
+      @Override
+      public FluidCell2.Previous previous() {
+        return this.previous;
+      }
+
+      @Override
+      public Map<ComponentKey, ? extends FluidCell2.ComponentValue> componentMap() {
+        return this.componentMap;
+      }
+
+    };
+  }
+
   /// 流体を含むセルの前ステップ値.
   interface Previous extends Cell2.Previous {
 
@@ -165,6 +195,13 @@ interface FluidCell2 extends Cell2 {
     /// @throws IllegalArgumentException `specificConstantPressureSpecificHeat` が 0 以下の場合
     ///     (`specificConstantPressureSpecificHeat <= 0`).
     void setSpecificConstantPressureSpecificHeat(double specificConstantPressureSpecificHeat);
+
+    /// 流体を含むセルの成分値のインスタンスを生成して返す.
+    ///
+    /// @return 流体を含むセルの成分値のインスタンス.
+    static Previous newInstance() {
+      return new AbstractFluidCell.Previous() {};
+    }
 
   } // Previous
 
@@ -228,6 +265,22 @@ interface FluidCell2 extends Cell2 {
     @Override
     Previous previous();
 
+    /// 流体を含むセルの成分値のインスタンスを生成して返す.
+    ///
+    /// @return 流体を含むセルの成分値のインスタンス.
+    static ComponentValue newInstance() {
+      return new AbstractFluidCell.ComponentValue() {
+
+        private final ComponentValue.Previous previous = ComponentValue.Previous.newInstance();
+
+        @Override
+        public ComponentValue.Previous previous() {
+          return this.previous;
+        }
+
+      };
+    }
+
     /// 流体を含むセルの成分値の前ステップ値.
     interface Previous extends Cell2.ComponentValue.Previous {
 
@@ -242,6 +295,13 @@ interface FluidCell2 extends Cell2 {
       /// @throws IllegalArgumentException `fraction` が 0 未満か 1 を超えている場合
       ///     (`fraction < 0 || 1 < fraction`).
       void setFraction(double fraction);
+
+      /// 流体を含むセルの成分値の前ステップ値のインスタンスを生成して返す.
+      ///
+      /// @return 流体を含むセルの成分値の前ステップ値のインスタンス.
+      static Previous newInstance() {
+        return new AbstractFluidCell.ComponentValue.Previous() {};
+      }
 
     } // ComponentValue.Previous
 
