@@ -53,7 +53,7 @@ public final class TankStart extends FluidStart {
   /// 指定された貯槽のセルへ開始条件を設定する.
   ///
   /// @param cell 貯槽のセル.
-  void start(TankCell cell) {
+  void start(TankCell2 cell) {
     super.start(cell);
   }
 

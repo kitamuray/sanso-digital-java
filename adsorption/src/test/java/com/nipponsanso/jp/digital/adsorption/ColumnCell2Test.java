@@ -41,7 +41,7 @@ class ColumnCell2Test {
       private LocalCell(
           ColumnShape shape, double fromX, double toX,
           Composition composition, Shell shell, Adsorbent adsorbent) {
-        super(0, composition, shell, adsorbent, shape, fromX, toX);
+        super(0, shape, fromX, toX, composition, adsorbent, shell);
       }
 
       @Override

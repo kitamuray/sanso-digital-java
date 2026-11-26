@@ -42,7 +42,7 @@ abstract class AdsorbentStart extends ShellStart {
   /// 指定された吸着剤を含むセルへ開始条件を設定する.
   ///
   /// @param cell 吸着剤を含むセル.
-  void start(AdsorbentCell cell) {
+  void start(AdsorbentCell2 cell) {
     super.start(cell);
   }
 

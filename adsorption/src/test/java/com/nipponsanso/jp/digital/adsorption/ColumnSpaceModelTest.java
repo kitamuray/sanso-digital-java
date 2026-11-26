@@ -27,7 +27,7 @@ class ColumnSpaceModelTest {
   private ColumnSpace space;
 
   @Mock
-  private ColumnCell cell;
+  private ColumnCell2 cell;
 
   /// [ColumnSpaceModel#cell()] のテスト.
   @Test

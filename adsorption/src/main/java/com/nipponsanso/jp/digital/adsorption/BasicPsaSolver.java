@@ -59,8 +59,7 @@ public final class BasicPsaSolver extends AdsorbentSolver<BasicPsaSolver> {
   public BasicPsaSolver write(String fileName) {
     Preconditions.checkNotNull(fileName);
 
-    BasicPsaModelEntity entity = new BasicPsaModelEntity();
-    this.model.write(entity);
+    BasicPsaModelEntity2 entity = this.model.newEntity();
     OBJECT_MAPPER.writeValue(new File(fileName), entity);
 
     return this;
@@ -74,9 +73,9 @@ public final class BasicPsaSolver extends AdsorbentSolver<BasicPsaSolver> {
   public BasicPsaSolver read(String fileName) {
     Preconditions.checkNotNull(fileName);
 
-    BasicPsaModelEntity entity
-        = OBJECT_MAPPER.readValue(new File(fileName), BasicPsaModelEntity.class);
-    this.model.read(entity);
+    BasicPsaModelEntity2 entity
+        = OBJECT_MAPPER.readValue(new File(fileName), BasicPsaModelEntity2.class);
+    this.model.accept(entity);
 
     return this;
   }

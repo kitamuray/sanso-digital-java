@@ -20,7 +20,7 @@ final class ColumnSpaceModel {
   private final ColumnSpace space;
 
   /// セル.
-  private final ColumnCell cell;
+  private final ColumnCell2 cell;
 
   /// 履歴情報の不変マップ.
   private final Map<String, List<Double>> historyListMap;
@@ -29,7 +29,7 @@ final class ColumnSpaceModel {
   ///
   /// @param space 空間.
   /// @param cell セル.
-  ColumnSpaceModel(ColumnSpace space, ColumnCell cell) {
+  ColumnSpaceModel(ColumnSpace space, ColumnCell2 cell) {
     this.space = space;
     this.cell = cell;
 
@@ -43,7 +43,7 @@ final class ColumnSpaceModel {
   /// セルを返す.
   ///
   /// @return セル.
-  ColumnCell cell() {
+  ColumnCell2 cell() {
     return this.cell;
   }
 

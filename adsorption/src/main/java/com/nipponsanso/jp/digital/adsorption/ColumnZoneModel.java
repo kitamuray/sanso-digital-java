@@ -21,7 +21,7 @@ final class ColumnZoneModel {
   private final ColumnZone zone;
 
   /// セルの不変リスト.
-  private final List<ColumnCell> cellList;
+  private final List<ColumnCell2> cellList;
 
   /// 履歴情報の不変マップ.
   private final Map<String, List<Double>> historyListMap;
@@ -30,7 +30,7 @@ final class ColumnZoneModel {
   ///
   /// @param zone 領域.
   /// @param cellList セルのリスト.
-  ColumnZoneModel(ColumnZone zone, List<ColumnCell> cellList) {
+  ColumnZoneModel(ColumnZone zone, List<ColumnCell2> cellList) {
     this.zone = zone;
     this.cellList = ImmutableList.copyOf(cellList);
 
@@ -44,7 +44,7 @@ final class ColumnZoneModel {
   /// セルの不変リストを返す.
   ///
   /// @return セルの不変リスト.
-  List<ColumnCell> cellList() {
+  List<ColumnCell2> cellList() {
     return this.cellList;
   }
 

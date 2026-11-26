@@ -6,13 +6,6 @@
 package com.nipponsanso.jp.digital.adsorption;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /// 流出境界条件.
 ///
@@ -56,7 +49,7 @@ public final class OutletPort extends Port {
   }
 
   @Override
-  void set(PortCell cell) {
+  void set(FluidCell2 cell) {
     cell.setPressure(this.pressure());
   }
 

@@ -114,7 +114,7 @@ public final class InletPort extends Port {
   }
 
   @Override
-  void set(PortCell cell) {
+  void set(FluidCell2 cell) {
     cell.setTemperature(this.temperature);
     cell.setPressure(this.pressure());
     cell.componentMap().forEach(

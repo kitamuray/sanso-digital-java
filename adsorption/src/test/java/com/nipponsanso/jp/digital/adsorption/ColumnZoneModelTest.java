@@ -27,24 +27,24 @@ class ColumnZoneModelTest {
   private ColumnZone zone;
 
   @Mock
-  private ColumnCell cell0;
+  private ColumnCell2 cell0;
 
   @Mock
-  private ColumnCell cell1;
+  private ColumnCell2 cell1;
 
   @Mock
-  private ColumnCell cell2;
+  private ColumnCell2 cell2;
 
   @Mock
-  private ColumnCell cell3;
+  private ColumnCell2 cell3;
 
   @Mock
-  private ColumnCell cell4;
+  private ColumnCell2 cell4;
 
   /// [ColumnZoneModel#cellList()] のテスト.
   @Test
   void testCellList() {
-    final List<ColumnCell> cellList = List.of(
+    final List<ColumnCell2> cellList = List.of(
         this.cell0, this.cell1, this.cell2, this.cell3, this.cell4);
 
     ColumnZoneModel model = new ColumnZoneModel(this.zone, cellList);

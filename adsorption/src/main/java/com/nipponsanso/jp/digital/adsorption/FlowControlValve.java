@@ -108,7 +108,7 @@ public final class FlowControlValve extends Valve {
   /// @param downCell 二次側の流体セル.
   /// @return 弁の流量 (kg s<sup>-1</sup>).
   @Override
-  double flowRate(FluidCell upCell, FluidCell downCell) {
+  double flowRate(FluidCell2 upCell, FluidCell2 downCell) {
     if (upCell.getPressure() > downCell.getPressure()) {
       return Math.min(super.flowRate(upCell, downCell), this.flowRate);
     } else {

@@ -113,16 +113,16 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
 
   /// 吸着筒のセルのインスタンスを生成する.
   ///
-  /// @param offset 数値の位置のオフセット量.
+  /// @param offset      数値の位置のオフセット量.
+  /// @param shape       形状.
+  /// @param fromX       始点座標 (m).
+  /// @param toX         終点座標 (m).
   /// @param composition 組成.
-  /// @param shell 容器.
-  /// @param adsorbent 吸着剤.
-  /// @param shape 形状.
-  /// @param fromX 始点座標 (m).
-  /// @param toX 終点座標 (m).
+  /// @param adsorbent   吸着剤.
+  /// @param shell       容器.
   ColumnCell2(
-      int offset, Composition composition, Shell shell, Adsorbent adsorbent,
-      ColumnShape shape, double fromX, double toX) {
+      int offset, ColumnShape shape, double fromX, double toX, Composition composition,
+      Adsorbent adsorbent, Shell shell) {
     int o = this.offset = offset;
     o += Position.values().length;
 

@@ -137,7 +137,7 @@ public final class VacuumPump {
     return this.monitorMap;
   }
 
-  void set(PortCell cell) {
+  void set(FluidCell2 cell) {
     cell.setPressure(this.minPressure);
   }
 

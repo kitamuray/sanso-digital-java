@@ -29,9 +29,9 @@ class AdsorbentModelTest {
   private SpecificHeat specificHeat;
 
   @Mock
-  private AdsorbentCell cell;
+  private AdsorbentCell2 cell;
 
-  /// [AdsorbentModel#adsorbentSpecificHeat(AdsorbentCell)] のテスト.
+  /// [AdsorbentModel#adsorbentSpecificHeat(AdsorbentCell2)] のテスト.
   @Test
   void testAdsorbentSpecificHeatAdsorbentCell() {
     doReturn(800.).when(this.specificHeat).specificHeat(anyDouble());
@@ -44,7 +44,7 @@ class AdsorbentModelTest {
     assertThat(model.adsorbentSpecificHeat(this.cell)).isEqualTo(800.);
   }
 
-  /// [AdsorbentModel#molarSpecificConstantVolumeSpecificHeat(AdsorbentCell, ComponentKey)]
+  /// [AdsorbentModel#molarSpecificConstantVolumeSpecificHeat(AdsorbentCell2, ComponentKey)]
   /// のテスト.
   @Test
   void testMolarSpecificConstantVolumeSpecificHeatAdsorbentCellComponentKey() {

@@ -43,11 +43,11 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
 
   /// 吸着筒のフェイスのインスタンスを生成する.
   ///
-  /// @param offset 数値の位置のオフセット量.
+  /// @param offset      数値の位置のオフセット量.
+  /// @param shape       形状.
+  /// @param coordinate  座標 (m).
   /// @param composition 組成.
-  /// @param shape 形状.
-  /// @param coordinate 座標 (m).
-  ColumnFace2(int offset, Composition composition, ColumnShape shape, double coordinate) {
+  ColumnFace2(int offset, ColumnShape shape, double coordinate, Composition composition) {
     int o = this.offset = offset;
     o += Position.values().length;
 

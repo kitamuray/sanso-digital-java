@@ -5,6 +5,7 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ final class TankModel {
   private final Tank tank;
 
   /// セル.
-  private final TankCell cell;
+  private final TankCell2 cell;
 
   /// モニタ値の可変リストの不変マップ.
   private final Map<String, List<Double>> historyListMap;
@@ -31,7 +32,7 @@ final class TankModel {
   /// @param composition 組成.
   TankModel(Tank tank, Composition composition) {
     this.tank = tank;
-    this.cell = new TankCell(composition);
+    this.cell = new TankCell2(this.tank, composition);
     this.historyListMap = this.tank.monitorMap().keySet().stream()
         .collect(
             ImmutableMap.toImmutableMap(
@@ -40,22 +41,26 @@ final class TankModel {
   }
 
   /// セルを返す.
-  TankCell cell() {
+  TankCell2 cell() {
     return this.cell;
   }
 
-  /// 指定された永続化オブジェクトへ情報を書き込む.
+  /// 貯槽モデルの永続化クラスのインスタンスを生成して返す.
   ///
-  /// @param entity 永続化オブジェクト.
-  void write(TankModelEntity entity) {
-    this.cell.write(entity.getCellEntity());
+  /// @return 貯槽モデルの永続化クラスのインスタンス.
+  TankModelEntity2 newEntity() {
+    return new TankModelEntity2(this.cell.newEntity());
   }
 
-  /// 指定された永続化オブジェクトから情報を読み出す.
+  /// 指定された永続化クラスのインスタンスを反映する.
   ///
-  /// @param entity 永続化オブジェクト.
-  void read(TankModelEntity entity) {
-    this.cell.read(entity.getCellEntity());
+  /// @param entity 永続化クラスのインスタンス.
+  /// @throws NullPointerException `entity` の構成要素に `null` が含まれている場合.
+  void accept(TankModelEntity2 entity) {
+    Preconditions.checkNotNull(entity);
+    Preconditions.checkNotNull(entity.cellEntity());
+
+    this.cell.accept(entity.cellEntity());
   }
 
   /// 履歴リストを初期化する.

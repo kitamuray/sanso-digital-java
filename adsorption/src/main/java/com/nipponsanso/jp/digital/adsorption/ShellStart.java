@@ -80,7 +80,7 @@ abstract class ShellStart extends FluidStart {
   /// 指定された容器を含むセルへ開始条件を設定する.
   ///
   /// @param cell セル.
-  void start(ShellCell cell) {
+  void start(ShellCell2 cell) {
     super.start(cell);
     cell.setShellTemperature(this.shellTemperature);
   }

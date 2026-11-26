@@ -34,7 +34,7 @@ class ColumnFace2Test {
     private final class LocalFace extends ColumnFace2 {
 
       LocalFace(Composition composition, ColumnShape shape, double coordinate) {
-        super(0, composition, shape, coordinate);
+        super(0, shape, coordinate, composition);
       }
 
       @Override

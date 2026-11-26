@@ -20,12 +20,12 @@ final class PortModel {
   private final Port port;
 
   /// セル.
-  private final PortCell cell;
+  private final FluidCell2 cell;
 
   /// フェイス.
   ///
   /// 境界外から中への向きを正とする.
-  private final PortFace face;
+  private final FluidFace2 face;
 
   /// モニタ値の可変リストの不変マップ.
   private final Map<String, List<Double>> historyListMap;
@@ -35,8 +35,8 @@ final class PortModel {
   /// @param composition 組成.
   PortModel(Port port, Composition composition) {
     this.port = port;
-    this.cell = new PortCell(composition);
-    this.face = new PortFace(composition);
+    this.cell = FluidCell2.newInstance(composition);
+    this.face = FluidFace2.newInstance(composition);
     this.historyListMap = this.port.monitorMap().keySet().stream()
         .collect(
             ImmutableMap.toImmutableMap(
@@ -56,7 +56,7 @@ final class PortModel {
   /// セルを返す.
   ///
   /// @return セル.
-  PortCell cell() {
+  FluidCell2 cell() {
     return this.cell;
   }
 
@@ -65,7 +65,7 @@ final class PortModel {
   /// 境界外から中への向きを正とする.
   ///
   /// @return フェイス.
-  PortFace face() {
+  FluidFace2 face() {
     return this.face;
   }
 

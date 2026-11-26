@@ -20,10 +20,10 @@ final class VacuumPumpModel {
   private final VacuumPump vacuumPump;
 
   /// セル.
-  private final PortCell cell;
+  private final FluidCell2 cell;
 
   /// フェイス.
-  private final PortFace face;
+  private final FluidFace2 face;
 
   /// モニタ値の可変リストの不変マップ.
   private final Map<String, List<Double>> historyListMap;
@@ -34,8 +34,8 @@ final class VacuumPumpModel {
   /// @param composition 組成.
   VacuumPumpModel(VacuumPump vacuumPump, Composition composition) {
     this.vacuumPump = vacuumPump;
-    this.cell = new PortCell(composition);
-    this.face = new PortFace(composition);
+    this.cell = FluidCell2.newInstance(composition);
+    this.face = FluidFace2.newInstance(composition);
     this.historyListMap = this.vacuumPump.monitorMap().keySet().stream()
         .collect(
             ImmutableMap.toImmutableMap(
@@ -48,7 +48,7 @@ final class VacuumPumpModel {
   /// セルを返す.
   ///
   /// @return セル.
-  PortCell cell() {
+  FluidCell2 cell() {
     return this.cell;
   }
 
@@ -57,7 +57,7 @@ final class VacuumPumpModel {
   /// 境界外から中への向きを正とする.
   ///
   /// @return フェイス.
-  PortFace face() {
+  FluidFace2 face() {
     return this.face;
   }
 

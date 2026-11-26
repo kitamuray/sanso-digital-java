@@ -42,6 +42,6 @@ abstract class Start {
   /// 指定されたセルへ開始条件を設定する.
   ///
   /// @param cell セル.
-  void start(Cell cell) {}
+  void start(Cell2 cell) {}
 
 }
