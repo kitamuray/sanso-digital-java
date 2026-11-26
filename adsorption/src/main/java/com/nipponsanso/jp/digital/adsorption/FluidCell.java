@@ -199,7 +199,7 @@ interface FluidCell extends Cell {
     /// 流体を含むセルの成分値のインスタンスを生成して返す.
     ///
     /// @return 流体を含むセルの成分値のインスタンス.
-    static Previous newInstance() {
+    private static Previous newInstance() {
       return new AbstractFluidCell.Previous() {};
     }
 
@@ -268,7 +268,7 @@ interface FluidCell extends Cell {
     /// 流体を含むセルの成分値のインスタンスを生成して返す.
     ///
     /// @return 流体を含むセルの成分値のインスタンス.
-    static ComponentValue newInstance() {
+    private static ComponentValue newInstance() {
       return new AbstractFluidCell.ComponentValue() {
 
         private final ComponentValue.Previous previous = ComponentValue.Previous.newInstance();
@@ -299,7 +299,7 @@ interface FluidCell extends Cell {
       /// 流体を含むセルの成分値の前ステップ値のインスタンスを生成して返す.
       ///
       /// @return 流体を含むセルの成分値の前ステップ値のインスタンス.
-      static Previous newInstance() {
+      private static Previous newInstance() {
         return new AbstractFluidCell.ComponentValue.Previous() {};
       }
 

@@ -9,6 +9,8 @@ import com.google.common.base.Preconditions;
 
 /// 流体を含むセルの抽象実装.
 ///
+/// 参照の局所性を配慮しない場合を対象とする.
+///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 abstract class AbstractFluidCell implements FluidCell {

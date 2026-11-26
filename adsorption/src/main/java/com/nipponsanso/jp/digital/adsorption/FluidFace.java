@@ -102,7 +102,7 @@ interface FluidFace extends Face {
     /// 流体を含むフェイスの成分値のインスタンスを生成して返す.
     ///
     /// @return 流体を含むフェイスの成分値のインスタンス.
-    static ComponentValue newInstance() {
+    private static ComponentValue newInstance() {
       return new ComponentValue() {
 
         private double speciesFlow;
