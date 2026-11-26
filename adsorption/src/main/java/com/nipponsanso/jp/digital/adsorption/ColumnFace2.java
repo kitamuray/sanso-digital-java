@@ -64,6 +64,15 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
     this.setValue(Position.SHELL_AREA, shape.shellArea(coordinate));
   }
 
+  /// 数値の数を返す.
+  ///
+  /// @param composition 組成.
+  /// @return 数値の数.
+  static int number(Composition composition) {
+    return Position.values().length
+        + composition.componentKeySet().size() * ColumnFace2.ComponentValue.number();
+  }
+
   /// 数値を記憶する配列を返す.
   ///
   /// @return 数値を記憶する配列.
