@@ -16,7 +16,7 @@ interface Face2 {
   /// フェイスの成分の不変マップを返す.
   ///
   /// @return フェイスの成分の不変マップ.
-  Map<ComponentKey, ? extends ComponentValue> componentValue();
+  Map<ComponentKey, ? extends ComponentValue> componentMap();
 
   /// フェイスの成分値.
   interface ComponentValue {

@@ -121,7 +121,7 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
   }
 
   @Override
-  public Map<ComponentKey, ComponentValue> componentValue() {
+  public Map<ComponentKey, ComponentValue> componentMap() {
     return this.componentMap;
   }
 

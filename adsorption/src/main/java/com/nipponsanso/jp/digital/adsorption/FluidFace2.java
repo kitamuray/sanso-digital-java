@@ -5,6 +5,7 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
 
 /// 流体を含むフェイス.
@@ -37,7 +38,53 @@ interface FluidFace2 extends Face2 {
   ///
   /// @return 流体を含むフェイスの成分の不変マップ.
   @Override
-  Map<ComponentKey, ? extends ComponentValue> componentValue();
+  Map<ComponentKey, ? extends ComponentValue> componentMap();
+
+  /// 流体を含むフェイスのインスタンスを生成して返す.
+  ///
+  /// @param composition 組成.
+  /// @return 流体を含むフェイスのインスタンス.
+  static FluidFace2 newInstance(Composition composition) {
+    return new FluidFace2() {
+
+      private double massFlow;
+
+      private double energyFlow;
+
+      private final Map<ComponentKey, ? extends FluidFace2.ComponentValue> componentMap
+          = composition.componentKeySet().stream()
+          .collect(
+              Maps.toImmutableEnumMap(
+                  componentKey -> componentKey,
+                  _ -> ComponentValue.newInstance()));
+
+      @Override
+      public double getMassFlow() {
+        return this.massFlow;
+      }
+
+      @Override
+      public void setMassFlow(double massFlow) {
+        this.massFlow = massFlow;
+      }
+
+      @Override
+      public double getEnergyFlow() {
+        return this.energyFlow;
+      }
+
+      @Override
+      public void setEnergyFlow(double energyFlow) {
+        this.energyFlow = energyFlow;
+      }
+
+      @Override
+      public Map<ComponentKey, ? extends ComponentValue> componentMap() {
+        return this.componentMap;
+      }
+
+    };
+  }
 
   /// 流体を含むフェイスの成分値.
   interface ComponentValue extends Face2.ComponentValue {
@@ -51,6 +98,27 @@ interface FluidFace2 extends Face2 {
     ///
     /// @param speciesFlow 流体成分の化学種流量 (kg s<sup>-1</sup>).
     void setSpeciesFlow(double speciesFlow);
+
+    /// 流体を含むフェイスの成分値のインスタンスを生成して返す.
+    ///
+    /// @return 流体を含むフェイスの成分値のインスタンス.
+    static ComponentValue newInstance() {
+      return new ComponentValue() {
+
+        private double speciesFlow;
+
+        @Override
+        public double getSpeciesFlow() {
+          return this.speciesFlow;
+        }
+
+        @Override
+        public void setSpeciesFlow(double speciesFlow) {
+          this.speciesFlow = speciesFlow;
+        }
+
+      };
+    }
 
   } // ComponentValue
 
