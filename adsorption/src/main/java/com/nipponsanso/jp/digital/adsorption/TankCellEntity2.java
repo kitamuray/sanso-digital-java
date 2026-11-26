@@ -6,6 +6,8 @@
 package com.nipponsanso.jp.digital.adsorption;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Map;
 
 /// 貯槽のセルの永続化クラス.
@@ -30,7 +32,11 @@ public record TankCellEntity2(
     double viscosity,
     double thermalConductivity,
     Previous previous,
-    @JsonProperty("component") Map<ComponentKey, ComponentValue> componentMap) {
+    @JsonProperty("component") Map<ComponentKey, ComponentValue> componentMap)
+      implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = -7801081476653706011L;
 
   /// 貯槽のセルの前ステップ値の永続化クラス.
   ///
@@ -42,7 +48,12 @@ public record TankCellEntity2(
       double temperature,
       double density,
       double specificEnthalpy,
-      double specificConstantPressureSpecificHeat) {}
+      double specificConstantPressureSpecificHeat) implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 7802761683037021862L;
+
+  } // Previous
 
   /// 貯槽のセルの成分値の永続化クラス.
   ///
@@ -52,13 +63,21 @@ public record TankCellEntity2(
   public record ComponentValue(
       double fraction,
       double diffusivity,
-      Previous previous) {
+      Previous previous) implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -4792074988771542757L;
 
     /// 貯槽のセルの成分値の前ステップ値の永続化クラス.
     ///
     /// @param fraction 流体成分の質量分率 (-).
     public record Previous(
-        double fraction) {}
+        double fraction) implements Serializable {
+
+      @Serial
+      private static final long serialVersionUID = -3793189106270619139L;
+
+    } // ComponentValue.Previous
 
   } // ComponentValue
 

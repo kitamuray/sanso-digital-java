@@ -441,6 +441,57 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     return this.componentMap;
   }
 
+  /// 永続化クラスのインスタンスを生成して返す.
+  ///
+  /// @return 永続化クラスのインスタンス.
+  ColumnCellEntity2 newEntity() {
+    return new ColumnCellEntity2(
+        this.getTemperature(),
+        this.getPressure(),
+        this.getDensity(),
+        this.getSpecificEnthalpy(),
+        this.getSpecificConstantPressureSpecificHeat(),
+        this.getViscosity(),
+        this.getThermalConductivity(),
+        this.getShellTemperature(),
+        this.getShellSpecificHeat(),
+        this.getShellThermalConductivity(),
+        this.getAdsorbentSpecificHeat(),
+        this.previous.newEntity(),
+        this.componentMap.entrySet().stream()
+            .collect(
+                Maps.toImmutableEnumMap(
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().newEntity())));
+  }
+
+  /// 永続化クラスのインスタンスを反映する.
+  ///
+  /// @param entity 永続化クラスのインスタンス.
+  /// @throws NullPointerException `entity` またはそれが構成する要素が `null` の場合.
+  /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
+  void accept(ColumnCellEntity2 entity) {
+    Preconditions.checkNotNull(entity);
+    Preconditions.checkNotNull(entity.previous());
+    Preconditions.checkNotNull(entity.componentMap());
+    Preconditions.checkArgument(this.componentMap.keySet().equals(entity.componentMap().keySet()));
+    entity.componentMap().values().forEach(Preconditions::checkNotNull);
+
+    this.setTemperature(entity.temperature());
+    this.setPressure(entity.pressure());
+    this.setDensity(entity.density());
+    this.setSpecificEnthalpy(entity.specificEnthalpy());
+    this.setSpecificConstantPressureSpecificHeat(entity.specificConstantPressureSpecificHeat());
+    this.setViscosity(entity.viscosity());
+    this.setThermalConductivity(entity.thermalConductivity());
+    this.setShellTemperature(entity.shellTemperature());
+    this.setShellSpecificHeat(entity.shellSpecificHeat());
+    this.setShellThermalConductivity(entity.thermalConductivity());
+    this.setAdsorbentSpecificHeat(entity.adsorbentSpecificHeat());
+    this.previous.accept(entity.previous());
+    this.componentMap.forEach((key, value) -> value.accept(entity.componentMap().get(key)));
+  }
+
   /// 吸着筒のセルの前ステップ値.
   final class Previous implements FluidCell2.Previous, ShellCell2.Previous, AdsorbentCell2.Previous {
 
@@ -580,6 +631,34 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       this.setValue(Position.ADSORBENT_SPECIFIC_HEAT, adsorbentSpecificHeat);
     }
 
+    /// 永続化クラスのインスタンスを生成して返す.
+    ///
+    /// @return 永続化クラスのインスタンス.
+    private ColumnCellEntity2.Previous newEntity() {
+      return new ColumnCellEntity2.Previous(
+          this.getTemperature(),
+          this.getDensity(),
+          this.getSpecificEnthalpy(),
+          this.getSpecificConstantPressureSpecificHeat(),
+          this.getShellTemperature(),
+          this.getShellSpecificHeat(),
+          this.getAdsorbentSpecificHeat());
+    }
+
+    /// 永続化クラスのインスタンスを反映する.
+    ///
+    /// @param entity 永続化クラスのインスタンス.
+    /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
+    private void accept(ColumnCellEntity2.Previous entity) {
+      this.setTemperature(entity.temperature());
+      this.setDensity(entity.density());
+      this.setSpecificEnthalpy(entity.specificEnthalpy());
+      this.setSpecificConstantPressureSpecificHeat(entity.specificConstantPressureSpecificHeat());
+      this.setShellTemperature(entity.shellTemperature());
+      this.setShellSpecificHeat(entity.shellSpecificHeat());
+      this.setAdsorbentSpecificHeat(entity.adsorbentSpecificHeat());
+    }
+
   } // Previous
 
   /// 吸着筒のセルの成分値.
@@ -711,6 +790,31 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
             molarSpecificConstantVolumeSpecificHeat);
     }
 
+    /// 永続化クラスのインスタンスを生成して返す.
+    ///
+    /// @return 永続化クラスのインスタンス.
+    private ColumnCellEntity2.ComponentValue newEntity() {
+      return new ColumnCellEntity2.ComponentValue(
+          this.getFraction(),
+          this.getDiffusivity(),
+          this.getMolarQuantity(),
+          this.getMolarSpecificConstantVolumeSpecificHeat(),
+          this.previous.newEntity());
+    }
+
+    /// 永続化クラスのインスタンスを反映する.
+    ///
+    /// @param entity 永続化クラスのインスタンス.
+    /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
+    private void accept(ColumnCellEntity2.ComponentValue entity) {
+      this.setFraction(entity.fraction());
+      this.setDiffusivity(entity.diffusivity());
+      this.setMolarQuantity(entity.molarQuantity());
+      this.setMolarSpecificConstantVolumeSpecificHeat(
+          entity.molarSpecificConstantVolumeSpecificHeat());
+      this.previous.accept(entity.previous());
+    }
+
     @Override
     public Previous previous() {
       return this.previous;
@@ -800,6 +904,27 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
         this.setValue(
             Position.MOLAR_SPECIFIC_CONSTANT_VOLUME_SPECIFIC_HEAT,
             molarSpecificConstantVolumeSpecificHeat);
+      }
+
+      /// 永続化クラスのインスタンスを生成して返す.
+      ///
+      /// @return 永続化クラスのインスタンス.
+      private ColumnCellEntity2.ComponentValue.Previous newEntity() {
+        return new ColumnCellEntity2.ComponentValue.Previous(
+            this.getFraction(),
+            this.getMolarQuantity(),
+            this.getMolarSpecificConstantVolumeSpecificHeat());
+      }
+
+      /// 永続化クラスのインスタンスを反映する.
+      ///
+      /// @param entity 永続化クラスのインスタンス.
+      /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
+      private void accept(ColumnCellEntity2.ComponentValue.Previous entity) {
+        this.setFraction(entity.fraction());
+        this.setMolarQuantity(entity.molarQuantity());
+        this.setMolarSpecificConstantVolumeSpecificHeat(
+            entity.molarSpecificConstantVolumeSpecificHeat());
       }
 
     } // ComponentValue.Previous
