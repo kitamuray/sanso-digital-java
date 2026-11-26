@@ -9,7 +9,7 @@ package com.nipponsanso.jp.digital.adsorption;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-interface ShellCell2 extends Cell2 {
+interface ShellCell extends Cell {
 
   /// 容器の密度を返す.
   ///
@@ -61,7 +61,7 @@ interface ShellCell2 extends Cell2 {
   Previous previous();
 
   /// 容器を含むセルの前ステップ値.
-  interface Previous extends Cell2.Previous {
+  interface Previous extends Cell.Previous {
 
     /// 容器の熱力学的温度を返す.
     ///

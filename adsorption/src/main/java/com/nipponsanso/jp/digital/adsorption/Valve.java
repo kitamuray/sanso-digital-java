@@ -33,7 +33,7 @@ abstract class Valve {
   /// @param upCell 一次側の流体セル.
   /// @param downCell 二次側の流体セル.
   /// @return 弁の流量 (kg s<sup>-1</sup>).
-  double flowRate(FluidCell2 upCell, FluidCell2 downCell) {
+  double flowRate(FluidCell upCell, FluidCell downCell) {
     double deltaPressure = upCell.getPressure() - downCell.getPressure();
 
     if (Math.abs(deltaPressure) < DELTA_PRESSURE) {
@@ -50,7 +50,7 @@ abstract class Valve {
   /// @param upCell 一次側（高圧側）の流体セル.
   /// @param downCell 二次側（低圧側）の流体セル.
   /// @return 弁の流量 (kg s<sup>-1</sup>).
-  private double flowRate2(FluidCell2 upCell, FluidCell2 downCell) {
+  private double flowRate2(FluidCell upCell, FluidCell downCell) {
     final double p1 = upCell.getPressure() * 1e-6; // Pa -> MPa
     final double p2 = downCell.getPressure() * 1e-6; // Pa -> MPa
     final double g = upCell.getDensity() / AIR_DENSITY;

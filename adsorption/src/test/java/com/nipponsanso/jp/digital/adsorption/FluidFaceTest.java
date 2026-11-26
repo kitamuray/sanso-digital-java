@@ -15,73 +15,73 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/// [FluidFace2] のテスト.
+/// [FluidFace] のテスト.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 @ExtendWith(MockitoExtension.class)
-class FluidFace2Test {
+class FluidFaceTest {
 
   @Mock
   private Composition composition;
 
-  /// [FluidFace2#getMassFlow()] と [FluidFace2#setMassFlow(double)] のテスト.
+  /// [FluidFace#getMassFlow()] と [FluidFace#setMassFlow(double)] のテスト.
   @Test
   void testMassFlow() {
     final Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.OXYGEN, ComponentKey.NITROGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    FluidFace2 face = FluidFace2.newInstance(this.composition);
+    FluidFace face = FluidFace.newInstance(this.composition);
 
     final double massFlow = 1.2;
     face.setMassFlow(massFlow);
     assertThat(face.getMassFlow()).isEqualTo(massFlow);
   }
 
-  /// [FluidFace2#getEnergyFlow()] と [FluidFace2#setEnergyFlow(double)] のテスト.
+  /// [FluidFace#getEnergyFlow()] と [FluidFace#setEnergyFlow(double)] のテスト.
   @Test
   void testEnergyFlow() {
     final Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.OXYGEN, ComponentKey.NITROGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    FluidFace2 face = FluidFace2.newInstance(this.composition);
+    FluidFace face = FluidFace.newInstance(this.composition);
 
     final double energyFlow = 2.3;
     face.setEnergyFlow(energyFlow);
     assertThat(face.getEnergyFlow()).isEqualTo(energyFlow);
   }
 
-  /// [FluidFace2#componentMap()] のテスト.
+  /// [FluidFace#componentMap()] のテスト.
   @Test
   void testComponentMap() {
     final Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.OXYGEN, ComponentKey.NITROGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    FluidFace2 face = FluidFace2.newInstance(this.composition);
+    FluidFace face = FluidFace.newInstance(this.composition);
 
     assertThat(face.componentMap().keySet()).isEqualTo(componentKeySet);
     face.componentMap().values().forEach(o -> assertThat(o).isNotNull());
   }
 
-  /// [FluidFace2.ComponentValue] のテスト.
+  /// [FluidFace.ComponentValue] のテスト.
   @Nested
   class ComponentValueTest {
 
     @Mock
     private Composition composition;
 
-    /// [FluidFace2.ComponentValue#getSpeciesFlow()] と
-    /// [FluidFace2.ComponentValue#setSpeciesFlow(double)] のテスト.
+    /// [FluidFace.ComponentValue#getSpeciesFlow()] と
+    /// [FluidFace.ComponentValue#setSpeciesFlow(double)] のテスト.
     @Test
     void testSpeciesFlow() {
       final Set<ComponentKey> componentKeySet
           = Set.of(ComponentKey.ARGON, ComponentKey.OXYGEN, ComponentKey.NITROGEN);
       doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-      FluidFace2.ComponentValue componentValue = FluidFace2.newInstance(this.composition)
+      FluidFace.ComponentValue componentValue = FluidFace.newInstance(this.composition)
           .componentMap().get(ComponentKey.NITROGEN);
 
       final double speciesFlow = 3.4;

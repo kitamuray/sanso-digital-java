@@ -25,7 +25,7 @@ final class ShellModel {
   ///
   /// @param cell セル.
   /// @return 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-  double shellSpecificHeat(ShellCell2 cell) {
+  double shellSpecificHeat(ShellCell cell) {
     return this.shell.specificHeat().specificHeat(cell.getShellTemperature());
   }
 
@@ -33,7 +33,7 @@ final class ShellModel {
   ///
   /// @param cell セル.
   /// @return 容器の熱伝導率.
-  double shellThermalConductivity(ShellCell2 cell) {
+  double shellThermalConductivity(ShellCell cell) {
     return this.shell.thermalConductivity().thermalConductivity(cell.getShellTemperature());
   }
 

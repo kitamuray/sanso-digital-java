@@ -139,7 +139,7 @@ abstract class FluidStart extends Start {
   /// 指定された流体を含むセルへ初期条件を設定する.
   ///
   /// @param cell 流体を含むセル.
-  void start(FluidCell2 cell) {
+  void start(FluidCell cell) {
     super.start(cell);
 
     cell.setTemperature(this.temperature);

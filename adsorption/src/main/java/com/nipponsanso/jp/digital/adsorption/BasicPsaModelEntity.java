@@ -12,8 +12,8 @@ import java.util.Map;
 ///
 /// @param columnModelEntityMap 吸着筒モデルの永続化オブジェクトのマップ.
 /// @param productTankModelEntity 製品槽モデルの永続化オブジェクト.
-public record BasicPsaModelEntity2(
-    @JsonProperty("column") Map<ColumnKey, ColumnModelEntity2> columnModelEntityMap,
-    @JsonProperty("productTank") TankModelEntity2 productTankModelEntity) {
+public record BasicPsaModelEntity(
+    @JsonProperty("column") Map<ColumnKey, ColumnModelEntity> columnModelEntityMap,
+    @JsonProperty("productTank") TankModelEntity productTankModelEntity) {
 
 }

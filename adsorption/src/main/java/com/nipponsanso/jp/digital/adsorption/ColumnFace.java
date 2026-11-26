@@ -13,7 +13,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-abstract class ColumnFace2 implements GridFace, FluidFace2 {
+abstract class ColumnFace implements GridFace, FluidFace {
 
   /// 数値の位置.
   private enum Position {
@@ -47,7 +47,7 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
   /// @param shape       形状.
   /// @param coordinate  座標 (m).
   /// @param composition 組成.
-  ColumnFace2(int offset, ColumnShape shape, double coordinate, Composition composition) {
+  ColumnFace(int offset, ColumnShape shape, double coordinate, Composition composition) {
     int o = this.offset = offset;
     o += Position.values().length;
 
@@ -70,7 +70,7 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
   /// @return 数値の数.
   static int number(Composition composition) {
     return Position.values().length
-        + composition.componentKeySet().size() * ColumnFace2.ComponentValue.number();
+        + composition.componentKeySet().size() * ColumnFace.ComponentValue.number();
   }
 
   /// 数値を記憶する配列を返す.
@@ -135,7 +135,7 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
   }
 
   /// 吸着筒のフェイスの成分値.
-  final class ComponentValue implements FluidFace2.ComponentValue {
+  final class ComponentValue implements FluidFace.ComponentValue {
 
     /// 数値の位置.
     private enum Position {
@@ -168,7 +168,7 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
     /// @return 指定された数値.
     @SuppressWarnings("SameParameterValue")
     private double getValue(Position position) {
-      return ColumnFace2.this.doubleArray()[this.offset + position.ordinal()];
+      return ColumnFace.this.doubleArray()[this.offset + position.ordinal()];
     }
 
     /// 指定された数値を設定する.
@@ -177,7 +177,7 @@ abstract class ColumnFace2 implements GridFace, FluidFace2 {
     /// @param value 指定された新な数値.
     @SuppressWarnings("SameParameterValue")
     private void setValue(Position position, double value) {
-      ColumnFace2.this.doubleArray()[this.offset + position.ordinal()] = value;
+      ColumnFace.this.doubleArray()[this.offset + position.ordinal()] = value;
     }
 
     @Override

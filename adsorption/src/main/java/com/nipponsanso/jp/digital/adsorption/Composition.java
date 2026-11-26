@@ -135,20 +135,20 @@ public final class Composition {
   /// 副成分の質量分率を元に, 主成分の質量分率を更新する.
   ///
   /// @param cell セル.
-  void updateMajorFraction(FluidCell2 cell) {
+  void updateMajorFraction(FluidCell cell) {
     double sumMinorFractions = this.minorComponentKeySet.stream()
         .map(cell.componentMap()::get)
-        .mapToDouble(FluidCell2.ComponentValue::getFraction)
+        .mapToDouble(FluidCell.ComponentValue::getFraction)
         .sum();
     cell.componentMap().get(this.majorComponentKey).setFraction(1. - sumMinorFractions);
   }
 
   /// 質量分率を元に, 平均分子量を更新する.
   ///
-  /// 事前に [#updateMajorFraction(FluidCell2)] を呼ぶ必要が有る.
+  /// 事前に [#updateMajorFraction(FluidCell)] を呼ぶ必要が有る.
   ///
   /// @param cell セル.
-  void updateMolecularWeight(FluidCell2 cell) {
+  void updateMolecularWeight(FluidCell cell) {
     double reciprocalMolecularWeight
         = cell.componentMap().entrySet().stream()
         .mapToDouble(entry -> {
@@ -164,10 +164,10 @@ public final class Composition {
 
   /// 質量分率と平均分子量を元に, モル分率を更新する.
   ///
-  /// 事前に [#updateMolecularWeight(FluidCell2)] を呼ぶ必要が有る.
+  /// 事前に [#updateMolecularWeight(FluidCell)] を呼ぶ必要が有る.
   ///
   /// @param cell セル.
-  void updateMolarFractions(FluidCell2 cell) {
+  void updateMolarFractions(FluidCell cell) {
     final double molecularWeight = cell.getMolecularWeight();
 
     cell.componentMap().forEach(

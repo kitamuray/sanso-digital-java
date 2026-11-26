@@ -27,7 +27,7 @@ final class AdsorbentModel {
   ///
   /// @param cell セル.
   /// @return 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-  double adsorbentSpecificHeat(AdsorbentCell2 cell) {
+  double adsorbentSpecificHeat(AdsorbentCell cell) {
     return this.adsorbent.specificHeat().specificHeat(cell.getTemperature());
   }
 
@@ -36,7 +36,7 @@ final class AdsorbentModel {
   /// @param cell セル.
   /// @param componentKey 成分のキー.
   /// @return 吸着質成分のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>).
-  double molarSpecificConstantVolumeSpecificHeat(AdsorbentCell2 cell, ComponentKey componentKey) {
+  double molarSpecificConstantVolumeSpecificHeat(AdsorbentCell cell, ComponentKey componentKey) {
     return componentKey.thermodynamicFunction()
         .molarSpecificConstantPressureSpecificHeat(cell.getTemperature())
         - PhysicalConstants.MOLAR_GAS_CONSTANT;

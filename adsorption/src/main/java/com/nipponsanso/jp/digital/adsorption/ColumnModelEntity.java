@@ -13,6 +13,6 @@ import java.util.List;
 /// @param cellEntityList セルの永続化オブジェクトのリスト.
 /// @since 1.1
 /// @author KITAMURA Yuichiro
-public record ColumnModelEntity2(
-    @JsonProperty("cells") List<ColumnCellEntity2> cellEntityList) {
+public record ColumnModelEntity(
+    @JsonProperty("cells") List<ColumnCellEntity> cellEntityList) {
 }

@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.doReturn;
 
-import com.nipponsanso.jp.digital.adsorption.ColumnCell2.ComponentValue;
+import com.nipponsanso.jp.digital.adsorption.ColumnCell.ComponentValue;
 import java.util.Set;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
@@ -20,12 +20,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/// [ColumnCell2] のテスト.
+/// [ColumnCell] のテスト.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 @ExtendWith(MockitoExtension.class)
-class ColumnCell2Test {
+class ColumnCellTest {
 
   @SuppressWarnings("ClassCanBeRecord")
   private static final class LocalModel {
@@ -33,10 +33,10 @@ class ColumnCell2Test {
     private final double[] doubleArray;
 
     private LocalModel(Composition composition) {
-      this.doubleArray = new double[ColumnCell2.number(composition)];
+      this.doubleArray = new double[ColumnCell.number(composition)];
     }
 
-    private final class LocalCell extends ColumnCell2 {
+    private final class LocalCell extends ColumnCell {
 
       private LocalCell(
           ColumnShape shape, double fromX, double toX,
@@ -65,7 +65,7 @@ class ColumnCell2Test {
   @Mock
   private Adsorbent adsorbent;
 
-  /// [ColumnCell2] のデータ階層をテスト.
+  /// [ColumnCell] のデータ階層をテスト.
   @Test
   void testStructure() {
     Set<ComponentKey> componentKeySet
@@ -73,16 +73,16 @@ class ColumnCell2Test {
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
     LocalModel model = new LocalModel(this.composition);
-    ColumnCell2 cell = model.new LocalCell(
+    ColumnCell cell = model.new LocalCell(
         this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
 
-    assertThat(cell.previous()).isInstanceOf(ColumnCell2.Previous.class);
+    assertThat(cell.previous()).isInstanceOf(ColumnCell.Previous.class);
     assertThat(cell.componentMap().keySet()).isEqualTo(componentKeySet);
     assertThat(cell.componentMap().get(ComponentKey.OXYGEN).previous())
-        .isInstanceOf(ColumnCell2.ComponentValue.Previous.class);
+        .isInstanceOf(ColumnCell.ComponentValue.Previous.class);
   }
 
-  /// [ColumnCell2] の幾何情報をテスト.
+  /// [ColumnCell] の幾何情報をテスト.
   @Test
   void testGeometry() {
     final double fluidVolume = 5.4;
@@ -102,7 +102,7 @@ class ColumnCell2Test {
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
     LocalModel model = new LocalModel(this.composition);
-    ColumnCell2 cell = model.new LocalCell(
+    ColumnCell cell = model.new LocalCell(
         this.shape, fromX, toX, this.composition, this.shell, this.adsorbent);
 
     assertThat(cell.centroid()).isEqualTo(.5 * (fromX + toX));
@@ -113,7 +113,7 @@ class ColumnCell2Test {
     assertThat(cell.outsideArea()).isEqualTo(outsideArea);
   }
 
-  /// [ColumnCell2] の [Shell] 由来メソッドをテスト.
+  /// [ColumnCell] の [Shell] 由来メソッドをテスト.
   @Test
   void testShell() {
     final double shellDensity = 5800.;
@@ -124,13 +124,13 @@ class ColumnCell2Test {
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
     LocalModel model = new LocalModel(this.composition);
-    ColumnCell2 cell = model.new LocalCell(
+    ColumnCell cell = model.new LocalCell(
         this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
 
     assertThat(cell.shellDensity()).isEqualTo(shellDensity);
   }
 
-  /// [ColumnCell2] の [Adsorbent] 由来メソッドをテスト.
+  /// [ColumnCell] の [Adsorbent] 由来メソッドをテスト.
   @Test
   void testAdsorbent() {
     final double particleDiameter = 2e-3;
@@ -146,7 +146,7 @@ class ColumnCell2Test {
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
     LocalModel model = new LocalModel(this.composition);
-    ColumnCell2 cell = model.new LocalCell(
+    ColumnCell cell = model.new LocalCell(
         this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
 
     assertThat(cell.particleDiameter()).isEqualTo(particleDiameter);
@@ -154,222 +154,222 @@ class ColumnCell2Test {
     assertThat(cell.bulkDensity()).isEqualTo(bulkDensity);
   }
 
-  /// [ColumnCell2] の getter 及び setter をテスト.
+  /// [ColumnCell] の getter 及び setter をテスト.
   @Test
   void testGetterAndSetter() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2> supplier = () -> {
+    Supplier<ColumnCell> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
     };
 
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getTemperature)
-        .setter(ColumnCell2::setTemperature)
+        .getter(ColumnCell::getTemperature)
+        .setter(ColumnCell::setTemperature)
         .valid(298.15)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getPressure)
-        .setter(ColumnCell2::setPressure)
+        .getter(ColumnCell::getPressure)
+        .setter(ColumnCell::setPressure)
         .valid(101325.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getDensity)
-        .setter(ColumnCell2::setDensity)
+        .getter(ColumnCell::getDensity)
+        .setter(ColumnCell::setDensity)
         .valid(1.2)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getSpecificEnthalpy)
-        .setter(ColumnCell2::setSpecificEnthalpy)
+        .getter(ColumnCell::getSpecificEnthalpy)
+        .setter(ColumnCell::setSpecificEnthalpy)
         .valid(1e6)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getSpecificConstantPressureSpecificHeat)
-        .setter(ColumnCell2::setSpecificConstantPressureSpecificHeat)
+        .getter(ColumnCell::getSpecificConstantPressureSpecificHeat)
+        .setter(ColumnCell::setSpecificConstantPressureSpecificHeat)
         .valid(1e3)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getViscosity)
-        .setter(ColumnCell2::setViscosity)
+        .getter(ColumnCell::getViscosity)
+        .setter(ColumnCell::setViscosity)
         .valid(18e-6)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getThermalConductivity)
-        .setter(ColumnCell2::setThermalConductivity)
+        .getter(ColumnCell::getThermalConductivity)
+        .setter(ColumnCell::setThermalConductivity)
         .valid(0.02)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getMolecularWeight)
-        .setter(ColumnCell2::setMolecularWeight)
+        .getter(ColumnCell::getMolecularWeight)
+        .setter(ColumnCell::setMolecularWeight)
         .valid(29.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getShellTemperature)
-        .setter(ColumnCell2::setShellTemperature)
+        .getter(ColumnCell::getShellTemperature)
+        .setter(ColumnCell::setShellTemperature)
         .valid(303.15)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getShellSpecificHeat)
-        .setter(ColumnCell2::setShellSpecificHeat)
+        .getter(ColumnCell::getShellSpecificHeat)
+        .setter(ColumnCell::setShellSpecificHeat)
         .valid(640.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getShellThermalConductivity)
-        .setter(ColumnCell2::setShellThermalConductivity)
+        .getter(ColumnCell::getShellThermalConductivity)
+        .setter(ColumnCell::setShellThermalConductivity)
         .valid(0.2)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getAdsorbentSpecificHeat)
-        .setter(ColumnCell2::setAdsorbentSpecificHeat)
+        .getter(ColumnCell::getAdsorbentSpecificHeat)
+        .setter(ColumnCell::setAdsorbentSpecificHeat)
         .valid(800.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getAp)
-        .setter(ColumnCell2::setAp)
+        .getter(ColumnCell::getAp)
+        .setter(ColumnCell::setAp)
         .valid(1.2)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getAw)
-        .setter(ColumnCell2::setAw)
+        .getter(ColumnCell::getAw)
+        .setter(ColumnCell::setAw)
         .valid(2.3)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getAe)
-        .setter(ColumnCell2::setAe)
+        .getter(ColumnCell::getAe)
+        .setter(ColumnCell::setAe)
         .valid(3.4)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getSp)
-        .setter(ColumnCell2::setSp)
+        .getter(ColumnCell::getSp)
+        .setter(ColumnCell::setSp)
         .valid(4.5)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getSc)
-        .setter(ColumnCell2::setSc)
+        .getter(ColumnCell::getSc)
+        .setter(ColumnCell::setSc)
         .valid(5.6)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getP)
-        .setter(ColumnCell2::setP)
+        .getter(ColumnCell::getP)
+        .setter(ColumnCell::setP)
         .valid(2.1)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2::getQ)
-        .setter(ColumnCell2::setQ)
+        .getter(ColumnCell::getQ)
+        .setter(ColumnCell::setQ)
         .valid(3.2)
         .test();
   }
 
-  /// [ColumnCell2] の永続化をテスト.
+  /// [ColumnCell] の永続化をテスト.
   @Test
   void testEntity() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2> supplier = () -> {
+    Supplier<ColumnCell> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
     };
 
     record Entry(
-        ToDoubleFunction<ColumnCell2> getter,
-        ObjDoubleConsumer<ColumnCell2> setter,
-        ToDoubleFunction<ColumnCellEntity2> entityGetter,
+        ToDoubleFunction<ColumnCell> getter,
+        ObjDoubleConsumer<ColumnCell> setter,
+        ToDoubleFunction<ColumnCellEntity> entityGetter,
         double value) {}
 
     Stream.of(
             new Entry(
-                ColumnCell2::getTemperature,
-                ColumnCell2::setTemperature,
-                ColumnCellEntity2::temperature,
+                ColumnCell::getTemperature,
+                ColumnCell::setTemperature,
+                ColumnCellEntity::temperature,
                 298.15),
             new Entry(
-                ColumnCell2::getPressure,
-                ColumnCell2::setPressure,
-                ColumnCellEntity2::pressure,
+                ColumnCell::getPressure,
+                ColumnCell::setPressure,
+                ColumnCellEntity::pressure,
                 101325.),
             new Entry(
-                ColumnCell2::getDensity,
-                ColumnCell2::setDensity,
-                ColumnCellEntity2::density,
+                ColumnCell::getDensity,
+                ColumnCell::setDensity,
+                ColumnCellEntity::density,
                 1.2),
             new Entry(
-                ColumnCell2::getSpecificEnthalpy,
-                ColumnCell2::setSpecificEnthalpy,
-                ColumnCellEntity2::specificEnthalpy,
+                ColumnCell::getSpecificEnthalpy,
+                ColumnCell::setSpecificEnthalpy,
+                ColumnCellEntity::specificEnthalpy,
                 1000000.),
             new Entry(
-                ColumnCell2::getSpecificConstantPressureSpecificHeat,
-                ColumnCell2::setSpecificConstantPressureSpecificHeat,
-                ColumnCellEntity2::specificConstantPressureSpecificHeat,
+                ColumnCell::getSpecificConstantPressureSpecificHeat,
+                ColumnCell::setSpecificConstantPressureSpecificHeat,
+                ColumnCellEntity::specificConstantPressureSpecificHeat,
                 1000.),
             new Entry(
-                ColumnCell2::getViscosity,
-                ColumnCell2::setViscosity,
-                ColumnCellEntity2::viscosity,
+                ColumnCell::getViscosity,
+                ColumnCell::setViscosity,
+                ColumnCellEntity::viscosity,
                 18e-6),
             new Entry(
-                ColumnCell2::getThermalConductivity,
-                ColumnCell2::setThermalConductivity,
-                ColumnCellEntity2::thermalConductivity,
+                ColumnCell::getThermalConductivity,
+                ColumnCell::setThermalConductivity,
+                ColumnCellEntity::thermalConductivity,
                 0.02),
             new Entry(
-                ColumnCell2::getShellTemperature,
-                ColumnCell2::setShellTemperature,
-                ColumnCellEntity2::shellTemperature,
+                ColumnCell::getShellTemperature,
+                ColumnCell::setShellTemperature,
+                ColumnCellEntity::shellTemperature,
                 303.15),
             new Entry(
-                ColumnCell2::getShellSpecificHeat,
-                ColumnCell2::setShellSpecificHeat,
-                ColumnCellEntity2::shellSpecificHeat,
+                ColumnCell::getShellSpecificHeat,
+                ColumnCell::setShellSpecificHeat,
+                ColumnCellEntity::shellSpecificHeat,
                 640.),
             new Entry(
-                ColumnCell2::getShellThermalConductivity,
-                ColumnCell2::setShellThermalConductivity,
-                ColumnCellEntity2::shellThermalConductivity,
+                ColumnCell::getShellThermalConductivity,
+                ColumnCell::setShellThermalConductivity,
+                ColumnCellEntity::shellThermalConductivity,
                 0.2),
             new Entry(
-                ColumnCell2::getAdsorbentSpecificHeat,
-                ColumnCell2::setAdsorbentSpecificHeat,
-                ColumnCellEntity2::adsorbentSpecificHeat,
+                ColumnCell::getAdsorbentSpecificHeat,
+                ColumnCell::setAdsorbentSpecificHeat,
+                ColumnCellEntity::adsorbentSpecificHeat,
                 800.))
         .forEach(entry -> {
-          ColumnCell2 cell1 = supplier.get();
+          ColumnCell cell1 = supplier.get();
           entry.setter().accept(cell1, entry.value());
 
-          ColumnCellEntity2 entity = cell1.newEntity();
+          ColumnCellEntity entity = cell1.newEntity();
           assertThat(entry.entityGetter().applyAsDouble(entity)).isEqualTo(entry.value());
 
-          ColumnCell2 cell2 = supplier.get();
+          ColumnCell cell2 = supplier.get();
           cell2.accept(entity);
           assertThat(entry.getter().applyAsDouble(cell2)).isEqualTo(entry.value());
         });
   }
 
-  /// [ColumnCell2.Previous] の getter 及び setter をテスト.
+  /// [ColumnCell.Previous] の getter 及び setter をテスト.
   @Test
   void testPreviousGetterAndSetter() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2.Previous> supplier = () -> {
+    Supplier<ColumnCell.Previous> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent)
@@ -377,125 +377,125 @@ class ColumnCell2Test {
     };
 
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getTemperature)
-        .setter(ColumnCell2.Previous::setTemperature)
+        .getter(ColumnCell.Previous::getTemperature)
+        .setter(ColumnCell.Previous::setTemperature)
         .valid(298.15)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getDensity)
-        .setter(ColumnCell2.Previous::setDensity)
+        .getter(ColumnCell.Previous::getDensity)
+        .setter(ColumnCell.Previous::setDensity)
         .valid(1.2)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getSpecificEnthalpy)
-        .setter(ColumnCell2.Previous::setSpecificEnthalpy)
+        .getter(ColumnCell.Previous::getSpecificEnthalpy)
+        .setter(ColumnCell.Previous::setSpecificEnthalpy)
         .valid(1e6)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getSpecificConstantPressureSpecificHeat)
-        .setter(ColumnCell2.Previous::setSpecificConstantPressureSpecificHeat)
+        .getter(ColumnCell.Previous::getSpecificConstantPressureSpecificHeat)
+        .setter(ColumnCell.Previous::setSpecificConstantPressureSpecificHeat)
         .valid(1e3)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getShellTemperature)
-        .setter(ColumnCell2.Previous::setShellTemperature)
+        .getter(ColumnCell.Previous::getShellTemperature)
+        .setter(ColumnCell.Previous::setShellTemperature)
         .valid(303.15)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getShellSpecificHeat)
-        .setter(ColumnCell2.Previous::setShellSpecificHeat)
+        .getter(ColumnCell.Previous::getShellSpecificHeat)
+        .setter(ColumnCell.Previous::setShellSpecificHeat)
         .valid(640.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.Previous::getAdsorbentSpecificHeat)
-        .setter(ColumnCell2.Previous::setAdsorbentSpecificHeat)
+        .getter(ColumnCell.Previous::getAdsorbentSpecificHeat)
+        .setter(ColumnCell.Previous::setAdsorbentSpecificHeat)
         .valid(800.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
   }
 
-  /// [ColumnCell2.Previous] の永続化をテスト.
+  /// [ColumnCell.Previous] の永続化をテスト.
   @Test
   void testPreviousEntity() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2> supplier = () -> {
+    Supplier<ColumnCell> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
     };
 
     record Entry(
-        ToDoubleFunction<ColumnCell2.Previous> getter,
-        ObjDoubleConsumer<ColumnCell2.Previous> setter,
-        ToDoubleFunction<ColumnCellEntity2.Previous> entityGetter,
+        ToDoubleFunction<ColumnCell.Previous> getter,
+        ObjDoubleConsumer<ColumnCell.Previous> setter,
+        ToDoubleFunction<ColumnCellEntity.Previous> entityGetter,
         double value) {}
 
     Stream.of(
             new Entry(
-                ColumnCell2.Previous::getTemperature,
-                ColumnCell2.Previous::setTemperature,
-                ColumnCellEntity2.Previous::temperature,
+                ColumnCell.Previous::getTemperature,
+                ColumnCell.Previous::setTemperature,
+                ColumnCellEntity.Previous::temperature,
                 298.15),
             new Entry(
-                ColumnCell2.Previous::getDensity,
-                ColumnCell2.Previous::setDensity,
-                ColumnCellEntity2.Previous::density,
+                ColumnCell.Previous::getDensity,
+                ColumnCell.Previous::setDensity,
+                ColumnCellEntity.Previous::density,
                 1.2),
             new Entry(
-                ColumnCell2.Previous::getSpecificEnthalpy,
-                ColumnCell2.Previous::setSpecificEnthalpy,
-                ColumnCellEntity2.Previous::specificEnthalpy,
+                ColumnCell.Previous::getSpecificEnthalpy,
+                ColumnCell.Previous::setSpecificEnthalpy,
+                ColumnCellEntity.Previous::specificEnthalpy,
                 1000000.),
             new Entry(
-                ColumnCell2.Previous::getSpecificConstantPressureSpecificHeat,
-                ColumnCell2.Previous::setSpecificConstantPressureSpecificHeat,
-                ColumnCellEntity2.Previous::specificConstantPressureSpecificHeat,
+                ColumnCell.Previous::getSpecificConstantPressureSpecificHeat,
+                ColumnCell.Previous::setSpecificConstantPressureSpecificHeat,
+                ColumnCellEntity.Previous::specificConstantPressureSpecificHeat,
                 1000.),
             new Entry(
-                ColumnCell2.Previous::getShellTemperature,
-                ColumnCell2.Previous::setShellTemperature,
-                ColumnCellEntity2.Previous::shellTemperature,
+                ColumnCell.Previous::getShellTemperature,
+                ColumnCell.Previous::setShellTemperature,
+                ColumnCellEntity.Previous::shellTemperature,
                 303.15),
             new Entry(
-                ColumnCell2.Previous::getShellSpecificHeat,
-                ColumnCell2.Previous::setShellSpecificHeat,
-                ColumnCellEntity2.Previous::shellSpecificHeat,
+                ColumnCell.Previous::getShellSpecificHeat,
+                ColumnCell.Previous::setShellSpecificHeat,
+                ColumnCellEntity.Previous::shellSpecificHeat,
                 640.),
             new Entry(
-                ColumnCell2.Previous::getAdsorbentSpecificHeat,
-                ColumnCell2.Previous::setAdsorbentSpecificHeat,
-                ColumnCellEntity2.Previous::adsorbentSpecificHeat,
+                ColumnCell.Previous::getAdsorbentSpecificHeat,
+                ColumnCell.Previous::setAdsorbentSpecificHeat,
+                ColumnCellEntity.Previous::adsorbentSpecificHeat,
                 800.))
         .forEach(entry -> {
-          ColumnCell2 cell1 = supplier.get();
+          ColumnCell cell1 = supplier.get();
           entry.setter().accept(cell1.previous(), entry.value());
 
-          ColumnCellEntity2 entity = cell1.newEntity();
+          ColumnCellEntity entity = cell1.newEntity();
           assertThat(entry.entityGetter().applyAsDouble(entity.previous()))
               .isEqualTo(entry.value());
 
-          ColumnCell2 cell2 = supplier.get();
+          ColumnCell cell2 = supplier.get();
           cell2.accept(entity);
           assertThat(entry.getter().applyAsDouble(cell2.previous())).isEqualTo(entry.value());
         });
   }
 
-  /// [ColumnCell2.ComponentValue] の getter 及び setter をテスト.
+  /// [ColumnCell.ComponentValue] の getter 及び setter をテスト.
   @Test
   void testComponentValueGetterAndSetter() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2.ComponentValue> supplier = () -> {
+    Supplier<ColumnCell.ComponentValue> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent)
@@ -503,8 +503,8 @@ class ColumnCell2Test {
     };
 
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue::getFraction)
-        .setter(ColumnCell2.ComponentValue::setFraction)
+        .getter(ColumnCell.ComponentValue::getFraction)
+        .setter(ColumnCell.ComponentValue::setFraction)
         .valid(0.123)
         .thrown(IllegalArgumentException.class).value(-1.)
         .thrown(IllegalArgumentException.class).value(2.)
@@ -516,93 +516,93 @@ class ColumnCell2Test {
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue::getMolarFraction)
-        .setter(ColumnCell2.ComponentValue::setMolarFraction)
+        .getter(ColumnCell.ComponentValue::getMolarFraction)
+        .setter(ColumnCell.ComponentValue::setMolarFraction)
         .valid(0.23)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue::getViscosity)
-        .setter(ColumnCell2.ComponentValue::setViscosity)
+        .getter(ColumnCell.ComponentValue::getViscosity)
+        .setter(ColumnCell.ComponentValue::setViscosity)
         .valid(18e-6)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue::getMolarQuantity)
-        .setter(ColumnCell2.ComponentValue::setMolarQuantity)
+        .getter(ColumnCell.ComponentValue::getMolarQuantity)
+        .setter(ColumnCell.ComponentValue::setMolarQuantity)
         .valid(1.2)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat)
-        .setter(ColumnCell2.ComponentValue::setMolarSpecificConstantVolumeSpecificHeat)
+        .getter(ColumnCell.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat)
+        .setter(ColumnCell.ComponentValue::setMolarSpecificConstantVolumeSpecificHeat)
         .valid(12.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
   }
 
-  /// [ColumnCell2.ComponentValue] の永続化をテスト.
+  /// [ColumnCell.ComponentValue] の永続化をテスト.
   @Test
   void testComponentValueEntity() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2> supplier = () -> {
+    Supplier<ColumnCell> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
     };
 
     record Entry(
-        ToDoubleFunction<ColumnCell2.ComponentValue> getter,
-        ObjDoubleConsumer<ColumnCell2.ComponentValue> setter,
-        ToDoubleFunction<ColumnCellEntity2.ComponentValue> entityGetter,
+        ToDoubleFunction<ColumnCell.ComponentValue> getter,
+        ObjDoubleConsumer<ColumnCell.ComponentValue> setter,
+        ToDoubleFunction<ColumnCellEntity.ComponentValue> entityGetter,
         double value) {}
 
     Stream.of(
             new Entry(
-                ColumnCell2.ComponentValue::getFraction,
-                ColumnCell2.ComponentValue::setFraction,
-                ColumnCellEntity2.ComponentValue::fraction,
+                ColumnCell.ComponentValue::getFraction,
+                ColumnCell.ComponentValue::setFraction,
+                ColumnCellEntity.ComponentValue::fraction,
                 0.12),
             new Entry(
-                ColumnCell2.ComponentValue::getDiffusivity,
-                ColumnCell2.ComponentValue::setDiffusivity,
-                ColumnCellEntity2.ComponentValue::diffusivity,
+                ColumnCell.ComponentValue::getDiffusivity,
+                ColumnCell.ComponentValue::setDiffusivity,
+                ColumnCellEntity.ComponentValue::diffusivity,
                 5e-4),
             new Entry(
-                ColumnCell2.ComponentValue::getMolarQuantity,
-                ColumnCell2.ComponentValue::setMolarQuantity,
-                ColumnCellEntity2.ComponentValue::molarQuantity,
+                ColumnCell.ComponentValue::getMolarQuantity,
+                ColumnCell.ComponentValue::setMolarQuantity,
+                ColumnCellEntity.ComponentValue::molarQuantity,
                 100.),
             new Entry(
-                ColumnCell2.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat,
-                ColumnCell2.ComponentValue::setMolarSpecificConstantVolumeSpecificHeat,
-                ColumnCellEntity2.ComponentValue::molarSpecificConstantVolumeSpecificHeat,
+                ColumnCell.ComponentValue::getMolarSpecificConstantVolumeSpecificHeat,
+                ColumnCell.ComponentValue::setMolarSpecificConstantVolumeSpecificHeat,
+                ColumnCellEntity.ComponentValue::molarSpecificConstantVolumeSpecificHeat,
                 12.))
         .forEach(entry -> {
-          ColumnCell2 cell1 = supplier.get();
+          ColumnCell cell1 = supplier.get();
           entry.setter().accept(cell1.componentMap().get(ComponentKey.OXYGEN), entry.value());
 
-          ColumnCellEntity2 entity = cell1.newEntity();
+          ColumnCellEntity entity = cell1.newEntity();
           assertThat(
               entry.entityGetter().applyAsDouble(entity.componentMap().get(ComponentKey.OXYGEN)))
               .isEqualTo(entry.value());
 
-          ColumnCell2 cell2 = supplier.get();
+          ColumnCell cell2 = supplier.get();
           cell2.accept(entity);
           assertThat(entry.getter().applyAsDouble(cell2.componentMap().get(ComponentKey.OXYGEN)))
               .isEqualTo(entry.value());
         });
   }
 
-  /// [ColumnCell2.ComponentValue.Previous] の getter 及び setter をテスト.
+  /// [ColumnCell.ComponentValue.Previous] の getter 及び setter をテスト.
   @Test
   void testComponentValuePreviousGetterAndSetter() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2.ComponentValue.Previous> supplier = () -> {
+    Supplier<ColumnCell.ComponentValue.Previous> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent)
@@ -610,73 +610,73 @@ class ColumnCell2Test {
     };
 
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue.Previous::getFraction)
-        .setter(ColumnCell2.ComponentValue.Previous::setFraction)
+        .getter(ColumnCell.ComponentValue.Previous::getFraction)
+        .setter(ColumnCell.ComponentValue.Previous::setFraction)
         .valid(0.123)
         .thrown(IllegalArgumentException.class).value(-1.)
         .thrown(IllegalArgumentException.class).value(2.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue.Previous::getMolarQuantity)
-        .setter(ColumnCell2.ComponentValue.Previous::setMolarQuantity)
+        .getter(ColumnCell.ComponentValue.Previous::getMolarQuantity)
+        .setter(ColumnCell.ComponentValue.Previous::setMolarQuantity)
         .valid(1.2)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
     GetterSetterTester.supplier(supplier)
-        .getter(ColumnCell2.ComponentValue.Previous::getMolarSpecificConstantVolumeSpecificHeat)
-        .setter(ColumnCell2.ComponentValue.Previous::setMolarSpecificConstantVolumeSpecificHeat)
+        .getter(ColumnCell.ComponentValue.Previous::getMolarSpecificConstantVolumeSpecificHeat)
+        .setter(ColumnCell.ComponentValue.Previous::setMolarSpecificConstantVolumeSpecificHeat)
         .valid(12.)
         .thrown(IllegalArgumentException.class).value(0.)
         .test();
   }
 
-  /// [ColumnCell2.ComponentValue.Previous] の永続化をテスト.
+  /// [ColumnCell.ComponentValue.Previous] の永続化をテスト.
   @Test
   void testComponentValuePreviousEntity() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    Supplier<ColumnCell2> supplier = () -> {
+    Supplier<ColumnCell> supplier = () -> {
       LocalModel model = new LocalModel(this.composition);
       return model.new LocalCell(
           this.shape, 0., 1., this.composition, this.shell, this.adsorbent);
     };
 
     record Entry(
-        ToDoubleFunction<ColumnCell2.ComponentValue.Previous> getter,
-        ObjDoubleConsumer<ColumnCell2.ComponentValue.Previous> setter,
-        ToDoubleFunction<ColumnCellEntity2.ComponentValue.Previous> entityGetter,
+        ToDoubleFunction<ColumnCell.ComponentValue.Previous> getter,
+        ObjDoubleConsumer<ColumnCell.ComponentValue.Previous> setter,
+        ToDoubleFunction<ColumnCellEntity.ComponentValue.Previous> entityGetter,
         double value) {}
 
     Stream.of(
             new Entry(
-                ColumnCell2.ComponentValue.Previous::getFraction,
-                ColumnCell2.ComponentValue.Previous::setFraction,
-                ColumnCellEntity2.ComponentValue.Previous::fraction,
+                ColumnCell.ComponentValue.Previous::getFraction,
+                ColumnCell.ComponentValue.Previous::setFraction,
+                ColumnCellEntity.ComponentValue.Previous::fraction,
                 0.12),
             new Entry(
-                ColumnCell2.ComponentValue.Previous::getMolarQuantity,
-                ColumnCell2.ComponentValue.Previous::setMolarQuantity,
-                ColumnCellEntity2.ComponentValue.Previous::molarQuantity,
+                ColumnCell.ComponentValue.Previous::getMolarQuantity,
+                ColumnCell.ComponentValue.Previous::setMolarQuantity,
+                ColumnCellEntity.ComponentValue.Previous::molarQuantity,
                 100.),
             new Entry(
-                ColumnCell2.ComponentValue.Previous::getMolarSpecificConstantVolumeSpecificHeat,
-                ColumnCell2.ComponentValue.Previous::setMolarSpecificConstantVolumeSpecificHeat,
-                ColumnCellEntity2.ComponentValue.Previous::molarSpecificConstantVolumeSpecificHeat,
+                ColumnCell.ComponentValue.Previous::getMolarSpecificConstantVolumeSpecificHeat,
+                ColumnCell.ComponentValue.Previous::setMolarSpecificConstantVolumeSpecificHeat,
+                ColumnCellEntity.ComponentValue.Previous::molarSpecificConstantVolumeSpecificHeat,
                 12.))
         .forEach(entry -> {
-          ColumnCell2 cell1 = supplier.get();
+          ColumnCell cell1 = supplier.get();
           entry.setter()
               .accept(cell1.componentMap().get(ComponentKey.OXYGEN).previous(), entry.value());
 
-          ColumnCellEntity2 entity = cell1.newEntity();
+          ColumnCellEntity entity = cell1.newEntity();
           assertThat(
               entry.entityGetter()
                   .applyAsDouble(entity.componentMap().get(ComponentKey.OXYGEN).previous()))
               .isEqualTo(entry.value());
 
-          ColumnCell2 cell2 = supplier.get();
+          ColumnCell cell2 = supplier.get();
           cell2.accept(entity);
           assertThat(entry.getter()
               .applyAsDouble(cell2.componentMap().get(ComponentKey.OXYGEN).previous()))

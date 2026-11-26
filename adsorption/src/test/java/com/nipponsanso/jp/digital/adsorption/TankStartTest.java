@@ -89,12 +89,12 @@ class TankStartTest {
   }
   
   @Mock
-  private TankCell2 cell;
+  private TankCell cell;
 
   @Mock
-  private TankCell2.ComponentValue componentValue;
+  private TankCell.ComponentValue componentValue;
 
-  /// [TankStart#start(TankCell2)] のテスト.
+  /// [TankStart#start(TankCell)] のテスト.
   @Test
   void testStartTankCell() {
     final double temperature = 303.15;

@@ -14,30 +14,30 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/// [FluidCell2] のテスト.
+/// [FluidCell] のテスト.
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
 @ExtendWith(MockitoExtension.class)
-class FluidCell2Test {
+class FluidCellTest {
 
   @Mock
   private Composition composition;
 
-  /// [FluidCell2#newInstance(Composition)] のテスト.
+  /// [FluidCell#newInstance(Composition)] のテスト.
   @Test
   void testNewInstanceComposition() {
     final Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.OXYGEN, ComponentKey.NITROGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    FluidCell2 cell = FluidCell2.newInstance(this.composition);
+    FluidCell cell = FluidCell.newInstance(this.composition);
 
-    assertThat(cell.previous()).isInstanceOf(FluidCell2.Previous.class);
+    assertThat(cell.previous()).isInstanceOf(FluidCell.Previous.class);
     assertThat(cell.componentMap().keySet()).isEqualTo(componentKeySet);
     cell.componentMap().values().forEach(componentValue -> {
-      assertThat(componentValue).isInstanceOf(FluidCell2.ComponentValue.class);
-      assertThat(componentValue.previous()).isInstanceOf(FluidCell2.ComponentValue.Previous.class);
+      assertThat(componentValue).isInstanceOf(FluidCell.ComponentValue.class);
+      assertThat(componentValue.previous()).isInstanceOf(FluidCell.ComponentValue.Previous.class);
     });
   }
 

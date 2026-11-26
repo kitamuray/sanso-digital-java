@@ -31,9 +31,9 @@ class ShellModelTest {
   private ThermalConductivity thermalConductivity;
 
   @Mock
-  private ShellCell2 cell;
+  private ShellCell cell;
 
-  /// [ShellModel#shellSpecificHeat(ShellCell2)] のテスト.
+  /// [ShellModel#shellSpecificHeat(ShellCell)] のテスト.
   @Test
   void testShellSpecificHeatShellCell() {
     doReturn(640.).when(this.specificHeat).specificHeat(anyDouble());
@@ -46,7 +46,7 @@ class ShellModelTest {
     assertThat(model.shellSpecificHeat(this.cell)).isEqualTo(640.);
   }
 
-  /// [ShellModel#shellSpecificHeat(ShellCell2)] のテスト.
+  /// [ShellModel#shellSpecificHeat(ShellCell)] のテスト.
   @Test
   void testShellThermalConductivityShellCell() {
     doReturn(0.2).when(this.thermalConductivity).thermalConductivity(anyDouble());

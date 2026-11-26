@@ -52,34 +52,34 @@ final class BasicPsaModel {
   private final VacuumPumpModel vacuumPumpModel;
 
   /// 原料供給系統セル.
-  private final FluidCell2 feedLineCell;
+  private final FluidCell feedLineCell;
 
   /// 充圧系統セル.
-  private final FluidCell2 pressurizationLineCell;
+  private final FluidCell pressurizationLineCell;
 
   /// リンス系統セル.
-  private final FluidCell2 rinseLineCell;
+  private final FluidCell rinseLineCell;
 
   /// 真空排気系統セル.
-  private final FluidCell2 vacuumLineCell;
+  private final FluidCell vacuumLineCell;
 
   /// 上部均圧系統の不変マップ.
-  private final Map<LineKey, FluidCell2> upperEqualizationLineCellMap;
+  private final Map<LineKey, FluidCell> upperEqualizationLineCellMap;
 
   /// 下部均圧系統の不変マップ.
-  private final Map<LineKey, FluidCell2> lowerEqualizationLineCellMap;
+  private final Map<LineKey, FluidCell> lowerEqualizationLineCellMap;
 
   /// 原料供給主弁フェイス.
-  private final FluidFace2 mainFeedFluidFace;
+  private final FluidFace mainFeedFluidFace;
 
   /// 製品払出主弁フェイス.
-  private final FluidFace2 mainProductFluidFace;
+  private final FluidFace mainProductFluidFace;
 
   /// 充圧主弁フェイス.
-  private final FluidFace2 mainPressurizationFluidFace;
+  private final FluidFace mainPressurizationFluidFace;
 
   /// リンス主弁フェイス.
-  private final FluidFace2 mainRinseFluidFace;
+  private final FluidFace mainRinseFluidFace;
 
   /// 履歴時刻 (s) の可変リスト.
   private final List<Double> historyTimeList = new ArrayList<>();
@@ -117,25 +117,25 @@ final class BasicPsaModel {
     this.vacuumPumpModel
         = new VacuumPumpModel(process.vacuumPump(), this.fluidService.composition());
 
-    this.feedLineCell = FluidCell2.newInstance(process.composition());
-    this.pressurizationLineCell = FluidCell2.newInstance(process.composition());
-    this.rinseLineCell = FluidCell2.newInstance(process.composition());
-    this.vacuumLineCell = FluidCell2.newInstance(process.composition());
+    this.feedLineCell = FluidCell.newInstance(process.composition());
+    this.pressurizationLineCell = FluidCell.newInstance(process.composition());
+    this.rinseLineCell = FluidCell.newInstance(process.composition());
+    this.vacuumLineCell = FluidCell.newInstance(process.composition());
     this.upperEqualizationLineCellMap = process.upperEqualizationValveMap().keySet().stream()
         .collect(
             Maps.toImmutableEnumMap(
                 lineKey -> lineKey,
-                _ -> FluidCell2.newInstance(process.composition())));
+                _ -> FluidCell.newInstance(process.composition())));
     this.lowerEqualizationLineCellMap = process.lowerEqualizationValveMap().keySet().stream()
         .collect(
             Maps.toImmutableEnumMap(
                 lineKey -> lineKey,
-                _ -> FluidCell2.newInstance(process.composition())));
+                _ -> FluidCell.newInstance(process.composition())));
 
-    this.mainFeedFluidFace = FluidFace2.newInstance(process.composition());
-    this.mainProductFluidFace = FluidFace2.newInstance(process.composition());
-    this.mainPressurizationFluidFace = FluidFace2.newInstance(process.composition());
-    this.mainRinseFluidFace = FluidFace2.newInstance(process.composition());
+    this.mainFeedFluidFace = FluidFace.newInstance(process.composition());
+    this.mainProductFluidFace = FluidFace.newInstance(process.composition());
+    this.mainPressurizationFluidFace = FluidFace.newInstance(process.composition());
+    this.mainRinseFluidFace = FluidFace.newInstance(process.composition());
   }
 
   /// 流体モデルを返す.
@@ -190,78 +190,78 @@ final class BasicPsaModel {
   /// 原料供給系統セルを返す.
   ///
   /// @return 原料供給系統セル.
-  FluidCell2 feedLineCell() {
+  FluidCell feedLineCell() {
     return this.feedLineCell;
   }
 
   /// 充圧系統セルを返す.
   ///
   /// @return 充圧系統セル.
-  FluidCell2 pressurizationLineCell() {
+  FluidCell pressurizationLineCell() {
     return this.pressurizationLineCell;
   }
 
   /// リンス系統セルを返す.
   ///
   /// @return リンス系統セル.
-  FluidCell2 rinseLineCell() {
+  FluidCell rinseLineCell() {
     return this.rinseLineCell;
   }
 
   /// 真空排気系統セルを返す.
   ///
   /// @return 真空排気系統セル.
-  FluidCell2 vacuumLineCell() {
+  FluidCell vacuumLineCell() {
     return this.vacuumLineCell;
   }
 
   /// 上部均圧系統セルの不変マップを返す.
   ///
   /// @return 上部均圧系統セルの不変マップ.
-  Map<LineKey, FluidCell2> upperEqualizationLineCellMap() {
+  Map<LineKey, FluidCell> upperEqualizationLineCellMap() {
     return this.upperEqualizationLineCellMap;
   }
 
   /// 下部均圧系統セルの不変マップを返す.
   ///
   /// @return 下部均圧系統セルの不変マップ.
-  Map<LineKey, FluidCell2> lowerEqualizationFluidCellMap() {
+  Map<LineKey, FluidCell> lowerEqualizationFluidCellMap() {
     return this.lowerEqualizationLineCellMap;
   }
 
   /// 原料供給主弁フェイスを返す.
   ///
   /// @return 原料供給主弁フェイス.
-  FluidFace2 mainFeedFluidFace() {
+  FluidFace mainFeedFluidFace() {
     return this.mainFeedFluidFace;
   }
 
   /// 製品払出主弁フェイスを返す.
   ///
   /// @return 製品払出主弁フェイス.
-  FluidFace2 mainProductFluidFace() {
+  FluidFace mainProductFluidFace() {
     return this.mainProductFluidFace;
   }
 
   /// 充圧主弁フェイスを返す.
   ///
   /// @return 充圧主弁フェイス.
-  FluidFace2 mainPressurizationFluidFace() {
+  FluidFace mainPressurizationFluidFace() {
     return this.mainPressurizationFluidFace;
   }
 
   /// リンス主弁フェイスを返す.
   ///
   /// @return リンス主弁フェイス.
-  FluidFace2 mainRinseFluidFace() {
+  FluidFace mainRinseFluidFace() {
     return this.mainRinseFluidFace;
   }
 
   /// 永続化クラスのインスタンスを生成して返す.
   ///
   /// @return 永続化クラスのインスタンス.
-  BasicPsaModelEntity2 newEntity() {
-    return new BasicPsaModelEntity2(
+  BasicPsaModelEntity newEntity() {
+    return new BasicPsaModelEntity(
         this.columnGroupMap.entrySet().stream()
             .collect(
                 Maps.toImmutableEnumMap(
@@ -273,7 +273,7 @@ final class BasicPsaModel {
   /// 永続化クラスのインスタンスを反映する.
   ///
   /// @param entity 永続化クラスのインスタンス.
-  void accept(BasicPsaModelEntity2 entity) {
+  void accept(BasicPsaModelEntity entity) {
     Preconditions.checkNotNull(entity);
     Preconditions.checkNotNull(entity.columnModelEntityMap());
     Preconditions.checkArgument(
@@ -451,7 +451,7 @@ final class BasicPsaModel {
   /// @param fileName 出力ファイル名.
   /// @param monitor モニタ.
   void snapshot(String fileName, Monitor monitor) {
-    Map<ColumnKey, Iterator<ColumnCell2>> cellIteratorMap = this.columnGroupMap.entrySet().stream()
+    Map<ColumnKey, Iterator<ColumnCell>> cellIteratorMap = this.columnGroupMap.entrySet().stream()
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
@@ -459,7 +459,7 @@ final class BasicPsaModel {
                 (a, _) -> a,
                 () -> new EnumMap<>(ColumnKey.class)));
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    List<ColumnCell2> axisCellList = this.columnGroupMap.values().stream()
+    List<ColumnCell> axisCellList = this.columnGroupMap.values().stream()
         .findAny().get()
         .columnModel()
         .cellList();
@@ -475,7 +475,7 @@ final class BasicPsaModel {
       csv.writeRecord(stringList);
       stringList.clear();
 
-      for (ColumnCell2 axisCell : axisCellList) {
+      for (ColumnCell axisCell : axisCellList) {
         stringList.add(Double.toString(axisCell.centroid()));
         cellIteratorMap.values().forEach(
             cellIterator -> stringList.add(
@@ -496,25 +496,25 @@ final class BasicPsaModel {
     private final ColumnModel columnModel;
 
     /// 原料供給弁フェイス.
-    private final FluidFace2 feedFluidFace;
+    private final FluidFace feedFluidFace;
 
     /// 製品払出主弁フェイス.
-    private final FluidFace2 productFluidFace;
+    private final FluidFace productFluidFace;
 
     /// 充圧主弁フェイス.
-    private final FluidFace2 pressurizationFluidFace;
+    private final FluidFace pressurizationFluidFace;
 
     /// リンス主弁フェイス.
-    private final FluidFace2 rinseFluidFace;
+    private final FluidFace rinseFluidFace;
 
     /// 脱圧弁フェイスの不変マップ.
-    private final Map<LineKey, FluidFace2> blowFluidFaceMap;
+    private final Map<LineKey, FluidFace> blowFluidFaceMap;
 
     /// 上部均圧弁フェイスの不変マップ.
-    private final Map<LineKey, FluidFace2> upperEqualizationFluidFaceMap;
+    private final Map<LineKey, FluidFace> upperEqualizationFluidFaceMap;
 
     /// 下部均圧弁フェイスの不変マップ.
-    private final Map<LineKey, FluidFace2> lowerEqualizationFluidFaceMap;
+    private final Map<LineKey, FluidFace> lowerEqualizationFluidFaceMap;
 
     /// 吸着筒周辺モデルのインスタンスを生成する.
     ///
@@ -530,26 +530,26 @@ final class BasicPsaModel {
         Set<LineKey> upperEqualizationLineKey, Set<LineKey> lowerEqualizationLineKey) {
       this.columnModel = new ColumnModel(column, composition);
 
-      this.feedFluidFace = FluidFace2.newInstance(composition);
-      this.productFluidFace = FluidFace2.newInstance(composition);
-      this.pressurizationFluidFace = FluidFace2.newInstance(composition);
-      this.rinseFluidFace = FluidFace2.newInstance(composition);
+      this.feedFluidFace = FluidFace.newInstance(composition);
+      this.productFluidFace = FluidFace.newInstance(composition);
+      this.pressurizationFluidFace = FluidFace.newInstance(composition);
+      this.rinseFluidFace = FluidFace.newInstance(composition);
 
       this.blowFluidFaceMap = blowLineKey.stream()
           .collect(
               Maps.toImmutableEnumMap(
                   lineKey -> lineKey,
-                  _ -> FluidFace2.newInstance(composition)));
+                  _ -> FluidFace.newInstance(composition)));
       this.upperEqualizationFluidFaceMap = upperEqualizationLineKey.stream()
           .collect(
               Maps.toImmutableEnumMap(
                   lineKey -> lineKey,
-                  _ -> FluidFace2.newInstance(composition)));
+                  _ -> FluidFace.newInstance(composition)));
       this.lowerEqualizationFluidFaceMap = lowerEqualizationLineKey.stream()
           .collect(
               Maps.toImmutableEnumMap(
                   lineKey -> lineKey,
-                  _ -> FluidFace2.newInstance(composition)));
+                  _ -> FluidFace.newInstance(composition)));
     }
 
     /// 吸着筒モデルを返す.
@@ -562,49 +562,49 @@ final class BasicPsaModel {
     /// 原料供給弁フェイスを返す.
     ///
     /// @return 原料供給弁フェイス.
-    FluidFace2 feedFluidFace() {
+    FluidFace feedFluidFace() {
       return this.feedFluidFace;
     }
 
     /// 製品払出弁フェイスを返す.
     ///
     /// @return 製品払出弁フェイス.
-    FluidFace2 productFluidFace() {
+    FluidFace productFluidFace() {
       return this.productFluidFace;
     }
 
     /// 充圧弁フェイスを返す.
     ///
     /// @return 充圧弁フェイス.
-    FluidFace2 pressurizationFluidFace() {
+    FluidFace pressurizationFluidFace() {
       return this.pressurizationFluidFace;
     }
 
     /// リンス弁フェイスを返す.
     ///
     /// @return リンス弁フェイス.
-    FluidFace2 rinseFluidFace() {
+    FluidFace rinseFluidFace() {
       return this.rinseFluidFace;
     }
 
     /// 脱圧弁フェイスの不変セットを返す.
     ///
     /// @return 脱圧弁フェイスの不変セット.
-    Map<LineKey, FluidFace2> blowFluidFaceMap() {
+    Map<LineKey, FluidFace> blowFluidFaceMap() {
       return this.blowFluidFaceMap;
     }
 
     /// 上部均圧弁フェイスの不変セットを返す.
     ///
     /// @return 上部均圧弁フェイスの不変セット.
-    Map<LineKey, FluidFace2> upperEqualizationFluidFaceMap() {
+    Map<LineKey, FluidFace> upperEqualizationFluidFaceMap() {
       return this.upperEqualizationFluidFaceMap;
     }
 
     /// 下部均圧弁フェイスの不変セットを返す.
     ///
     /// @return 下部均圧弁フェイスの不変セット.
-    Map<LineKey, FluidFace2> lowerEqualizationFluidFaceMap() {
+    Map<LineKey, FluidFace> lowerEqualizationFluidFaceMap() {
       return this.lowerEqualizationFluidFaceMap;
     }
 

@@ -21,12 +21,12 @@ class AbstractFluidCellTest {
     Supplier<AbstractFluidCell> supplier = () -> new AbstractFluidCell() {
 
       @Override
-      public FluidCell2.Previous previous() {
+      public FluidCell.Previous previous() {
         return null;
       }
 
       @Override
-      public Map<ComponentKey, ? extends FluidCell2.ComponentValue> componentMap() {
+      public Map<ComponentKey, ? extends FluidCell.ComponentValue> componentMap() {
         return Map.of();
       }
 
@@ -118,7 +118,7 @@ class AbstractFluidCellTest {
         = () -> new AbstractFluidCell.ComponentValue() {
 
       @Override
-      public FluidCell2.ComponentValue.Previous previous() {
+      public FluidCell.ComponentValue.Previous previous() {
         return null;
       }
 

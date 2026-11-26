@@ -108,7 +108,7 @@ abstract class Port {
     return this.monitorMap;
   }
 
-  abstract void set(FluidCell2 cell);
+  abstract void set(FluidCell cell);
 
   @Override
   public boolean equals(Object o) {

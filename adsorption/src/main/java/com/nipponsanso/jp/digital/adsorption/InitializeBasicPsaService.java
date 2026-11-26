@@ -38,7 +38,7 @@ final class InitializeBasicPsaService extends BasicPsaService {
   ///
   /// @param model 流体モデル.
   /// @param cell 流体セル.
-  private void initialize(FluidService model, FluidCell2 cell) {
+  private void initialize(FluidService model, FluidCell cell) {
     // 熱力学的温度, 絶対圧力, 副成分の質量分率が設定されている
 
     model.update(cell);
@@ -67,7 +67,7 @@ final class InitializeBasicPsaService extends BasicPsaService {
   ///
   /// @param model 容器モデル.
   /// @param cell 容器セル.
-  private void initialize(ShellModel model, ShellCell2 cell) {
+  private void initialize(ShellModel model, ShellCell cell) {
     cell.setShellSpecificHeat(model.shellSpecificHeat(cell));
     cell.setShellThermalConductivity(model.shellThermalConductivity(cell));
 
@@ -79,7 +79,7 @@ final class InitializeBasicPsaService extends BasicPsaService {
   ///
   /// @param model 吸着剤モデル.
   /// @param cell 吸着剤セル.
-  private void initialize(AdsorbentModel model, AdsorbentCell2 cell) {
+  private void initialize(AdsorbentModel model, AdsorbentCell cell) {
     cell.setAdsorbentSpecificHeat(model.adsorbentSpecificHeat(cell));
     cell.componentMap().forEach(
         (componentKey, componentValue) -> componentValue.setMolarSpecificConstantVolumeSpecificHeat(

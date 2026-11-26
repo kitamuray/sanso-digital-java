@@ -11,7 +11,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-interface Face2 {
+interface Face {
 
   /// フェイスの成分の不変マップを返す.
   ///

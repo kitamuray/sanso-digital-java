@@ -12,7 +12,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-interface FluidFace2 extends Face2 {
+interface FluidFace extends Face {
 
   /// 流体の質量流量を返す.
   ///
@@ -44,14 +44,14 @@ interface FluidFace2 extends Face2 {
   ///
   /// @param composition 組成.
   /// @return 流体を含むフェイスのインスタンス.
-  static FluidFace2 newInstance(Composition composition) {
-    return new FluidFace2() {
+  static FluidFace newInstance(Composition composition) {
+    return new FluidFace() {
 
       private double massFlow;
 
       private double energyFlow;
 
-      private final Map<ComponentKey, ? extends FluidFace2.ComponentValue> componentMap
+      private final Map<ComponentKey, ? extends FluidFace.ComponentValue> componentMap
           = composition.componentKeySet().stream()
           .collect(
               Maps.toImmutableEnumMap(
@@ -87,7 +87,7 @@ interface FluidFace2 extends Face2 {
   }
 
   /// 流体を含むフェイスの成分値.
-  interface ComponentValue extends Face2.ComponentValue {
+  interface ComponentValue extends Face.ComponentValue {
 
     /// 流体成分の化学種流量を返す.
     ///

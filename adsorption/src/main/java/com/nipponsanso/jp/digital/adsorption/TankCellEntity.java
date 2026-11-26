@@ -23,7 +23,7 @@ import java.util.Map;
 /// @param componentMap 成分のマップ.
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public record TankCellEntity2(
+public record TankCellEntity(
     double temperature,
     double pressure,
     double density,

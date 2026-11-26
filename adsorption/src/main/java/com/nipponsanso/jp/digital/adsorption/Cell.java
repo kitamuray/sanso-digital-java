@@ -11,7 +11,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-interface Cell2 {
+interface Cell {
 
   /// セルの前ステップ値を返す.
   ///

@@ -13,7 +13,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-final class TankCell2 extends AbstractFluidCell {
+final class TankCell extends AbstractFluidCell {
 
   /// 貯槽.
   private final Tank tank;
@@ -28,7 +28,7 @@ final class TankCell2 extends AbstractFluidCell {
   ///
   /// @param tank 貯槽.
   /// @param composition 組成.
-  TankCell2(Tank tank, Composition composition) {
+  TankCell(Tank tank, Composition composition) {
     this.tank = tank;
     this.previous = new Previous();
     this.componentMap = composition.componentKeySet().stream()
@@ -58,8 +58,8 @@ final class TankCell2 extends AbstractFluidCell {
   /// 永続化クラスのインスタンスを生成して返す.
   ///
   /// @return 永続化クラスのインスタンス.
-  TankCellEntity2 newEntity() {
-    return new TankCellEntity2(
+  TankCellEntity newEntity() {
+    return new TankCellEntity(
         this.getTemperature(),
         this.getPressure(),
         this.getDensity(),
@@ -80,7 +80,7 @@ final class TankCell2 extends AbstractFluidCell {
   /// @param entity 永続化クラスのインスタンス.
   /// @throws NullPointerException `entity` またはそれが構成する要素が `null` の場合.
   /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-  void accept(TankCellEntity2 entity) {
+  void accept(TankCellEntity entity) {
     Preconditions.checkNotNull(entity);
     Preconditions.checkNotNull(entity.previous());
     Preconditions.checkNotNull(entity.componentMap());
@@ -108,8 +108,8 @@ final class TankCell2 extends AbstractFluidCell {
     /// 永続化クラスのインスタンスを生成して返す.
     ///
     /// @return 永続化クラスのインスタンス.
-    private TankCellEntity2.Previous newEntity() {
-      return new TankCellEntity2.Previous(
+    private TankCellEntity.Previous newEntity() {
+      return new TankCellEntity.Previous(
           this.getTemperature(),
           this.getDensity(),
           this.getSpecificEnthalpy(),
@@ -120,7 +120,7 @@ final class TankCell2 extends AbstractFluidCell {
     ///
     /// @param entity 永続化クラスのインスタンス.
     /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-    private void accept(TankCellEntity2.Previous entity) {
+    private void accept(TankCellEntity.Previous entity) {
       this.setTemperature(entity.temperature());
       this.setDensity(entity.density());
       this.setSpecificEnthalpy(entity.specificEnthalpy());
@@ -148,8 +148,8 @@ final class TankCell2 extends AbstractFluidCell {
     /// 永続化クラスのインスタンスを生成して返す.
     ///
     /// @return 永続化クラスのインスタンス.
-    private TankCellEntity2.ComponentValue newEntity() {
-      return new TankCellEntity2.ComponentValue(
+    private TankCellEntity.ComponentValue newEntity() {
+      return new TankCellEntity.ComponentValue(
           this.getFraction(),
           this.getDiffusivity(),
           this.previous.newEntity());
@@ -159,7 +159,7 @@ final class TankCell2 extends AbstractFluidCell {
     ///
     /// @param entity 永続化クラスのインスタンス.
     /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-    private void accept(TankCellEntity2.ComponentValue entity) {
+    private void accept(TankCellEntity.ComponentValue entity) {
       this.setFraction(entity.fraction());
       this.setDiffusivity(entity.diffusivity());
       this.previous.accept(entity.previous());
@@ -174,8 +174,8 @@ final class TankCell2 extends AbstractFluidCell {
       /// 永続化クラスのインスタンスを生成して返す.
       ///
       /// @return 永続化クラスのインスタンス.
-      private TankCellEntity2.ComponentValue.Previous newEntity() {
-        return new TankCellEntity2.ComponentValue.Previous(
+      private TankCellEntity.ComponentValue.Previous newEntity() {
+        return new TankCellEntity.ComponentValue.Previous(
             this.getFraction());
       }
 
@@ -183,7 +183,7 @@ final class TankCell2 extends AbstractFluidCell {
       ///
       /// @param entity 永続化クラスのインスタンス.
       /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-      private void accept(TankCellEntity2.ComponentValue.Previous entity) {
+      private void accept(TankCellEntity.ComponentValue.Previous entity) {
         this.setFraction(entity.fraction());
       }
 

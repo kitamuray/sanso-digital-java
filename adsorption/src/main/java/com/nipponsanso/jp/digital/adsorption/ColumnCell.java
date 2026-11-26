@@ -14,7 +14,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, AdsorbentCell2, SolverCell {
+abstract class ColumnCell implements GridCell, FluidCell, ShellCell, AdsorbentCell, SolverCell {
 
   /// 数値の位置.
   private enum Position {
@@ -120,7 +120,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
   /// @param composition 組成.
   /// @param adsorbent   吸着剤.
   /// @param shell       容器.
-  ColumnCell2(
+  ColumnCell(
       int offset, ColumnShape shape, double fromX, double toX, Composition composition,
       Adsorbent adsorbent, Shell shell) {
     int o = this.offset = offset;
@@ -454,8 +454,8 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
   /// 永続化クラスのインスタンスを生成して返す.
   ///
   /// @return 永続化クラスのインスタンス.
-  ColumnCellEntity2 newEntity() {
-    return new ColumnCellEntity2(
+  ColumnCellEntity newEntity() {
+    return new ColumnCellEntity(
         this.getTemperature(),
         this.getPressure(),
         this.getDensity(),
@@ -480,7 +480,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
   /// @param entity 永続化クラスのインスタンス.
   /// @throws NullPointerException `entity` またはそれが構成する要素が `null` の場合.
   /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-  void accept(ColumnCellEntity2 entity) {
+  void accept(ColumnCellEntity entity) {
     Preconditions.checkNotNull(entity);
     Preconditions.checkNotNull(entity.previous());
     Preconditions.checkNotNull(entity.componentMap());
@@ -503,7 +503,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
   }
 
   /// 吸着筒のセルの前ステップ値.
-  final class Previous implements FluidCell2.Previous, ShellCell2.Previous, AdsorbentCell2.Previous {
+  final class Previous implements FluidCell.Previous, ShellCell.Previous, AdsorbentCell.Previous {
 
     /// 数値の位置.
     private enum Position {
@@ -561,7 +561,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// @param position 数値の位置.
     /// @return 指定された数値.
     private double getValue(Position position) {
-      return ColumnCell2.this.doubleArray()[this.offset + position.ordinal()];
+      return ColumnCell.this.doubleArray()[this.offset + position.ordinal()];
     }
 
     /// 指定された数値を設定する.
@@ -569,7 +569,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// @param position 数値の位置.
     /// @param value 指定された新な数値.
     private void setValue(Position position, double value) {
-      ColumnCell2.this.doubleArray()[this.offset + position.ordinal()] = value;
+      ColumnCell.this.doubleArray()[this.offset + position.ordinal()] = value;
     }
 
     @Override
@@ -652,8 +652,8 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// 永続化クラスのインスタンスを生成して返す.
     ///
     /// @return 永続化クラスのインスタンス.
-    private ColumnCellEntity2.Previous newEntity() {
-      return new ColumnCellEntity2.Previous(
+    private ColumnCellEntity.Previous newEntity() {
+      return new ColumnCellEntity.Previous(
           this.getTemperature(),
           this.getDensity(),
           this.getSpecificEnthalpy(),
@@ -667,7 +667,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     ///
     /// @param entity 永続化クラスのインスタンス.
     /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-    private void accept(ColumnCellEntity2.Previous entity) {
+    private void accept(ColumnCellEntity.Previous entity) {
       this.setTemperature(entity.temperature());
       this.setDensity(entity.density());
       this.setSpecificEnthalpy(entity.specificEnthalpy());
@@ -680,7 +680,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
   } // Previous
 
   /// 吸着筒のセルの成分値.
-  final class ComponentValue implements FluidCell2.ComponentValue, AdsorbentCell2.ComponentValue {
+  final class ComponentValue implements FluidCell.ComponentValue, AdsorbentCell.ComponentValue {
 
     /// 数値の位置.
     private enum Position {
@@ -736,7 +736,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// @param position 数値の位置.
     /// @return 指定された数値.
     private double getValue(Position position) {
-      return ColumnCell2.this.doubleArray()[this.offset + position.ordinal()];
+      return ColumnCell.this.doubleArray()[this.offset + position.ordinal()];
     }
 
     /// 指定された数値を設定する.
@@ -744,7 +744,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// @param position 数値の位置.
     /// @param value 指定された新な数値.
     private void setValue(Position position, double value) {
-      ColumnCell2.this.doubleArray()[this.offset + position.ordinal()] = value;
+      ColumnCell.this.doubleArray()[this.offset + position.ordinal()] = value;
     }
 
     @Override
@@ -817,8 +817,8 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     /// 永続化クラスのインスタンスを生成して返す.
     ///
     /// @return 永続化クラスのインスタンス.
-    private ColumnCellEntity2.ComponentValue newEntity() {
-      return new ColumnCellEntity2.ComponentValue(
+    private ColumnCellEntity.ComponentValue newEntity() {
+      return new ColumnCellEntity.ComponentValue(
           this.getFraction(),
           this.getDiffusivity(),
           this.getMolarQuantity(),
@@ -830,7 +830,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
     ///
     /// @param entity 永続化クラスのインスタンス.
     /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-    private void accept(ColumnCellEntity2.ComponentValue entity) {
+    private void accept(ColumnCellEntity.ComponentValue entity) {
       this.setFraction(entity.fraction());
       this.setDiffusivity(entity.diffusivity());
       this.setMolarQuantity(entity.molarQuantity());
@@ -846,7 +846,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
 
     /// 吸着筒のセルの成分値の前ステップ値.
     final class Previous
-        implements FluidCell2.ComponentValue.Previous, AdsorbentCell2.ComponentValue.Previous {
+        implements FluidCell.ComponentValue.Previous, AdsorbentCell.ComponentValue.Previous {
 
       /// 数値の位置.
       private enum Position {
@@ -888,7 +888,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       /// @param position 数値の位置.
       /// @return 指定された数値.
       private double getValue(Position position) {
-        return ColumnCell2.this.doubleArray()[this.offset + position.ordinal()];
+        return ColumnCell.this.doubleArray()[this.offset + position.ordinal()];
       }
 
       /// 指定された数値を設定する.
@@ -896,7 +896,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       /// @param position 数値の位置.
       /// @param value 指定された新な数値.
       private void setValue(Position position, double value) {
-        ColumnCell2.this.doubleArray()[this.offset + position.ordinal()] = value;
+        ColumnCell.this.doubleArray()[this.offset + position.ordinal()] = value;
       }
 
       @Override
@@ -938,8 +938,8 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       /// 永続化クラスのインスタンスを生成して返す.
       ///
       /// @return 永続化クラスのインスタンス.
-      private ColumnCellEntity2.ComponentValue.Previous newEntity() {
-        return new ColumnCellEntity2.ComponentValue.Previous(
+      private ColumnCellEntity.ComponentValue.Previous newEntity() {
+        return new ColumnCellEntity.ComponentValue.Previous(
             this.getFraction(),
             this.getMolarQuantity(),
             this.getMolarSpecificConstantVolumeSpecificHeat());
@@ -949,7 +949,7 @@ abstract class ColumnCell2 implements GridCell, FluidCell2, ShellCell2, Adsorben
       ///
       /// @param entity 永続化クラスのインスタンス.
       /// @throws IllegalArgumentException `entity` を構成する要素の値が範囲外の場合.
-      private void accept(ColumnCellEntity2.ComponentValue.Previous entity) {
+      private void accept(ColumnCellEntity.ComponentValue.Previous entity) {
         this.setFraction(entity.fraction());
         this.setMolarQuantity(entity.molarQuantity());
         this.setMolarSpecificConstantVolumeSpecificHeat(

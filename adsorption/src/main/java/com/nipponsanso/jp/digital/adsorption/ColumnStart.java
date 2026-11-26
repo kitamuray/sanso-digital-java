@@ -53,8 +53,8 @@ public class ColumnStart extends AdsorbentStart {
   /// 指定された吸着筒のセルへ開始条件を設定する.
   ///
   /// @param cell 吸着筒のセル.
-  void start(ColumnCell2 cell) {
-    super.start((AdsorbentCell2) cell);
+  void start(ColumnCell cell) {
+    super.start((AdsorbentCell) cell);
   }
 
   @Override

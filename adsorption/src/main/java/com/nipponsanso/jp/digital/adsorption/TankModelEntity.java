@@ -10,6 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /// 貯槽モデルの永続化クラス.
 ///
 /// @param cellEntity セルの永続化オブジェクト.
-public record TankModelEntity2(@JsonProperty("cell") TankCellEntity2 cellEntity) {
+public record TankModelEntity(@JsonProperty("cell") TankCellEntity cellEntity) {
 
 }

@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-abstract class AbstractFluidCell implements FluidCell2 {
+abstract class AbstractFluidCell implements FluidCell {
 
   /// 流体の熱力学的温度 (K).
   private double temperature = Double.MIN_VALUE;
@@ -127,7 +127,7 @@ abstract class AbstractFluidCell implements FluidCell2 {
   }
 
   /// 流体を含むセルの前ステップ値の抽象実装.
-  abstract static class Previous implements FluidCell2.Previous {
+  abstract static class Previous implements FluidCell.Previous {
 
     /// 流体の熱力学的温度 (K).
     private double temperature = Double.MIN_VALUE;
@@ -190,7 +190,7 @@ abstract class AbstractFluidCell implements FluidCell2 {
   } // Previous
 
   /// 流体を含むセルの成分値の抽象実装.
-  abstract static class ComponentValue implements FluidCell2.ComponentValue {
+  abstract static class ComponentValue implements FluidCell.ComponentValue {
 
     /// 流体成分の質量分率 (-).
     private double fraction;
@@ -250,7 +250,7 @@ abstract class AbstractFluidCell implements FluidCell2 {
     }
 
     /// 流体を含むセルの成分値の前ステップ値の抽象実装.
-    abstract static class Previous implements FluidCell2.ComponentValue.Previous {
+    abstract static class Previous implements FluidCell.ComponentValue.Previous {
 
       /// 流体成分の質量分率 (-).
       private double fraction;

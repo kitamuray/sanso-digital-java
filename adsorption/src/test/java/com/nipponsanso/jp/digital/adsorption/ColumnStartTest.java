@@ -106,12 +106,12 @@ class ColumnStartTest {
   }
 
   @Mock
-  private ColumnCell2 cell;
+  private ColumnCell cell;
 
   @Mock
-  private ColumnCell2.ComponentValue componentValue;
+  private ColumnCell.ComponentValue componentValue;
 
-  /// [ColumnStart#start(ColumnCell2)] のテスト.
+  /// [ColumnStart#start(ColumnCell)] のテスト.
   @Test
   void testStartColumnCell() {
     final double temperature = 303.15;

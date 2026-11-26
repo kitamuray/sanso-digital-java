@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MonitorTest {
 
   @Mock
-  private FluidCell2 fluidCell;
+  private FluidCell fluidCell;
 
   /// [Monitor#temperature()] のテスト.
   @Test
@@ -145,7 +145,7 @@ class MonitorTest {
   }
 
   @Mock
-  private FluidCell2.ComponentValue fluidCellValue;
+  private FluidCell.ComponentValue fluidCellValue;
 
   /// [Monitor#fraction(ComponentKey)] のテスト.
   @Test
@@ -190,7 +190,7 @@ class MonitorTest {
   }
 
   @Mock
-  private ShellCell2 shellCell;
+  private ShellCell shellCell;
 
   /// [Monitor#shellTemperature()] のテスト.
   @Test
@@ -244,7 +244,7 @@ class MonitorTest {
   }
   
   @Mock
-  private AdsorbentCell2 adsorbentCell;
+  private AdsorbentCell adsorbentCell;
 
   /// [Monitor#adsorbentSpecificHeat()] のテスト.
   @Test
@@ -264,7 +264,7 @@ class MonitorTest {
   }
   
   @Mock
-  private AdsorbentCell2.ComponentValue adsorbentCellValue;
+  private AdsorbentCell.ComponentValue adsorbentCellValue;
 
   /// [Monitor#molarQuantity(ComponentKey)] のテスト.
   @Test
@@ -290,7 +290,7 @@ class MonitorTest {
   }
 
   @Mock
-  private FluidFace2 fluidFace;
+  private FluidFace fluidFace;
 
   /// [Monitor#massFlow()] のテスト.
   @Test
@@ -323,7 +323,7 @@ class MonitorTest {
   }
 
   @Mock
-  private FluidFace2.ComponentValue fluidFaceValue;
+  private FluidFace.ComponentValue fluidFaceValue;
 
   /// [Monitor#speciesFlow(ComponentKey)] のテスト.
   @Test

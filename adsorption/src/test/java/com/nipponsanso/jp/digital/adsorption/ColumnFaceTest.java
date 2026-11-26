@@ -15,12 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/// [ColumnFace2] のテスト.
+/// [ColumnFace] のテスト.
 ///
 /// @since 1.1
 /// @author KITAMURA Yuichiro
 @ExtendWith(MockitoExtension.class)
-class ColumnFace2Test {
+class ColumnFaceTest {
 
   @SuppressWarnings("ClassCanBeRecord")
   private static final class LocalModel {
@@ -28,10 +28,10 @@ class ColumnFace2Test {
     private final double[] doubleArray;
 
     private LocalModel(Composition composition) {
-      this.doubleArray = new double[ColumnFace2.number(composition)];
+      this.doubleArray = new double[ColumnFace.number(composition)];
     }
 
-    private final class LocalFace extends ColumnFace2 {
+    private final class LocalFace extends ColumnFace {
 
       LocalFace(Composition composition, ColumnShape shape, double coordinate) {
         super(0, shape, coordinate, composition);
@@ -52,22 +52,22 @@ class ColumnFace2Test {
   @Mock
   private ColumnShape shape;
 
-  /// [ColumnFace2] のデータ構造をテスト.
+  /// [ColumnFace] のデータ構造をテスト.
   @Test
   void testStructure() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    ColumnFace2 face = new LocalModel(this.composition)
+    ColumnFace face = new LocalModel(this.composition)
         .new LocalFace(this.composition, this.shape, 0.);
 
     assertThat(face.componentMap().keySet()).isEqualTo(componentKeySet);
     face.componentMap().values()
-        .forEach(o -> assertThat(o).isInstanceOf(ColumnFace2.ComponentValue.class));
+        .forEach(o -> assertThat(o).isInstanceOf(ColumnFace.ComponentValue.class));
   }
 
-  /// [ColumnFace2] の幾何情報メソッドをテスト.
+  /// [ColumnFace] の幾何情報メソッドをテスト.
   @Test
   void testGeometry() {
     Set<ComponentKey> componentKeySet
@@ -80,7 +80,7 @@ class ColumnFace2Test {
     doReturn(fluidArea).when(this.shape).fluidArea(anyDouble());
     doReturn(shellArea).when(this.shape).shellArea(anyDouble());
 
-    ColumnFace2 face = new LocalModel(this.composition)
+    ColumnFace face = new LocalModel(this.composition)
         .new LocalFace(this.composition, this.shape, coordinate);
 
     assertThat(face.coordinate()).isEqualTo(coordinate);
@@ -88,14 +88,14 @@ class ColumnFace2Test {
     assertThat(face.shellArea()).isEqualTo(shellArea);
   }
 
-  /// [ColumnFace2#getMassFlow()] と [ColumnFace2#setMassFlow(double)] のテスト.
+  /// [ColumnFace#getMassFlow()] と [ColumnFace#setMassFlow(double)] のテスト.
   @Test
   void testMassFlow() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    ColumnFace2 face = new LocalModel(this.composition)
+    ColumnFace face = new LocalModel(this.composition)
         .new LocalFace(this.composition, this.shape, 0.);
 
     final double massFlow = 1.2;
@@ -103,14 +103,14 @@ class ColumnFace2Test {
     assertThat(face.getMassFlow()).isEqualTo(massFlow);
   }
 
-  /// [ColumnFace2#getEnergyFlow()] と [ColumnFace2#setEnergyFlow(double)] のテスト.
+  /// [ColumnFace#getEnergyFlow()] と [ColumnFace#setEnergyFlow(double)] のテスト.
   @Test
   void testEnergyFlow() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    ColumnFace2 face = new LocalModel(this.composition)
+    ColumnFace face = new LocalModel(this.composition)
         .new LocalFace(this.composition, this.shape, 0.);
 
     final double energyFlow = 1.2;
@@ -118,15 +118,15 @@ class ColumnFace2Test {
     assertThat(face.getEnergyFlow()).isEqualTo(energyFlow);
   }
 
-  /// [ColumnFace2.ComponentValue#getSpeciesFlow()] と
-  /// [ColumnFace2.ComponentValue#setSpeciesFlow(double)] のテスト.
+  /// [ColumnFace.ComponentValue#getSpeciesFlow()] と
+  /// [ColumnFace.ComponentValue#setSpeciesFlow(double)] のテスト.
   @Test
   void testSpeciesFlow() {
     Set<ComponentKey> componentKeySet
         = Set.of(ComponentKey.ARGON, ComponentKey.NITROGEN, ComponentKey.OXYGEN);
     doReturn(componentKeySet).when(this.composition).componentKeySet();
 
-    ColumnFace2 face = new LocalModel(this.composition)
+    ColumnFace face = new LocalModel(this.composition)
         .new LocalFace(this.composition, this.shape, 0.);
 
     final double speciesFlow = 1.2;

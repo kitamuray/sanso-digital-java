@@ -25,22 +25,22 @@ final class ColumnModel {
   private final double[] doubleArray;
 
   /// 西側境界セル.
-  private final ColumnCell2 westCell;
+  private final ColumnCell westCell;
 
   /// 空間セルの不変リスト.
-  private final List<ColumnCell2> spaceCellList;
+  private final List<ColumnCell> spaceCellList;
 
   /// 領域セルの不変リストの不変リストの不変リスト.
-  private final List<List<List<ColumnCell2>>> zoneCellListListList;
+  private final List<List<List<ColumnCell>>> zoneCellListListList;
 
   /// 東側境界セル.
-  private final ColumnCell2 eastCell;
+  private final ColumnCell eastCell;
 
   /// 全セルの不変リスト.
-  private final List<ColumnCell2> cellList;
+  private final List<ColumnCell> cellList;
 
   /// 全フェイスの不変リスト.
-  private final List<ColumnFace2> faceList;
+  private final List<ColumnFace> faceList;
 
   /// 空間モデルの不変リスト.
   private final List<ColumnSpaceModel> spaceModelList;
@@ -65,8 +65,8 @@ final class ColumnModel {
           .sum()
         + 2;
 
-    final int cellSize = ColumnCell2.number(composition); // セルあたりの double 値の数
-    final int faceSize = ColumnFace2.number(composition); // フェイスあたりの double 値の数
+    final int cellSize = ColumnCell.number(composition); // セルあたりの double 値の数
+    final int faceSize = ColumnFace.number(composition); // フェイスあたりの double 値の数
     this.doubleArray = new double[number * cellSize + (number - 1) * faceSize];
 
     double origin = column.origin();
@@ -78,10 +78,10 @@ final class ColumnModel {
         offset, column.shape(), origin, origin, composition, Adsorbent.empty(), column.shell());
     offset += stride;
 
-    ImmutableList.Builder<ColumnCell2> spaceCellListBuilder = ImmutableList.builder();
+    ImmutableList.Builder<ColumnCell> spaceCellListBuilder = ImmutableList.builder();
     ImmutableList.Builder<ColumnSpaceModel> spaceModelListBuilder = ImmutableList.builder();
 
-    ImmutableList.Builder<List<List<ColumnCell2>>> zoneCellListListListBuilder
+    ImmutableList.Builder<List<List<ColumnCell>>> zoneCellListListListBuilder
         = ImmutableList.builder();
     ImmutableList.Builder<List<ColumnZoneModel>> zoneModelListListBuilder
         = ImmutableList.builder();
@@ -90,7 +90,7 @@ final class ColumnModel {
 
     for (List<ColumnZone> zoneList : column.zoneListList()) { // Space + List<Zone> の loop
       ColumnSpace space = spaceIterator.next();
-      ColumnCell2 spaceCell = new InnerCell(
+      ColumnCell spaceCell = new InnerCell(
           offset, column.shape(), origin, origin + space.length(),
           composition, Adsorbent.empty(), column.shell());
       spaceCellListBuilder.add(spaceCell);
@@ -98,10 +98,10 @@ final class ColumnModel {
       origin += space.length();
       offset += stride;
 
-      ImmutableList.Builder<List<ColumnCell2>> zoneCellListListBuilder = ImmutableList.builder();
+      ImmutableList.Builder<List<ColumnCell>> zoneCellListListBuilder = ImmutableList.builder();
       ImmutableList.Builder<ColumnZoneModel> zoneModelListBuilder = ImmutableList.builder();
       for (ColumnZone zone : zoneList) {
-        ImmutableList.Builder<ColumnCell2> zoneCellListBuilder = ImmutableList.builder();
+        ImmutableList.Builder<ColumnCell> zoneCellListBuilder = ImmutableList.builder();
         for (double segment : zone.section().segments()) {
           zoneCellListBuilder.add(
               new InnerCell(
@@ -110,7 +110,7 @@ final class ColumnModel {
           origin += segment;
           offset += stride;
         }
-        List<ColumnCell2> zoneCellList = zoneCellListBuilder.build();
+        List<ColumnCell> zoneCellList = zoneCellListBuilder.build();
         zoneCellListListBuilder.add(zoneCellList);
         zoneModelListBuilder.add(new ColumnZoneModel(zone, zoneCellList));
       }
@@ -120,7 +120,7 @@ final class ColumnModel {
 
     { // 最後の Space
       ColumnSpace space = spaceIterator.next();
-      ColumnCell2 spaceCell = new InnerCell(
+      ColumnCell spaceCell = new InnerCell(
           offset, column.shape(), origin, origin + space.length(),
           composition, Adsorbent.empty(), column.shell());
       spaceCellListBuilder.add(spaceCell);
@@ -139,12 +139,12 @@ final class ColumnModel {
         offset, column.shape(), origin, origin,
         composition, Adsorbent.empty(), column.shell());
 
-    ImmutableList.Builder<ColumnCell2> cellListBuilder = ImmutableList.builder();
+    ImmutableList.Builder<ColumnCell> cellListBuilder = ImmutableList.builder();
 
     cellListBuilder.add(this.westCell);
 
-    Iterator<ColumnCell2> spaceCellIterator = this.spaceCellList.iterator();
-    for (List<List<ColumnCell2>> zoneCellListList : this.zoneCellListListList) {
+    Iterator<ColumnCell> spaceCellIterator = this.spaceCellList.iterator();
+    for (List<List<ColumnCell>> zoneCellListList : this.zoneCellListListList) {
       cellListBuilder.add(spaceCellIterator.next());
       cellListBuilder.addAll(
           zoneCellListList.stream()
@@ -157,12 +157,12 @@ final class ColumnModel {
 
     this.cellList = cellListBuilder.build();
 
-    ImmutableList.Builder<ColumnFace2> faceListBuilder = ImmutableList.builder();
+    ImmutableList.Builder<ColumnFace> faceListBuilder = ImmutableList.builder();
 
     offset = cellSize;
     origin = this.westCell.centroid();
 
-    for (ColumnCell2 cell : this.cellList.subList(1, this.cellList.size())) {
+    for (ColumnCell cell : this.cellList.subList(1, this.cellList.size())) {
       faceListBuilder.add(new InnerFace(offset, column.shape(), origin, composition));
       offset += stride;
       origin += cell.length();
@@ -175,10 +175,10 @@ final class ColumnModel {
   /// 永続化クラスのインスタンスを生成して返す.
   ///
   /// @return 永続化クラスのインスタンス.
-  ColumnModelEntity2 newEntity() {
-    return new ColumnModelEntity2(
+  ColumnModelEntity newEntity() {
+    return new ColumnModelEntity(
         this.cellList.stream()
-            .map(ColumnCell2::newEntity)
+            .map(ColumnCell::newEntity)
             .collect(ImmutableList.toImmutableList()));
   }
 
@@ -186,13 +186,13 @@ final class ColumnModel {
   ///
   /// @param entity 永続化クラスのインスタンス.
   /// @throws NullPointerException `entity` の構成要素に `null` が含まれている場合.
-  void accept(ColumnModelEntity2 entity) {
+  void accept(ColumnModelEntity entity) {
     Preconditions.checkNotNull(entity);
     Preconditions.checkNotNull(entity.cellEntityList());
     entity.cellEntityList().forEach(Preconditions::checkNotNull);
 
-    Iterator<ColumnCellEntity2> cellEntityIterator = entity.cellEntityList().iterator();
-    for (ColumnCell2 cell : this.cellList) {
+    Iterator<ColumnCellEntity> cellEntityIterator = entity.cellEntityList().iterator();
+    for (ColumnCell cell : this.cellList) {
       cell.accept(cellEntityIterator.next());
     }
   }
@@ -221,42 +221,42 @@ final class ColumnModel {
   /// 西側境界セルを返す.
   ///
   /// @return 西側境界セル.
-  ColumnCell2 westCell() {
+  ColumnCell westCell() {
     return this.westCell;
   }
 
   /// 空間セルの不変リストを返す.
   ///
   /// @return 空間セルの不変リスト.
-  List<ColumnCell2> spaceCellList() {
+  List<ColumnCell> spaceCellList() {
     return this.spaceCellList;
   }
 
   /// 領域セルの不変リストの不変リストの不変リストを返す.
   ///
   /// @return 領域セルの不変リストの不変リストの不変リスト.
-  List<List<List<ColumnCell2>>> zoneCellListListList() {
+  List<List<List<ColumnCell>>> zoneCellListListList() {
     return this.zoneCellListListList;
   }
 
   /// 東側境界セルを返す.
   ///
   /// @return 東側境界セル.
-  ColumnCell2 eastCell() {
+  ColumnCell eastCell() {
     return this.eastCell;
   }
 
   /// セルの不変リストを返す.
   ///
   /// @return セルの不変リスト.
-  List<ColumnCell2> cellList() {
+  List<ColumnCell> cellList() {
     return this.cellList;
   }
 
   /// フェイスの不変リストを返す.
   ///
   /// @return フェイスの不変リスト.
-  List<ColumnFace2> faceList() {
+  List<ColumnFace> faceList() {
     return this.faceList;
   }
 
@@ -275,7 +275,7 @@ final class ColumnModel {
   }
 
   /// セルの内部実装.
-  final class InnerCell extends ColumnCell2 {
+  final class InnerCell extends ColumnCell {
 
     /// セルのインスタンスを生成する.
     ///
@@ -301,7 +301,7 @@ final class ColumnModel {
   } // InnerCell
 
   /// フェイスの内部実装.
-  final class InnerFace extends ColumnFace2 {
+  final class InnerFace extends ColumnFace {
 
     /// フェイスのインスタンスを生成する.
     ///

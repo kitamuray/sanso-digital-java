@@ -125,18 +125,18 @@ class CompositionTest {
   }
 
   @Mock
-  private FluidCell2 cell;
+  private FluidCell cell;
 
   @Mock
-  private FluidCell2.ComponentValue argonValue;
+  private FluidCell.ComponentValue argonValue;
 
   @Mock
-  private FluidCell2.ComponentValue oxygenValue;
+  private FluidCell.ComponentValue oxygenValue;
 
   @Mock
-  private FluidCell2.ComponentValue nitrogenValue;
+  private FluidCell.ComponentValue nitrogenValue;
 
-  /// [Composition#updateMajorFraction(FluidCell2)] のテスト.
+  /// [Composition#updateMajorFraction(FluidCell)] のテスト.
   @Test
   void testUpdateMajorFractionFluidCell() {
     final double argonFraction = 0.01288;
@@ -165,7 +165,7 @@ class CompositionTest {
     composition.updateMajorFraction(this.cell);
   }
 
-  /// [Composition#updateMolecularWeight(FluidCell2)] のテスト.
+  /// [Composition#updateMolecularWeight(FluidCell)] のテスト.
   @Test
   void testUpdateMolecularWeightFluidCell() {
     final double argonFraction = 0.01288;
@@ -198,7 +198,7 @@ class CompositionTest {
     composition.updateMolecularWeight(this.cell);
   }
 
-  /// [Composition#updateMolarFractions(FluidCell2)] のテスト.
+  /// [Composition#updateMolarFractions(FluidCell)] のテスト.
   @Test
   void testUpdateMolarFractionsFluidCell() {
     final double argonFraction = 0.01288;

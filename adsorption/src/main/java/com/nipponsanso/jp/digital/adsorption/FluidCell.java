@@ -12,7 +12,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-interface FluidCell2 extends Cell2 {
+interface FluidCell extends Cell {
 
   /// 流体の熱力学的温度を返す.
   ///
@@ -123,25 +123,25 @@ interface FluidCell2 extends Cell2 {
   ///
   /// @param composition 組成.
   /// @return 流体を含むセルのインスタンス.
-  static FluidCell2 newInstance(Composition composition) {
+  static FluidCell newInstance(Composition composition) {
     return new AbstractFluidCell() {
 
-      private final FluidCell2.Previous previous = FluidCell2.Previous.newInstance();
+      private final FluidCell.Previous previous = FluidCell.Previous.newInstance();
 
-      private final Map<ComponentKey, ? extends FluidCell2.ComponentValue> componentMap
+      private final Map<ComponentKey, ? extends FluidCell.ComponentValue> componentMap
           = composition.componentKeySet().stream()
           .collect(
               Maps.toImmutableEnumMap(
                   componentKey -> componentKey,
-                  _ -> FluidCell2.ComponentValue.newInstance()));
+                  _ -> FluidCell.ComponentValue.newInstance()));
 
       @Override
-      public FluidCell2.Previous previous() {
+      public FluidCell.Previous previous() {
         return this.previous;
       }
 
       @Override
-      public Map<ComponentKey, ? extends FluidCell2.ComponentValue> componentMap() {
+      public Map<ComponentKey, ? extends FluidCell.ComponentValue> componentMap() {
         return this.componentMap;
       }
 
@@ -149,7 +149,7 @@ interface FluidCell2 extends Cell2 {
   }
 
   /// 流体を含むセルの前ステップ値.
-  interface Previous extends Cell2.Previous {
+  interface Previous extends Cell.Previous {
 
     /// 流体の熱力学的温度を返す.
     ///
@@ -206,7 +206,7 @@ interface FluidCell2 extends Cell2 {
   } // Previous
 
   /// 流体を含むセルの成分値.
-  interface ComponentValue extends Cell2.ComponentValue {
+  interface ComponentValue extends Cell.ComponentValue {
 
     /// 流体成分の質量分率を返す.
     ///
@@ -282,7 +282,7 @@ interface FluidCell2 extends Cell2 {
     }
 
     /// 流体を含むセルの成分値の前ステップ値.
-    interface Previous extends Cell2.ComponentValue.Previous {
+    interface Previous extends Cell.ComponentValue.Previous {
 
       /// 流体成分の質量分率を返す.
       ///

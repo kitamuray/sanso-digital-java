@@ -21,7 +21,7 @@ final class TankModel {
   private final Tank tank;
 
   /// セル.
-  private final TankCell2 cell;
+  private final TankCell cell;
 
   /// モニタ値の可変リストの不変マップ.
   private final Map<String, List<Double>> historyListMap;
@@ -32,7 +32,7 @@ final class TankModel {
   /// @param composition 組成.
   TankModel(Tank tank, Composition composition) {
     this.tank = tank;
-    this.cell = new TankCell2(this.tank, composition);
+    this.cell = new TankCell(this.tank, composition);
     this.historyListMap = this.tank.monitorMap().keySet().stream()
         .collect(
             ImmutableMap.toImmutableMap(
@@ -41,22 +41,22 @@ final class TankModel {
   }
 
   /// セルを返す.
-  TankCell2 cell() {
+  TankCell cell() {
     return this.cell;
   }
 
   /// 貯槽モデルの永続化クラスのインスタンスを生成して返す.
   ///
   /// @return 貯槽モデルの永続化クラスのインスタンス.
-  TankModelEntity2 newEntity() {
-    return new TankModelEntity2(this.cell.newEntity());
+  TankModelEntity newEntity() {
+    return new TankModelEntity(this.cell.newEntity());
   }
 
   /// 指定された永続化クラスのインスタンスを反映する.
   ///
   /// @param entity 永続化クラスのインスタンス.
   /// @throws NullPointerException `entity` の構成要素に `null` が含まれている場合.
-  void accept(TankModelEntity2 entity) {
+  void accept(TankModelEntity entity) {
     Preconditions.checkNotNull(entity);
     Preconditions.checkNotNull(entity.cellEntity());
 

@@ -11,7 +11,7 @@ import java.util.Map;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-interface AdsorbentCell2 extends FluidCell2 {
+interface AdsorbentCell extends FluidCell {
 
   /// 吸着剤の粒子径を返す.
   ///
@@ -70,7 +70,7 @@ interface AdsorbentCell2 extends FluidCell2 {
   Map<ComponentKey, ? extends ComponentValue> componentMap();
 
   /// 流体・吸着質・吸着剤を含むセルの前ステップ値.
-  interface Previous extends FluidCell2.Previous {
+  interface Previous extends FluidCell.Previous {
 
     /// 流体・吸着質・吸着剤の熱力学的温度を返す.
     ///
@@ -98,7 +98,7 @@ interface AdsorbentCell2 extends FluidCell2 {
   } // Previous
 
   /// 流体・吸着質・吸着剤を含むセルの成分値.
-  interface ComponentValue extends FluidCell2.ComponentValue {
+  interface ComponentValue extends FluidCell.ComponentValue {
 
     /// 吸着質成分のモル吸着量を返す.
     ///
@@ -131,7 +131,7 @@ interface AdsorbentCell2 extends FluidCell2 {
     Previous previous();
 
     /// 流体・吸着質・吸着剤を含むセルの成分値の前ステップ値.
-    interface Previous extends FluidCell2.ComponentValue.Previous {
+    interface Previous extends FluidCell.ComponentValue.Previous {
 
       /// 吸着質成分のモル吸着量を返す.
       ///

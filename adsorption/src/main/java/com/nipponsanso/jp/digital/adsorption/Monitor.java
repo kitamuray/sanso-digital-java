@@ -48,13 +48,13 @@ public abstract class Monitor {
   static final class FluidCellMonitor extends Monitor {
 
     /// 流体セルを引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<FluidCell2> function;
+    private final ToDoubleFunction<FluidCell> function;
 
     /// 流体セルのモニタのインスタンスを生成する.
     ///
     /// @param toString 文字列表現.
     /// @param function 流体セルを引数に取り従属変数の値を返す関数.
-    private FluidCellMonitor(String toString, ToDoubleFunction<FluidCell2> function) {
+    private FluidCellMonitor(String toString, ToDoubleFunction<FluidCell> function) {
       super(toString);
       this.function = function;
     }
@@ -62,42 +62,42 @@ public abstract class Monitor {
     @Override
     double applyAsDouble(Object object) {
       Preconditions.checkNotNull(object);
-      if (!(object instanceof FluidCell2)) {
+      if (!(object instanceof FluidCell)) {
         throw new ClassCastException();
       }
 
-      return this.function.applyAsDouble((FluidCell2) object);
+      return this.function.applyAsDouble((FluidCell) object);
     }
 
     /// 流体の熱力学的温度 (K) のモニタ.
     private static final FluidCellMonitor TEMPERATURE
-        = new FluidCellMonitor("temperature", FluidCell2::getTemperature);
+        = new FluidCellMonitor("temperature", FluidCell::getTemperature);
 
     /// 流体の絶対圧力 (Pa) のモニタ.
     private static final FluidCellMonitor PRESSURE
-        = new FluidCellMonitor("pressure", FluidCell2::getPressure);
+        = new FluidCellMonitor("pressure", FluidCell::getPressure);
 
     /// 流体の密度 (kg m<sup>-3</sup>) のモニタ.
     private static final FluidCellMonitor DENSITY
-        = new FluidCellMonitor("density", FluidCell2::getDensity);
+        = new FluidCellMonitor("density", FluidCell::getDensity);
 
     /// 流体の比エンタルピ (J kg<sup>-1</sup>) のモニタ.
     private static final FluidCellMonitor SPECIFIC_ENTHALPY
-        = new FluidCellMonitor("specificEnthalpy", FluidCell2::getSpecificEnthalpy);
+        = new FluidCellMonitor("specificEnthalpy", FluidCell::getSpecificEnthalpy);
 
     /// 流体の定圧比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
     private static final FluidCellMonitor SPECIFIC_CONSTANT_PRESSURE_SPECIFIC_HEAT
         = new FluidCellMonitor(
             "specificConstantPressureSpecificHeat",
-            FluidCell2::getSpecificConstantPressureSpecificHeat);
+            FluidCell::getSpecificConstantPressureSpecificHeat);
 
     /// 流体の粘性係数 (Pa s) のモニタ.
     private static final FluidCellMonitor VISCOSITY
-        = new FluidCellMonitor("viscosity", FluidCell2::getViscosity);
+        = new FluidCellMonitor("viscosity", FluidCell::getViscosity);
 
     /// 流体の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>) のモニタ.
     private static final FluidCellMonitor THERMAL_CONDUCTIVITY
-        = new FluidCellMonitor("thermalConductivity", FluidCell2::getThermalConductivity);
+        = new FluidCellMonitor("thermalConductivity", FluidCell::getThermalConductivity);
 
     /// 流体成分の質量分率 (-) のモニタ.
     private static final Map<ComponentKey, FluidCellMonitor> FRACTION_MAP
@@ -115,12 +115,12 @@ public abstract class Monitor {
   /// @param function セルの成分値を引数に取り値を返す関数.
   private record FluidCellComponent(
       ComponentKey componentKey,
-      ToDoubleFunction<FluidCell2.ComponentValue> function) implements ToDoubleFunction<FluidCell2> {
+      ToDoubleFunction<FluidCell.ComponentValue> function) implements ToDoubleFunction<FluidCell> {
 
     @Override
-    public double applyAsDouble(FluidCell2 cell) {
+    public double applyAsDouble(FluidCell cell) {
       // Preconditions.checkNotNull(cell); -> 事前に実行済
-      FluidCell2.ComponentValue value = cell.componentMap().get(this.componentKey);
+      FluidCell.ComponentValue value = cell.componentMap().get(this.componentKey);
       Preconditions.checkNotNull(value);
       return this.function.applyAsDouble(value);
     }
@@ -210,7 +210,7 @@ public abstract class Monitor {
         componentKey, // null -> NullPointerException
         key -> new FluidCellMonitor(
             "fraction[" + key.name() + "]",
-            new FluidCellComponent(key, FluidCell2.ComponentValue::getFraction)));
+            new FluidCellComponent(key, FluidCell.ComponentValue::getFraction)));
   }
 
   /// 流体成分の物質拡散係数のモニタを返す.
@@ -226,20 +226,20 @@ public abstract class Monitor {
         componentKey, // null -> NullPointerException
         key -> new FluidCellMonitor(
             "diffusivity[" + key.name() + "]",
-            new FluidCellComponent(key, FluidCell2.ComponentValue::getDiffusivity)));
+            new FluidCellComponent(key, FluidCell.ComponentValue::getDiffusivity)));
   }
 
   /// 容器セルのモニタ.
   static final class ShellCellMonitor extends Monitor {
 
     /// 容器セルを引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<ShellCell2> function;
+    private final ToDoubleFunction<ShellCell> function;
 
     /// 容器セルのモニタのインスタンスを生成する.
     ///
     /// @param toString 文字列表現.
     /// @param function 容器セルを引数に取り従属変数の値を返す関数.
-    private ShellCellMonitor(String toString, ToDoubleFunction<ShellCell2> function) {
+    private ShellCellMonitor(String toString, ToDoubleFunction<ShellCell> function) {
       super(toString);
       this.function = function;
     }
@@ -247,30 +247,30 @@ public abstract class Monitor {
     @Override
     double applyAsDouble(Object object) {
       Preconditions.checkNotNull(object);
-      if (!(object instanceof ShellCell2)) {
+      if (!(object instanceof ShellCell)) {
         throw new ClassCastException();
       }
 
-      return this.function.applyAsDouble((ShellCell2) object);
+      return this.function.applyAsDouble((ShellCell) object);
     }
 
     /// 容器の熱力学的温度 (K) のモニタ.
     private static final ShellCellMonitor SHELL_TEMPERATURE
         = new ShellCellMonitor(
             "shellTemperature",
-            ShellCell2::getShellTemperature);
+            ShellCell::getShellTemperature);
 
     /// 容器の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
     private static final ShellCellMonitor SHELL_SPECIFIC_HEAT
         = new ShellCellMonitor(
             "shellSpecificHeat",
-            ShellCell2::getShellSpecificHeat);
+            ShellCell::getShellSpecificHeat);
 
     /// 容器の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>) のモニタ.
     private static final ShellCellMonitor SHELL_THERMAL_CONDUCTIVITY
         = new ShellCellMonitor(
             "shellThermalConductivity",
-            ShellCell2::getShellThermalConductivity);
+            ShellCell::getShellThermalConductivity);
 
   } // ShellCellMonitor
 
@@ -308,13 +308,13 @@ public abstract class Monitor {
   static final class AdsorbentCell2Monitor extends Monitor {
 
     /// 吸着剤セルを引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<AdsorbentCell2> function;
+    private final ToDoubleFunction<AdsorbentCell> function;
 
     /// 吸着剤セルのモニタのインスタンスを生成する.
     ///
     /// @param toString 文字列表現.
     /// @param function 吸着剤セルを引数に取り従属変数の値を返す関数.
-    private AdsorbentCell2Monitor(String toString, ToDoubleFunction<AdsorbentCell2> function) {
+    private AdsorbentCell2Monitor(String toString, ToDoubleFunction<AdsorbentCell> function) {
       super(toString);
       this.function = function;
     }
@@ -322,18 +322,18 @@ public abstract class Monitor {
     @Override
     double applyAsDouble(Object object) {
       Preconditions.checkNotNull(object);
-      if (!(object instanceof AdsorbentCell2)) {
+      if (!(object instanceof AdsorbentCell)) {
         throw new ClassCastException();
       }
 
-      return this.function.applyAsDouble((AdsorbentCell2) object);
+      return this.function.applyAsDouble((AdsorbentCell) object);
     }
 
     /// 吸着剤の比熱 (J kg<sup>-1</sup> K<sup>-1</sup>) のモニタ.
     private static final AdsorbentCell2Monitor ADSORBENT_SPECIFIC_HEAT
         = new AdsorbentCell2Monitor(
         "adsorbentSpecificHeat",
-        AdsorbentCell2::getAdsorbentSpecificHeat);
+        AdsorbentCell::getAdsorbentSpecificHeat);
 
     /// 吸着質成分のモル吸着量 (mol kg<sup>-1</sup>) のモニタのマップ.
     private static final Map<ComponentKey, AdsorbentCell2Monitor> MOLAR_QUANTITY_MAP
@@ -347,13 +347,13 @@ public abstract class Monitor {
   /// @param function セルの成分値を引数に取り値を返す関数.
   private record AdsorbentCell2Component(
       ComponentKey componentKey,
-      ToDoubleFunction<AdsorbentCell2.ComponentValue> function)
-      implements ToDoubleFunction<AdsorbentCell2> {
+      ToDoubleFunction<AdsorbentCell.ComponentValue> function)
+      implements ToDoubleFunction<AdsorbentCell> {
 
     @Override
-    public double applyAsDouble(AdsorbentCell2 cell) {
+    public double applyAsDouble(AdsorbentCell cell) {
       // Preconditions.checkNotNull(cell); -> 事前に実行済
-      AdsorbentCell2.ComponentValue value = cell.componentMap().get(this.componentKey);
+      AdsorbentCell.ComponentValue value = cell.componentMap().get(this.componentKey);
       Preconditions.checkNotNull(value);
       return this.function.applyAsDouble(value);
     }
@@ -383,20 +383,20 @@ public abstract class Monitor {
         componentKey,
         key -> new AdsorbentCell2Monitor(
             "molarQuantity[" + key.name() + "]",
-            new AdsorbentCell2Component(key, AdsorbentCell2.ComponentValue::getMolarQuantity)));
+            new AdsorbentCell2Component(key, AdsorbentCell.ComponentValue::getMolarQuantity)));
   }
 
   /// 流体フェイスのモニタ.
   static final class FluidFaceMonitor extends Monitor {
 
       /// 流体フェイスを引数に取り従属変数の値を返す関数.
-    private final ToDoubleFunction<FluidFace2> function;
+    private final ToDoubleFunction<FluidFace> function;
 
     /// 流体フェイスのモニタのインスタンスを生成する.
     ///
     /// @param toString 文字列表現.
     /// @param function 流体フェイスを引数に取り従属変数の値を返す関数.
-    private FluidFaceMonitor(String toString, ToDoubleFunction<FluidFace2> function) {
+    private FluidFaceMonitor(String toString, ToDoubleFunction<FluidFace> function) {
       super(toString);
       this.function = function;
     }
@@ -404,20 +404,20 @@ public abstract class Monitor {
     @Override
     double applyAsDouble(Object object) {
       Preconditions.checkNotNull(object);
-      if (!(object instanceof FluidFace2)) {
+      if (!(object instanceof FluidFace)) {
         throw new ClassCastException();
       }
 
-      return this.function.applyAsDouble((FluidFace2) object);
+      return this.function.applyAsDouble((FluidFace) object);
     }
 
     /// 流体の質量流量 (kg s<sup>-1</sup>) のモニタ.
     private static final FluidFaceMonitor MASS_FLOW
-        = new FluidFaceMonitor("massFlow", FluidFace2::getMassFlow);
+        = new FluidFaceMonitor("massFlow", FluidFace::getMassFlow);
 
     /// 流体のエネルギ流量 (W) のモニタ.
     private static final FluidFaceMonitor ENERGY_FLOW
-        = new FluidFaceMonitor("energyFlow", FluidFace2::getEnergyFlow);
+        = new FluidFaceMonitor("energyFlow", FluidFace::getEnergyFlow);
 
     /// 流体成分の化学種流量 (kg s<sup>-1</sup>) のモニタのマップ.
     private static final Map<ComponentKey, FluidFaceMonitor> SPECIES_FLOW_MAP
@@ -431,12 +431,12 @@ public abstract class Monitor {
   /// @param function フェイスの成分値を引数に取り値を返す関数.
   private record FluidFace2Component(
       ComponentKey componentKey,
-      ToDoubleFunction<FluidFace2.ComponentValue> function) implements ToDoubleFunction<FluidFace2> {
+      ToDoubleFunction<FluidFace.ComponentValue> function) implements ToDoubleFunction<FluidFace> {
 
     @Override
-    public double applyAsDouble(FluidFace2 cell) {
+    public double applyAsDouble(FluidFace cell) {
       // Preconditions.checkNotNull(cell); -> 事前に実行済
-      FluidFace2.ComponentValue value = cell.componentMap().get(this.componentKey);
+      FluidFace.ComponentValue value = cell.componentMap().get(this.componentKey);
       Preconditions.checkNotNull(value);
       return this.function.applyAsDouble(value);
     }
@@ -470,7 +470,7 @@ public abstract class Monitor {
         componentKey, // null -> NullPointerException
         key -> new FluidFaceMonitor(
             "speciesFlow[" + key.name() + "]",
-            new FluidFace2Component(key, FluidFace2.ComponentValue::getSpeciesFlow)));
+            new FluidFace2Component(key, FluidFace.ComponentValue::getSpeciesFlow)));
   }
 
 }

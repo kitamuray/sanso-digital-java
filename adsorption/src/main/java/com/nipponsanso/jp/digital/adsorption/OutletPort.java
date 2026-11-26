@@ -49,7 +49,7 @@ public final class OutletPort extends Port {
   }
 
   @Override
-  void set(FluidCell2 cell) {
+  void set(FluidCell cell) {
     cell.setPressure(this.pressure());
   }
 

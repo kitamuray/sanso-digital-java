@@ -27,7 +27,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   }
 
   @Override
-  double density(FluidCell2 cell) {
+  double density(FluidCell cell) {
     return cell.getPressure()
         * cell.getMolecularWeight()
         / PhysicalConstants.MOLAR_GAS_CONSTANT
@@ -35,7 +35,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   }
 
   @Override
-  double pressure(FluidCell2 cell) {
+  double pressure(FluidCell cell) {
     return cell.getDensity()
         / cell.getMolecularWeight()
         * PhysicalConstants.MOLAR_GAS_CONSTANT
@@ -43,7 +43,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   }
 
   @Override
-  double specificConstantPressureSpecificHeat(FluidCell2 cell) {
+  double specificConstantPressureSpecificHeat(FluidCell cell) {
     double molecularWeight   = cell.getMolecularWeight();
     double molarSpecificHeat = this.molarSpecificConstantPressureSpecificHeat(cell);
 
@@ -54,7 +54,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   ///
   /// @param cell セル.
   /// @return 多成分物質のモル定圧比熱 (J kg<sup>-1</sup> K<sup>-1</sup>).
-  private double molarSpecificConstantPressureSpecificHeat(FluidCell2 cell) {
+  private double molarSpecificConstantPressureSpecificHeat(FluidCell cell) {
     return cell.componentMap().entrySet().stream()
         .mapToDouble(entry -> {
           // 式が長くなるため文で記述
@@ -72,13 +72,13 @@ final class LowPressureIdealGasFluidService extends FluidService {
   /// @param componentKey 成分のキー.
   /// @return 純成分物質のモル定圧比熱 (J mol<sup>-1</sup> K<sup>-1</sup>).
   private double molarSpecificConstantPressureSpecificHeat(
-      FluidCell2 cell, ComponentKey componentKey) {
+      FluidCell cell, ComponentKey componentKey) {
     return componentKey.thermodynamicFunction()
         .molarSpecificConstantPressureSpecificHeat(cell.getTemperature());
   }
 
   @Override
-  double specificEnthalpy(FluidCell2 cell) {
+  double specificEnthalpy(FluidCell cell) {
     double molecularWeight       = cell.getMolecularWeight();
     double molarSpecificEnthalpy = this.molarSpecificEnthalpy(cell);
 
@@ -89,7 +89,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   ///
   /// @param cell セル.
   /// @return 多成分物質のモル比エンタルピ (J mol<sup>-1</sup>)
-  private double molarSpecificEnthalpy(FluidCell2 cell) {
+  private double molarSpecificEnthalpy(FluidCell cell) {
     return cell.componentMap().entrySet().stream()
         .mapToDouble(entry -> {
           // 式が長くなるため文で記述
@@ -105,13 +105,13 @@ final class LowPressureIdealGasFluidService extends FluidService {
   /// @param cell セル.
   /// @param componentKey 成分のキー.
   /// @return 純成分物質のモル比エンタルピ (J mol<sup>-1</sup>).
-  private double molarSpecificEnthalpy(FluidCell2 cell, ComponentKey componentKey) {
+  private double molarSpecificEnthalpy(FluidCell cell, ComponentKey componentKey) {
     return componentKey.thermodynamicFunction()
         .molarSpecificEnthalpy(cell.getTemperature());
   }
 
   @Override
-  double viscosity(FluidCell2 cell) {
+  double viscosity(FluidCell cell) {
     return WilkeViscosity.calculate(
         cell.componentMap().keySet(),
         ComponentKey::molecularWeight,
@@ -124,7 +124,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   /// @param cell セル.
   /// @param componentKey 成分のキー.
   /// @return 純成分物質の粘性係数 (Pa s).
-  private double viscosity(FluidCell2 cell, ComponentKey componentKey) {
+  private double viscosity(FluidCell cell, ComponentKey componentKey) {
     return ChapmanEnskogViscosity.calculate(
         cell.getTemperature(),
         componentKey.molecularWeight(),
@@ -132,7 +132,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   }
 
   @Override
-  double thermalConductivity(FluidCell2 cell) {
+  double thermalConductivity(FluidCell cell) {
     return MasonSaxenaThermalConductivity.calculate(
         cell.componentMap().keySet(),
         ComponentKey::molecularWeight,
@@ -146,7 +146,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   /// @param cell セル.
   /// @param componentKey 成分のキー.
   /// @return 純成分物質の熱伝導率 (W m<sup>-1</sup> K<sup>-1</sup>).
-  private double thermalConductivity(FluidCell2 cell, ComponentKey componentKey) {
+  private double thermalConductivity(FluidCell cell, ComponentKey componentKey) {
     return ModifiedEuckenThermalConductivity.calculate(
         this.viscosity(cell, componentKey),
         this.molarSpecificConstantVolumeSpecificHeat(cell, componentKey),
@@ -159,12 +159,12 @@ final class LowPressureIdealGasFluidService extends FluidService {
   /// @param componentKey 成分のキー.
   /// @return 純成分物質のモル定積比熱 (J mol<sup>-1</sup> K<sup>-1</sup>).
   private double molarSpecificConstantVolumeSpecificHeat(
-      FluidCell2 cell, ComponentKey componentKey) {
+      FluidCell cell, ComponentKey componentKey) {
     return this.molarSpecificConstantPressureSpecificHeat(cell, componentKey)
         - PhysicalConstants.MOLAR_GAS_CONSTANT;
   }
 
-  double diffusivity(FluidCell2 cell, ComponentKey componentKey) {
+  double diffusivity(FluidCell cell, ComponentKey componentKey) {
     return BlancDiffusivity.calculate(
         cell.componentMap().keySet(),
         componentKey,
@@ -178,7 +178,7 @@ final class LowPressureIdealGasFluidService extends FluidService {
   /// @param i 成分 _i_ のキー.
   /// @param j 成分 _j_ のキー.
   /// @return 二成分物質の物質拡散係数 (m<sup>2</sup> s<sup>-1</sup>).
-  private double diffusivity(FluidCell2 cell, ComponentKey i, ComponentKey j) {
+  private double diffusivity(FluidCell cell, ComponentKey i, ComponentKey j) {
     return ChapmanEnskogDiffusivity.calculate(
         cell.getTemperature(),
         cell.getPressure(),
