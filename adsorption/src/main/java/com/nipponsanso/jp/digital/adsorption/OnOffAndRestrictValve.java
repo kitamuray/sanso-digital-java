@@ -50,9 +50,6 @@ final class OnOffAndRestrictValve extends Valve {
     return this.restrictValve;
   }
 
-  /// {@inheritDoc}
-  ///
-  /// @return {@inheritDoc}
   @Override
   double cvValue() {
     return this.cvValue;

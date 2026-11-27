@@ -26,7 +26,7 @@ public final class InletPort extends Port {
   public static final class Builder extends Port.Builder<Builder> {
 
     /// 流体の熱力学的温度 (K).
-    private double temperature = 298.15;
+    private double temperature;
 
     /// 流体成分の質量分率 (-) のマップ.
     private final Map<ComponentKey, Double> fractionMap = new EnumMap<>(ComponentKey.class);
@@ -89,14 +89,24 @@ public final class InletPort extends Port {
   /// 流入境界条件のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
+  /// @throws IllegalStateException `builder` が不完全な場合.
   private InletPort(Builder builder) {
     super(builder);
+
+    Preconditions.checkState(builder.temperature > 0.);
 
     this.temperature = builder.temperature;
     this.fractionMap = Maps.immutableEnumMap(builder.fractionMap);
 
     LOGGER.debug("temperature = {}", this.temperature);
     LOGGER.debug("fractionMap = {}", this.fractionMap);
+  }
+
+  /// ビルダのインスタンスを生成して返す.
+  ///
+  /// @return ビルダのインスタンス.
+  public static Builder builder() {
+    return new Builder();
   }
 
   /// 流体の熱力学的温度を返す.

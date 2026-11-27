@@ -41,8 +41,6 @@ final class VacuumPumpModel {
             ImmutableMap.toImmutableMap(
                 key -> key,
                 _ -> new ArrayList<>()));
-
-    this.vacuumPump.set(this.cell);
   }
 
   /// セルを返す.

@@ -27,7 +27,7 @@ abstract class Port {
   abstract static class Builder<B extends Builder<B>> {
 
     /// 流体の絶対圧力 (Pa).
-    private double pressure = 101325.;
+    private double pressure;
 
     /// モニタの可変マップ.
     public final Map<String, Monitor> monitorMap = new HashMap<>();
@@ -86,7 +86,10 @@ abstract class Port {
   /// 流出入境界条件のインスタンスを生成する.
   ///
   /// @param builder ビルダ.
+  /// @throws IllegalStateException `builder` が不完全な場合.
   Port(Builder<?> builder) {
+    Preconditions.checkState(builder.pressure > 0.);
+
     this.pressure = builder.pressure;
     this.monitorMap = ImmutableMap.copyOf(builder.monitorMap);
 

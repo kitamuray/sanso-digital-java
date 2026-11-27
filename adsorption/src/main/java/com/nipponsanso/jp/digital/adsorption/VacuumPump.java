@@ -116,6 +116,13 @@ public final class VacuumPump {
     LOGGER.debug("monitorMap = {}", this.monitorMap);
   }
 
+  /// ビルダのインスタンスを生成して返す.
+  ///
+  /// @return ビルダのインスタンス.
+  public static Builder builder() {
+    return new Builder();
+  }
+
   /// 流体の最大体積流量を返す.
   ///
   /// @return 流体の最大体積流量 (m<sup>3</sup> s<sup>-1</sup>).
@@ -135,10 +142,6 @@ public final class VacuumPump {
   /// @return モニタの不変マップ.
   public Map<String, Monitor> monitorMap() {
     return this.monitorMap;
-  }
-
-  void set(FluidCell cell) {
-    cell.setPressure(this.minPressure);
   }
 
   @Override
