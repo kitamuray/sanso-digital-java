@@ -5,8 +5,10 @@
 
 package com.nipponsanso.jp.digital.adsorption;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.util.Map;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
 /// [AbstractFluidCell] のテスト.
@@ -15,10 +17,10 @@ import org.junit.jupiter.api.Test;
 /// @author KITAMURA Yuichiro
 class AbstractFluidCellTest {
 
-  /// [AbstractFluidCell] の getter 及び setter を一括でテスト.
+  /// [AbstractFluidCell] の getter/setter をテスト.
   @Test
   void testCell() {
-    Supplier<AbstractFluidCell> supplier = () -> new AbstractFluidCell() {
+    AbstractFluidCell o = new AbstractFluidCell() {
 
       @Override
       public FluidCell.Previous previous() {
@@ -32,90 +34,80 @@ class AbstractFluidCellTest {
 
     };
 
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getTemperature)
-        .setter(AbstractFluidCell::setTemperature)
-        .valid(298.15)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getPressure)
-        .setter(AbstractFluidCell::setPressure)
-        .valid(101325.)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getDensity)
-        .setter(AbstractFluidCell::setDensity)
-        .valid(1.2)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getSpecificEnthalpy)
-        .setter(AbstractFluidCell::setSpecificEnthalpy)
-        .valid(1e6)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getSpecificConstantPressureSpecificHeat)
-        .setter(AbstractFluidCell::setSpecificConstantPressureSpecificHeat)
-        .valid(1000.)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getViscosity)
-        .setter(AbstractFluidCell::setViscosity)
-        .valid(18e-6)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getThermalConductivity)
-        .setter(AbstractFluidCell::setThermalConductivity)
-        .valid(0.02)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell::getMolecularWeight)
-        .setter(AbstractFluidCell::setMolecularWeight)
-        .valid(28.)
-        .test();
+    assertThatThrownBy(() -> o.setTemperature(0.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setPressure(0.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setDensity(0.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setSpecificConstantPressureSpecificHeat(0.))
+        .isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setViscosity(0.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setThermalConductivity(0.))
+        .isInstanceOf(IllegalArgumentException.class);
+
+    final double temperature = 298.15;
+    final double pressure = 101325.;
+    final double density = 1.2;
+    final double specificEnthalpy = 1e6;
+    final double specificConstantPressureSpecificHeat = 1e3;
+    final double viscosity = 18e-6;
+    final double thermalConductivity = 0.02;
+    final double molecularWeight = 29.;
+
+    o.setTemperature(temperature);
+    o.setPressure(pressure);
+    o.setDensity(density);
+    o.setSpecificEnthalpy(specificEnthalpy);
+    o.setSpecificConstantPressureSpecificHeat(specificConstantPressureSpecificHeat);
+    o.setViscosity(viscosity);
+    o.setThermalConductivity(thermalConductivity);
+    o.setMolecularWeight(molecularWeight);
+
+    assertThat(o)
+        .returns(temperature, AbstractFluidCell::getTemperature)
+        .returns(pressure, AbstractFluidCell::getPressure)
+        .returns(density, AbstractFluidCell::getDensity)
+        .returns(specificEnthalpy, AbstractFluidCell::getSpecificEnthalpy)
+        .returns(
+            specificConstantPressureSpecificHeat,
+            AbstractFluidCell::getSpecificConstantPressureSpecificHeat)
+        .returns(viscosity, AbstractFluidCell::getViscosity)
+        .returns(thermalConductivity, AbstractFluidCell::getThermalConductivity)
+        .returns(molecularWeight, AbstractFluidCell::getMolecularWeight);
   }
 
-  /// [AbstractFluidCell.Previous] の getter 及び setter を一括でテスト.
+  /// [AbstractFluidCell.Previous] のテスト.
   @Test
-  void testPrevious() {
-    Supplier<AbstractFluidCell.Previous> supplier = () -> new AbstractFluidCell.Previous() {
+  void testCellPrevious() {
+    AbstractFluidCell.Previous o = new AbstractFluidCell.Previous() {
     };
 
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.Previous::getTemperature)
-        .setter(AbstractFluidCell.Previous::setTemperature)
-        .valid(298.15)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.Previous::getDensity)
-        .setter(AbstractFluidCell.Previous::setDensity)
-        .valid(1.2)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.Previous::getSpecificEnthalpy)
-        .setter(AbstractFluidCell.Previous::setSpecificEnthalpy)
-        .valid(1e6)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.Previous::getSpecificConstantPressureSpecificHeat)
-        .setter(AbstractFluidCell.Previous::setSpecificConstantPressureSpecificHeat)
-        .valid(1000.)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
+    assertThatThrownBy(() -> o.setTemperature(0.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setDensity(0.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setSpecificConstantPressureSpecificHeat(0.))
+        .isInstanceOf(IllegalArgumentException.class);
+
+    final double temperature = 298.15;
+    final double density = 1.2;
+    final double specificEnthalpy = 1e6;
+    final double specificConstantPressureSpecificHeat = 1e3;
+
+    o.setTemperature(temperature);
+    o.setDensity(density);
+    o.setSpecificEnthalpy(specificEnthalpy);
+    o.setSpecificConstantPressureSpecificHeat(specificConstantPressureSpecificHeat);
+
+    assertThat(o)
+        .returns(temperature, AbstractFluidCell.Previous::getTemperature)
+        .returns(density, AbstractFluidCell.Previous::getDensity)
+        .returns(specificEnthalpy, AbstractFluidCell.Previous::getSpecificEnthalpy)
+        .returns(
+            specificConstantPressureSpecificHeat,
+            AbstractFluidCell.Previous::getSpecificConstantPressureSpecificHeat);
   }
 
-  /// [AbstractFluidCell.ComponentValue] の getter 及び setter を一括でテスト.
+  /// [AbstractFluidCell.ComponentValue] のテスト.
   @Test
-  void testComponentValue() {
-    Supplier<AbstractFluidCell.ComponentValue> supplier
-        = () -> new AbstractFluidCell.ComponentValue() {
+  void testCellComponentValue() {
+    AbstractFluidCell.ComponentValue o = new AbstractFluidCell.ComponentValue() {
 
       @Override
       public FluidCell.ComponentValue.Previous previous() {
@@ -124,46 +116,42 @@ class AbstractFluidCellTest {
 
     };
 
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.ComponentValue::getFraction)
-        .setter(AbstractFluidCell.ComponentValue::setFraction)
-        .valid(0.123)
-        .thrown(IllegalArgumentException.class).value(-1.)
-        .thrown(IllegalArgumentException.class).value(2.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.ComponentValue::getDiffusivity)
-        .setter(AbstractFluidCell.ComponentValue::setDiffusivity)
-        .valid(5e-4)
-        .thrown(IllegalArgumentException.class).value(0.)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.ComponentValue::getMolarFraction)
-        .setter(AbstractFluidCell.ComponentValue::setMolarFraction)
-        .valid(0.123)
-        .test();
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.ComponentValue::getViscosity)
-        .setter(AbstractFluidCell.ComponentValue::setViscosity)
-        .valid(18e-6)
-        .test();
+    assertThatThrownBy(() -> o.setFraction(-1.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setFraction(2.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setDiffusivity(0.)).isInstanceOf(IllegalArgumentException.class);
+
+    final double fraction = 0.12;
+    final double diffusivity = 5e-4;
+    final double molarFraction = 0.23;
+    final double viscosity = 18e-6;
+
+    o.setFraction(fraction);
+    o.setDiffusivity(diffusivity);
+    o.setMolarFraction(molarFraction);
+    o.setViscosity(viscosity);
+
+    assertThat(o)
+        .returns(fraction, AbstractFluidCell.ComponentValue::getFraction)
+        .returns(diffusivity, AbstractFluidCell.ComponentValue::getDiffusivity)
+        .returns(molarFraction, AbstractFluidCell.ComponentValue::getMolarFraction)
+        .returns(viscosity, AbstractFluidCell.ComponentValue::getViscosity);
   }
 
-  /// [AbstractFluidCell.ComponentValue.Previous] の getter 及び setter を一括でテスト.
+  /// [AbstractFluidCell.ComponentValue.Previous] のテスト.
   @Test
-  void testComponentValuePrevious() {
-
-    Supplier<AbstractFluidCell.ComponentValue.Previous> supplier
-        = () -> new AbstractFluidCell.ComponentValue.Previous() {
+  void testCellComponentValuePrevious() {
+    AbstractFluidCell.ComponentValue.Previous o = new AbstractFluidCell.ComponentValue.Previous() {
     };
 
-    GetterSetterTester.supplier(supplier)
-        .getter(AbstractFluidCell.ComponentValue.Previous::getFraction)
-        .setter(AbstractFluidCell.ComponentValue.Previous::setFraction)
-        .valid(0.123)
-        .thrown(IllegalArgumentException.class).value(-1.)
-        .thrown(IllegalArgumentException.class).value(2.)
-        .test();
+    assertThatThrownBy(() -> o.setFraction(-1.)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> o.setFraction(2.)).isInstanceOf(IllegalArgumentException.class);
+
+    final double fraction = 0.12;
+
+    o.setFraction(fraction);
+
+    assertThat(o)
+        .returns(fraction, AbstractFluidCell.ComponentValue.Previous::getFraction);
   }
 
 }
