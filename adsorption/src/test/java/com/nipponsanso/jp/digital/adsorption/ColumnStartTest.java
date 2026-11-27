@@ -54,6 +54,17 @@ class ColumnStartTest {
           .isInstanceOf(NullPointerException.class);
     }
 
+    /// [FractionMapBuilder#fraction(double)] のテスト.
+    @Test
+    void testFractionDouble() {
+      assertThatThrownBy(
+          () -> ColumnStart.builder().componentKey(ComponentKey.NITROGEN).fraction(-1.))
+          .isInstanceOf(IllegalArgumentException.class);
+      assertThatThrownBy(
+          () -> ColumnStart.builder().componentKey(ComponentKey.NITROGEN).fraction(2.))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
     /// [ColumnStart.Builder#shellTemperature(double)] のテスト.
     @Test
     void testShellTemperatureDouble() {
@@ -66,42 +77,54 @@ class ColumnStartTest {
   /// [ColumnStart#temperature()] のテスト.
   @Test
   void testTemperature() {
-    assertThat(ColumnStart.builder().build().temperature()).isEqualTo(298.15);
-
     final double temperature = 303.15;
-    assertThat(ColumnStart.builder().temperature(temperature).build().temperature())
+    assertThat(
+        ColumnStart.builder()
+            .temperature(temperature)
+            .pressure(101325.)
+            .shellTemperature(298.15)
+            .build().temperature())
         .isEqualTo(temperature);
   }
 
   /// [ColumnStart#pressure()] のテスト.
   @Test
   void testPressure() {
-    assertThat(ColumnStart.builder().build().pressure()).isEqualTo(101325.);
-
     final double pressure = 111325.;
-    assertThat(ColumnStart.builder().pressure(pressure).build().pressure())
+    assertThat(
+        ColumnStart.builder()
+            .temperature(298.15)
+            .pressure(pressure)
+            .shellTemperature(303.15)
+            .build().pressure())
         .isEqualTo(pressure);
   }
 
   /// [ColumnStart#fractionMap()] のテスト.
   @Test
   void testFractionMap() {
-    assertThat(ColumnStart.builder().build().fractionMap()).isEmpty();
-
     final ComponentKey componentKey = ComponentKey.NITROGEN;
     final double fraction = 0.123;
     assertThat(
-        ColumnStart.builder().componentKey(componentKey).fraction(fraction).build().fractionMap())
+        ColumnStart.builder()
+            .temperature(298.15)
+            .pressure(101325.)
+            .shellTemperature(303.15)
+            .componentKey(componentKey).fraction(fraction)
+            .build().fractionMap())
         .isEqualTo(Map.of(componentKey, fraction));
   }
 
   /// [ColumnStart#shellTemperature()] のテスト.
   @Test
   void testShellTemperature() {
-    assertThat(ColumnStart.builder().build().shellTemperature()).isEqualTo(298.15);
-
     final double shellTemperature = 313.15;
-    assertThat(ColumnStart.builder().shellTemperature(shellTemperature).build().shellTemperature())
+    assertThat(
+        ColumnStart.builder()
+            .temperature(298.15)
+            .pressure(101325.)
+            .shellTemperature(shellTemperature)
+            .build().shellTemperature())
         .isEqualTo(shellTemperature);
   }
 
@@ -154,11 +177,32 @@ class ColumnStartTest {
     EqualsTester tester = new EqualsTester();
 
     Stream.<Supplier<ColumnStart>>of(
-            () -> ColumnStart.builder().build(),
-            () -> ColumnStart.builder().temperature(303.15).build(),
-            () -> ColumnStart.builder().pressure(111325.).build(),
-            () -> ColumnStart.builder().componentKey(ComponentKey.NITROGEN).fraction(0.123).build(),
-            () -> ColumnStart.builder().shellTemperature(313.15).build())
+            () -> ColumnStart.builder()
+                .temperature(298.15)
+                .pressure(101325.)
+                .shellTemperature(303.15)
+                .build(),
+            () -> ColumnStart.builder()
+                .temperature(303.15)
+                .pressure(101325.)
+                .shellTemperature(303.15)
+                .build(),
+            () -> ColumnStart.builder()
+                .temperature(298.15)
+                .pressure(111325.)
+                .shellTemperature(303.15)
+                .build(),
+            () -> ColumnStart.builder()
+                .temperature(298.15)
+                .pressure(101325.)
+                .componentKey(ComponentKey.NITROGEN).fraction(0.123)
+                .shellTemperature(303.15)
+                .build(),
+            () -> ColumnStart.builder()
+                .temperature(298.15)
+                .pressure(101325.)
+                .shellTemperature(313.15)
+                .build())
         .map(supplier -> Stream.generate(supplier).limit(3).toArray())
         .forEach(tester::addEqualityGroup);
 

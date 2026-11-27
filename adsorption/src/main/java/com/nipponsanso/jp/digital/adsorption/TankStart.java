@@ -13,10 +13,10 @@ import com.google.common.base.MoreObjects;
 ///
 /// @since 1.0
 /// @author KITAMURA Yuichiro
-public final class TankStart extends FluidStart {
+public final class TankStart extends Start {
 
   /// 貯槽の開始条件のビルダ.
-  public static final class Builder extends FluidStart.Builder<Builder> {
+  public static final class Builder extends Start.Builder<Builder> {
 
     /// 貯槽の開始条件のビルダのインスタンスを生成する.
     private Builder() {}
@@ -54,7 +54,9 @@ public final class TankStart extends FluidStart {
   ///
   /// @param cell 貯槽のセル.
   void start(TankCell cell) {
-    super.start(cell);
+    cell.setTemperature(this.temperature());
+    cell.setPressure(this.pressure());
+    cell.componentMap().forEach((key, value) -> value.setFraction(this.fractionMap().get(key)));
   }
 
   @Override

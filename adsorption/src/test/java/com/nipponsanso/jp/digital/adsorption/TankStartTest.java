@@ -54,37 +54,54 @@ class TankStartTest {
           .isInstanceOf(NullPointerException.class);
     }
 
+    /// [FractionMapBuilder#fraction(double)] のテスト.
+    @Test
+    void testFractionDouble() {
+      assertThatThrownBy(
+          () -> TankStart.builder().componentKey(ComponentKey.NITROGEN).fraction(-1.))
+          .isInstanceOf(IllegalArgumentException.class);
+      assertThatThrownBy(
+          () -> TankStart.builder().componentKey(ComponentKey.NITROGEN).fraction(2.))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
   } // BuilderTest
 
   /// [TankStart#temperature()] のテスト.
   @Test
   void testTemperature() {
-    assertThat(TankStart.builder().build().temperature()).isEqualTo(298.15);
-
     final double temperature = 303.15;
-    assertThat(TankStart.builder().temperature(temperature).build().temperature())
+    assertThat(
+        TankStart.builder()
+            .temperature(temperature)
+            .pressure(101325.)
+            .build().temperature())
         .isEqualTo(temperature);
   }
 
   /// [TankStart#pressure()] のテスト.
   @Test
   void testPressure() {
-    assertThat(TankStart.builder().build().pressure()).isEqualTo(101325.);
-
     final double pressure = 111325;
-    assertThat(TankStart.builder().pressure(pressure).build().pressure())
+    assertThat(
+        TankStart.builder()
+            .temperature(298.15)
+            .pressure(pressure)
+            .build().pressure())
         .isEqualTo(pressure);
   }
 
   /// [TankStart#fractionMap()] のテスト.
   @Test
   void testFractionMap() {
-    assertThat(TankStart.builder().build().fractionMap()).isEmpty();
-
     final ComponentKey componentKey = ComponentKey.NITROGEN;
     final double fraction = 0.123;
     assertThat(
-        TankStart.builder().componentKey(componentKey).fraction(fraction).build().fractionMap())
+        TankStart.builder()
+            .temperature(298.15)
+            .pressure(101325.)
+            .componentKey(componentKey).fraction(fraction)
+            .build().fractionMap())
         .isEqualTo(Map.of(componentKey, fraction));
   }
   
@@ -131,10 +148,21 @@ class TankStartTest {
     EqualsTester tester = new EqualsTester();
 
     Stream.<Supplier<TankStart>>of(
-            () -> TankStart.builder().build(),
-            () -> TankStart.builder().temperature(303.15).build(),
-            () -> TankStart.builder().pressure(112315.).build(),
             () -> TankStart.builder()
+                .temperature(298.15)
+                .pressure(101325.)
+                .build(),
+            () -> TankStart.builder()
+                .temperature(303.15)
+                .pressure(101325.)
+                .build(),
+            () -> TankStart.builder()
+                .temperature(298.15)
+                .pressure(112315.)
+                .build(),
+            () -> TankStart.builder()
+                .temperature(298.15)
+                .pressure(101325.)
                 .componentKey(ComponentKey.NITROGEN).fraction(0.123)
                 .build())
         .map(supplier -> Stream.generate(supplier).limit(3).toArray())

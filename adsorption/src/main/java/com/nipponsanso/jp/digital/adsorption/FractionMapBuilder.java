@@ -28,6 +28,8 @@ public abstract class FractionMapBuilder<B> {
 
   /// 質量分率の可変マップを返す.
   ///
+  /// マップの値は常に健全性が保障される.
+  ///
   /// @return 質量分率の可変マップ.
   abstract Map<ComponentKey, Double> fractionMap();
 
@@ -53,7 +55,6 @@ public abstract class FractionMapBuilder<B> {
   /// @throws IllegalArgumentException `fraction` が範囲外の場合.
   public final B fraction(double fraction) {
     Preconditions.checkArgument(0. <= fraction && fraction <= (1. - this.sumFraction()));
-
     this.fractionMap().put(this.componentKey, fraction);
     return this.self();
   }
